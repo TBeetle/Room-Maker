@@ -30,6 +30,7 @@ Specify the commands for a developer to run the app from the cloned repo.
 
 # Deployment
 
+** Note ** - Railway costs $5 per month; possible alternatives [PythonAnywhere](https://www.pythonanywhere.com/) (beginner tier is free)
 Webapps need a deployment section that explains how to get it deployed on the
 Internet. These should be detailed enough so anyone can re-deploy if needed
 . Note that you **do not put passwords in git**.
