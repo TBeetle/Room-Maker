@@ -58,4 +58,8 @@ Explain how to run the automated tests.
 
 # Authors
 
-Your names and emails
+Tyler Beetle:
+Joey Missan:
+Anna Michelitch:
+Grant Ward:
+Jordan Fowler:
