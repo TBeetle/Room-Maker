@@ -62,4 +62,4 @@ Tyler Beetle:
 Joey Missan:
 Anna Michelitch:
 Grant Ward:
-Jordan Fowler:
+Jordan Fowler: jsfowler@email.sc.edu
