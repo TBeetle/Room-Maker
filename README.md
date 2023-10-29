@@ -7,6 +7,10 @@ Our project will be a Web application that can ingest a JSON or Excel/CSV file t
 List all the stuff the reader will need to install in order to get you app to
 run in their laptop. For example:
 
+Django Framework:
+
+How to install with commands:
+
 In order to build this project you first have to install:
 
 - [Node.js](https://nodejs.org/en/)
