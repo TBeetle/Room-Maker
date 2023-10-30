@@ -52,8 +52,8 @@ We are planning on deploying using Railway, but this is subject to change.
 Not applicable at this point in time.
 
 ## Testing Technology
-
-Not applicable at this time.
+  
+Not applicable at this time.          
 
 ## Running Tests
 
@@ -61,8 +61,8 @@ Not applicable at this time.
 
 # Authors
 
-Tyler Beetle:
-Joey Missan:
-Anna Michelitch:
-Grant Ward:
-Jordan Fowler: jsfowler@email.sc.edu
+Tyler Beetle: tbeetle22@gmail.com (TBeetle)
+Joey Missan: jmissan@email.sc.edu (jmissan)
+Anna Michelitch: acm34@email.sc.edu (acm34)
+Grant Ward: jgward@email.sc.edu (jgward)
+Jordan Fowler: jsfowler@email.sc.edu (jordansfowler)
