@@ -18,7 +18,7 @@ Install pipenv:
 
 To install:
 
-We're going to use pipenv to create virtual environment's which can be created with -
+We're going to use pipenv to create virtual environments which can be created with -
 
 pipenv --python "<path-to-python>" install --ignore-pipfile
 
@@ -52,8 +52,8 @@ We are planning on deploying using Railway, but this is subject to change.
 Not applicable at this point in time.
 
 ## Testing Technology
-  
-Not applicable at this time.          
+
+Not applicable at this time.
 
 ## Running Tests
 
