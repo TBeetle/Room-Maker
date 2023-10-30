@@ -56,7 +56,7 @@ The behavioral tests are in `/test/casper/`.
 
 ## Testing Technology
 
-In some cases you need to install test runners, etc. Explain how.
+In some cases you need to install test runners, etc. Explain how
 
 ## Running Tests
 
