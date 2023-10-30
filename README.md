@@ -64,7 +64,7 @@ Explain how to run the automated tests.
 
 # Authors
 
-Tyler Beetle: 
+Tyler Beetle: tbeetle22@gmail.com (TBeetle)
 Joey Missan: jmissan@email.sc.edu (jmissan)
 Anna Michelitch: acm34@email.sc.edu (acm34)
 Grant Ward: jgward@email.sc.edu (jgward)
