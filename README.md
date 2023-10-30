@@ -16,8 +16,6 @@ Pip comes on device but to upgrade look at commands here - https://pip.pypa.io/e
 
 Install pipenv:
 
-To install:
-
 We're going to use pipenv to create virtual environments which can be created with -
 
 pipenv --python "<path-to-python>" install --ignore-pipfile
