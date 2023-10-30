@@ -4,63 +4,60 @@ Our project will be a Web application that can ingest a JSON or Excel/CSV file t
 
 ## External Requirements
 
-List all the stuff the reader will need to install in order to get you app to
-run in their laptop. For example:
-
-Test again:
-
-Django Framework:
-
-How to install with commands:
-
 In order to build this project you first have to install:
 
-- [Node.js](https://nodejs.org/en/)
-- [MongoDB](https://www.mongodb.com/)
+- [Pip](https://pypi.org/project/pip/)
+- [Pipenv](https://pypi.org/project/pipenv/)
+- [Django](https://www.djangoproject.com/)
+- [Black](https://pypi.org/project/black/)
 
-If possible, list the actual commands you used to install these, so the reader
-can just cut-n-paste the commands and get everything setup.
+Install pip:
+Pip comes on device but to upgrade look at commands here - https://pip.pypa.io/en/stable/installation/
 
-You only need to add instructions for the OS you are using.
+Install pipenv:
+
+To install:
+
+We're going to use pipenv to create virtual environment's which can be created with -
+
+pipenv --python "<path-to-python>" install --ignore-pipfile
+
+Install Django:
+
+Django is a little bit more complicated to install and prepare, but you can view installation tutorial with commands here - https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django
+
+Install Black:
+
+Black is our group's style guide of choice. To install use -
+
+pip install black
 
 ## Setup
 
-Here you list all the one-time things the developer needs to do after cloning
-your repo. Sometimes there is no need for this section, but some apps require
-some first-time configuration from the developer, for example: setting up a
-database for running your webapp locally.
+If you plan on using pipenv, make sure you use pipenv shell to enter the environment.
 
 ## Running
 
-Specify the commands for a developer to run the app from the cloned repo.
+Make sure you have correctly cloned the repository and it is the most recent version by using git pull command. Then, to run our web app type:
+
+cd layoutGenerator
+python3 manage.py runserver
 
 # Deployment
 
-** Note ** - Railway costs $5 per month; possible alternatives [PythonAnywhere](https://www.pythonanywhere.com/) (beginner tier is free)
-Webapps need a deployment section that explains how to get it deployed on the
-Internet. These should be detailed enough so anyone can re-deploy if needed
-. Note that you **do not put passwords in git**.
-
-Mobile apps will also sometimes need some instructions on how to build a
-"release" version, maybe how to sign it, and how to run that binary in an
-emulator or in a physical phone.
+We are planning on deploying using Railway, but this is subject to change.
 
 # Testing
 
-In 492 you will write automated tests. When you do you will need to add a
-section that explains how to run them.
-
-The unit tests are in `/test/unit`.
-
-The behavioral tests are in `/test/casper/`.
+Not applicable at this point in time.
 
 ## Testing Technology
-
-In some cases you need to install test runners, etc. Explain how
+  
+Not applicable at this time.          
 
 ## Running Tests
 
-Explain how to run the automated tests.
+Not applicable at this time.
 
 # Authors
 
@@ -68,4 +65,4 @@ Tyler Beetle: tbeetle22@gmail.com (TBeetle)
 Joey Missan: jmissan@email.sc.edu (jmissan)
 Anna Michelitch: acm34@email.sc.edu (acm34)
 Grant Ward: jgward@email.sc.edu (jgward)
-Jordan Fowler: jsfowler@email.sc.edu
+Jordan Fowler: jsfowler@email.sc.edu (jordansfowler)
