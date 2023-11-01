@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app1 import views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/register/", views.RegisterPage, name='register'),
+    # TODO: change import URL to be the home page
+    path("import/", views.ImportPage, name='import'),
+    path('accounts/login/', views.LoginPage, name='login'),
+    path('', RedirectView.as_view(url='import/', permanent=True)),
 ]
