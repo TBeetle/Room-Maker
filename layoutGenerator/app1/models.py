@@ -5,14 +5,26 @@ from django.urls import reverse # Generate URLs of individual objects through re
 
 # User model is predefined by Django, containing all necessary fields
 
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.validators import FileExtensionValidator
+
 class UploadedFile(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)    # Identifier of user who uploaded file
     uploaded_at = models.DateTimeField(auto_now_add=True)   # Timestamp indicating when file was uploaded
 
-    file = models.FileField(upload_to='uploads/');  # Store uplaaded file
+    file = models.FileField(
+        upload_to='imported_files/',
+        default='placeholder.txt',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['xlsx', 'json', 'csv', 'txt'])]
+        );  # Store uplaaded file
+    
     file_name = models.CharField(max_length=255) # Added to track name of file
-    file_path = models.CharField(max_length=255)    # Path to uploaded file on server
+    file_path = models.CharField(max_length=255, blank=True)    # Path to uploaded file on server
     file_type = models.CharField(max_length=10)     # Store file type (Excel, JSON, or CSV)
     
     def __str__(self):
