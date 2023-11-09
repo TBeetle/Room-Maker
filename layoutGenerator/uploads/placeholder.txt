@@ -1,0 +1,1 @@
+Default placeholder for an "Uploaded file" record that does not have a file associated with it.

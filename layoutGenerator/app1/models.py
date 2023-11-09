@@ -7,14 +7,13 @@ from django.urls import reverse # Generate URLs of individual objects through re
 
 class UploadedFile(models.Model):
 
-    # TODO: Update Github schema with file_name
-    file_name = models.CharField(max_length=255) # Added to track name of file
-    # TODO: Update 'userid' with 'user'
     user = models.ForeignKey(User, on_delete=models.CASCADE)    # Identifier of user who uploaded file
-    file_path = models.CharField(max_length=255)    # Path to uploaded file on server
     uploaded_at = models.DateTimeField(auto_now_add=True)   # Timestamp indicating when file was uploaded
 
-    # TODO: Add a media field to store the uploaded file
+    file = models.FileField(upload_to='uploads/');  # Store uplaaded file
+    file_name = models.CharField(max_length=255) # Added to track name of file
+    file_path = models.CharField(max_length=255)    # Path to uploaded file on server
+    file_type = models.CharField(max_length=10)     # Store file type (Excel, JSON, or CSV)
     
     def __str__(self):
         return self.file_name
