@@ -1,1 +1,23 @@
-<h1>Hello! Welcome to our app!</h1>
+<!DOCTYPE html>
+<html>
+    <head><title>Import File</title></head>
+
+<body>
+    <h1>Hello! Welcome to our app!</h1>
+
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    <h1>Upload a File: </h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="uploaded_file">
+        <input type="submit" value="CONVERT">
+    </form>
+
+    {% if file_name %}
+        <p>Uploaded file: {{ file_name }}</p>
+    {% endif %}
+</body>
+</html>
