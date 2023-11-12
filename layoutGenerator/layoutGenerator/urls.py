@@ -23,13 +23,15 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/register/", views.RegisterPage, name='register'),
+    path("accounts/register/", views.RegisterPage, name="register"),
     # TODO: change import URL to be the home page
-    path("import/", views.ImportPage, name='import'),
-    path('accounts/login/', views.LoginPage, name='login'),
-    path('', RedirectView.as_view(url='import/', permanent=True)),
+    path("import/", views.ImportPage, name="import"),
+    path("accounts/login/", views.LoginPage, name="login"),
+    path("", RedirectView.as_view(url="import/", permanent=True)),
+    # TODO: should we change this to export/<id>? or can we keep it as export?
+    path("export/", views.ExportPage, name="export-page"),
 ]
 
 # Serving media files during development
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT);
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
