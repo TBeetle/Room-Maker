@@ -29,7 +29,7 @@ class UploadedFile(models.Model):
         blank=True,
         null=True,
         validators=[
-            FileExtensionValidator(allowed_extensions=["xlsx", "json", "csv"])
+            FileExtensionValidator(allowed_extensions=["xlsx", "json", "csv", "xls"])
         ],
     )
     # Store uplaaded file

@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from .models import UploadedFile
+import os
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
 
+
+# %******************** Import File Page ****************************%
 
 # Home page view of the website, where users can upload a file
 def ImportPage(request):
@@ -16,9 +19,9 @@ def ImportPage(request):
 
         # File extension validation:
         file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
-        valid_extensions = ['xlsx', 'json', 'csv']
+        valid_extensions = ['xlsx', 'json', 'csv', 'xls']
         if file_extension not in valid_extensions:
-            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv)."
+            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, xls, json, or csv)."
         else:
             # Create new UploadedFile object and set the name
             uploaded_file_obj = UploadedFile(
@@ -48,18 +51,40 @@ def ImportPage(request):
     }
     return render(request, "import.html", context)
 
+# Views for downloading sample files 
+from django.http import FileResponse
+def download_sample_excel(request):
+    file_path = os.path.join('uploads', 'sample_files', 'sample_excel_format.xlsx')
+    response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=sample_excel_format.xlsx'
+    return response;
+
+# TODO: Update
+def download_sample_csv(request):
+    file_path = os.path.join('uploads', 'sample_files', 'sample_excel.xlsx')
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    return response;
+
+# TODO: Update
+def download_sample_json(request):
+    file_path = os.path.join('sample_files', 'sample_excel.xlsx')
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    return response;
+
+# %******************** Export File Page ****************************%
 
 def ExportPage(request):
     return render(request, "export.html")
 
 
+# %******************** User Registration ****************************%
+
 def RegisterPage(request):
     return render(request, "register.html")
-
 
 def LoginPage(request):
     return render(request, "login.html")
 
-
-def HomePage(request):
-    return render(request, "home.html")
+# %******************** User Settings ****************************%

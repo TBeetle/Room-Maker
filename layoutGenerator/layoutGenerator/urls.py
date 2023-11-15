@@ -32,6 +32,13 @@ urlpatterns = [
     path("export/", views.ExportPage, name="export-page"),
 ]
 
+# Downloading Sample Files
+urlpatterns += [
+    path('download/sample_excel/', views.download_sample_excel, name="download-sample-excel"),
+    path('download/sample_csv/', views.download_sample_csv, name="download-sample-csv"),
+    path('download/sample_json/', views.download_sample_json, name="download-sample-json"),
+]
+
 # Serving media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,23 +1,34 @@
 <!DOCTYPE html>
-<html>
-    <head><title>Import File</title></head>
 
-<body>
-    <h1>Hello! Welcome to our app!</h1>
+{% extends 'base_generic.html' %}
 
-    {% if error_message %}
-        <p class="error">{{ error_message }}</p>
-    {% endif %}
+{% block title %}File Upload{% endblock %}
 
-    <h1>Upload a File: </h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="uploaded_file">
-        <input type="submit" value="CONVERT">
-    </form>
+{% block header %}Upload a File:{% endblock %}
 
-    {% if file_name %}
-        <p>Uploaded file: {{ file_name }}</p>
-    {% endif %}
-</body>
-</html>
+{% block content %}
+    <div>
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="uploaded_file">
+            <input type="submit" value="CONVERT">
+        </form>
+
+        {% if file_name %}
+            <p>Uploaded file: {{ file_name }}</p>
+        {% endif %}
+    </div>
+
+    <div class="samples">
+        <a href="{% url 'download-sample-excel' %}" download>
+            <button>Download Sample Excel File</button>
+        </a>
+        <button>Download Sample CSV File</button>
+        <button>Download Sample JSON File</button>
+    </div>
+
+{% endblock %}
