@@ -1,11 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from .models import UploadedFile
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
 
 
 # Home page view of the website, where users can upload a file
+@login_required(login_url="login")
 def ImportPage(request):
 
     file_name = None # Initialize the file name variable
@@ -54,12 +59,39 @@ def ExportPage(request):
 
 
 def RegisterPage(request):
+    if request.method=='POST':
+        uname = request.POST.get('username')
+        email = request.POST.get('email')
+        pass1 = request.POST.get('password1')
+        pass2 = request.POST.get('password2')
+        if pass1 != pass2:
+            messages.info(request, "Passwords do not match!")
+            # return HttpResponse("Passwords do not match!")
+        else:
+            my_user = User.objects.create_user(uname, email, pass1)
+            my_user.save()
+            return redirect('login')
+        # print(uname, email, pass1, pass2)
+
     return render(request, "register.html")
 
 
 def LoginPage(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        password = request.POST.get('pass')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('import')
+        else:
+            messages.info(request, "Username or password is incorrect!")
+            #return HttpResponse("Username or password is incorrect!")
     return render(request, "login.html")
 
+def LogoutPage(request):
+    logout(request)
+    return redirect('login')
 
 def HomePage(request):
     return render(request, "home.html")
