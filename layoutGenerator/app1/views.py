@@ -91,7 +91,8 @@ def LoginPage(request):
 
 def LogoutPage(request):
     logout(request)
-    return redirect('login')
+    # return redirect('login')
+    return render(request, 'logout.html')
 
 def HomePage(request):
     return render(request, "home.html")
