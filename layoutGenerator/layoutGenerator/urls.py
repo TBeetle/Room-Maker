@@ -27,9 +27,10 @@ urlpatterns = [
     # TODO: change import URL to be the home page
     path("import/", views.ImportPage, name="import"),
     path("accounts/login/", views.LoginPage, name="login"),
-    path("", RedirectView.as_view(url="import/", permanent=True)),
+    path("", RedirectView.as_view(url="accounts/login/", permanent=True)),
     # TODO: should we change this to export/<id>? or can we keep it as export?
     path("export/", views.ExportPage, name="export-page"),
+    path("accounts/logout/", views.LogoutPage, name='logout'),
 ]
 
 # Serving media files during development
