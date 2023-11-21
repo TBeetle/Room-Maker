@@ -4,6 +4,7 @@
 
 <body>
     <h1>Hello! Welcome to our app!</h1>
+    <a href="{% url 'logout' %}" class=""btn btn-primary">Logout</a>
 
     {% if error_message %}
         <p class="error">{{ error_message }}</p>
