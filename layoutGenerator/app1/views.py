@@ -1,9 +1,15 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from .models import UploadedFile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+import pandas as pd
+import os
+from django.shortcuts import render, redirect
+from django.conf import settings
+from .models import UploadedFile
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
@@ -14,6 +20,7 @@ from django.http import HttpResponseBadRequest
 def ImportPage(request):
 
     file_name = None # Initialize the file name variable
+    error_message = None
 
     # Ensure request is a POST and that a file was uploaded:
     if request.method == "POST" and request.FILES:
@@ -25,34 +32,39 @@ def ImportPage(request):
         if file_extension not in valid_extensions:
             error_message = "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv)."
         else:
-            # Create new UploadedFile object and set the name
-            uploaded_file_obj = UploadedFile(
-                file=uploaded_file, file_name=uploaded_file.name
-            )
-
-            # Set the user attribute for the uploaded file if they are authenticated
+            # Save using UploadedFile model
+            uploaded_file_instance = UploadedFile(file=uploaded_file)
+            
             if request.user.is_authenticated:
-                uploaded_file_obj.user = request.user
+                uploaded_file_instance.user = request.user
+            uploaded_file_instance.save()
+            
+            # Determine the path of the saved file
+            saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
 
-            # Save uploaded file
-            uploaded_file_obj.save()
+            if file_extension == 'xlsx':
+                # Convert Excel to CSV
+                df = pd.read_excel(saved_file_path)
+                csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
+                csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
+                df.to_csv(csv_file_path, index=False)
 
-            # Get the file name
-            file_name = uploaded_file_obj.file_name
+                # Save the converted CSV file as a new UploadedFile instance
+                with open(csv_file_path, 'rb') as csv_file:
+                    converted_file_instance = UploadedFile(file_name=csv_file_name, file=csv_file)
+                    
+                    if request.user.is_authenticated:
+                        converted_file_instance.user = request.user
+                    converted_file_instance.save()
+
+                file_name = converted_file_instance.file_name
+            else:
+                file_name = uploaded_file_instance.file_name
 
             # Redirect to export page
             return redirect("export-page")
-    
-    else:
-        error_message = None    # Initialize error_message variable
 
-    # Define context with 'file_name' and 'error_message' to pass to HTML
-    context = {
-        'file_name': file_name,
-        'error_message' : error_message
-    }
-    return render(request, "import.html", context)
-
+    return render(request, "import.html", {'file_name': file_name, 'error_message': error_message})
 
 def ExportPage(request):
     return render(request, "export.html")
