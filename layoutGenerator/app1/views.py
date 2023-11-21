@@ -20,6 +20,7 @@ from django.http import HttpResponseBadRequest
 def ImportPage(request):
 
     file_name = None # Initialize the file name variable
+    error_message = None
 
     # Ensure request is a POST and that a file was uploaded:
     if request.method == "POST" and request.FILES:
