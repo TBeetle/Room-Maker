@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
-    <head><title>Import File</title></head>
+{% extends 'base.html' %}
 
-<body>
-    <h1>Hello! Welcome to our app!</h1>
-    <a href="{% url 'logout' %}" class=""btn btn-primary">Logout</a>
+{% block title %} Import File {% endblock %}
+
+{% block content %}
+    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
 
     {% if error_message %}
         <p class="error">{{ error_message }}</p>
     {% endif %}
 
-    <h1>Upload a File: </h1>
+    <h1>Upload a File:</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="uploaded_file">
@@ -20,5 +19,4 @@
     {% if file_name %}
         <p>Uploaded file: {{ file_name }}</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
