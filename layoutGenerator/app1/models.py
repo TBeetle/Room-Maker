@@ -29,7 +29,7 @@ class UploadedFile(models.Model):
         blank=True,
         null=True,
         validators=[
-            FileExtensionValidator(allowed_extensions=["xlsx", "json", "csv"])
+            FileExtensionValidator(allowed_extensions=["xlsx", "json", "csv", "xls"])
         ],
     )
     # Store uplaaded file
@@ -46,7 +46,9 @@ class UploadedFile(models.Model):
         # Set default value for file_name to the uploaded file's name
         if not self.file_name:
             self.file_name = self.file.name
+
         super(UploadedFile, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.file_name

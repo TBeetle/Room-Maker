@@ -3,11 +3,14 @@
 {% block title %} Import File {% endblock %}
 
 {% block content %}
-    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
 
-    {% if error_message %}
-        <p class="error">{{ error_message }}</p>
-    {% endif %}
+    <div class="samples">
+        <a href="{% url 'download-sample-excel' %}" download>
+            <button>Download Sample Excel File</button>
+        </a>
+        <button>Download Sample CSV File</button>
+        <button>Download Sample JSON File</button>
+    </div>
 
     <h1>Upload a File:</h1>
     <form method="post" enctype="multipart/form-data">
@@ -19,4 +22,5 @@
     {% if file_name %}
         <p>Uploaded file: {{ file_name }}</p>
     {% endif %}
+
 {% endblock %}

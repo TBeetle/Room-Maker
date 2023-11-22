@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.files.base import ContentFile
 
 import pandas as pd
 import os
@@ -14,6 +15,8 @@ from .models import UploadedFile
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
 
+
+# %******************** Import File Page ****************************%
 
 # Home page view of the website, where users can upload a file
 @login_required(login_url="login")
@@ -28,12 +31,12 @@ def ImportPage(request):
 
         # File extension validation:
         file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
-        valid_extensions = ['xlsx', 'json', 'csv']
+        valid_extensions = ['xlsx', 'json', 'csv', 'xls']
         if file_extension not in valid_extensions:
-            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv)."
+            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, xls, json, or csv)."
         else:
             # Save using UploadedFile model
-            uploaded_file_instance = UploadedFile(file=uploaded_file)
+            uploaded_file_instance = UploadedFile(file=uploaded_file,)
             
             if request.user.is_authenticated:
                 uploaded_file_instance.user = request.user
@@ -51,7 +54,13 @@ def ImportPage(request):
 
                 # Save the converted CSV file as a new UploadedFile instance
                 with open(csv_file_path, 'rb') as csv_file:
-                    converted_file_instance = UploadedFile(file_name=csv_file_name, file=csv_file)
+                    # Create ContentFile to represent contents of CSV file
+                    csv_content = ContentFile(csv_file.read())
+                    # Create UploadedFile instance with uploaded CSV file
+                    converted_file_instance = UploadedFile(
+                        file_name=csv_file_name,
+                        file=csv_content,
+                        )
                     
                     if request.user.is_authenticated:
                         converted_file_instance.user = request.user
@@ -63,12 +72,38 @@ def ImportPage(request):
 
             # Redirect to export page
             return redirect("export-page")
+        
+    return render(request, 'import.html')
 
-    return render(request, "import.html", {'file_name': file_name, 'error_message': error_message})
+# Views for downloading sample files 
+from django.http import FileResponse
+def download_sample_excel(request):
+    file_path = os.path.join('uploads', 'sample_files', 'sample_excel_format.xlsx')
+    response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=sample_excel_format.xlsx'
+    return response;
+
+# TODO: Update
+def download_sample_csv(request):
+    file_path = os.path.join('uploads', 'sample_files', 'sample_excel.xlsx')
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    return response;
+
+# TODO: Update
+def download_sample_json(request):
+    file_path = os.path.join('sample_files', 'sample_excel.xlsx')
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    return response
+
+# %******************** Export File Page ****************************%
 
 def ExportPage(request):
     return render(request, "export.html")
 
+
+# %******************** User Registration ****************************%
 
 def RegisterPage(request):
     if request.method=='POST':
@@ -87,6 +122,7 @@ def RegisterPage(request):
 
     return render(request, "register.html")
 
+# %******************** Authentication pages ****************************%
 
 def LoginPage(request):
     if request.method=="POST":
