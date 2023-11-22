@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.files.base import ContentFile
 
 import pandas as pd
 import os
@@ -53,7 +54,13 @@ def ImportPage(request):
 
                 # Save the converted CSV file as a new UploadedFile instance
                 with open(csv_file_path, 'rb') as csv_file:
-                    converted_file_instance = UploadedFile(file_name=csv_file_name, file=csv_file)
+                    # Create ContentFile to represent contents of CSV file
+                    csv_content = ContentFile(csv_file.read())
+                    # Create UploadedFile instance with uploaded CSV file
+                    converted_file_instance = UploadedFile(
+                        file_name=csv_file_name,
+                        file=csv_content,
+                        )
                     
                     if request.user.is_authenticated:
                         converted_file_instance.user = request.user
