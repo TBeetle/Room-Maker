@@ -48,6 +48,8 @@ class UploadedFile(models.Model):
             self.file_name = self.file.name
 
         super(UploadedFile, self).save(*args, **kwargs)
+        
+        return self, self.file
 
 
     def __str__(self):
