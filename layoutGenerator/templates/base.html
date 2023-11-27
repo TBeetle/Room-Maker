@@ -20,20 +20,20 @@
                 <img src="#" alt="ASSET Logo" width="30" height="30" class="d-inline-block align-top">
             </a>
 
-            <!-- Links on the Right -->
+            <!-- Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item ">
-                        <a class="nav-link" href="#">Import</a>
+                        <a class="nav-link" href="{% url 'import' %}">Import</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Export</a>
+                        <a class="nav-link" href="{% url 'export' %}">Export</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Layout Library</a>
+                        <a class="nav-link" href="{% url 'layout-library' %}">Layout Library</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Settings</a>
+                        <a class="nav-link" href="{% url 'settings' %}">Settings</a>
                     </li>
                 </ul>
             </div>

@@ -102,6 +102,16 @@ def download_sample_json(request):
 def ExportPage(request):
     return render(request, "export.html")
 
+# %******************** Layout Library Page ****************************%
+
+def LayoutLibraryPage(request):
+    return render(request, "layout-library.html")
+
+
+# %******************** Settings Pages ****************************%
+
+def SettingsPage(request):
+    return render(request, "settings.html")
 
 # %******************** User Registration ****************************%
 
