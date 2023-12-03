@@ -78,9 +78,9 @@ def ImportPage(request):
 # Views for downloading sample files 
 from django.http import FileResponse
 def download_sample_excel(request):
-    file_path = os.path.join('uploads', 'sample_files', 'sample_excel_format.xlsx')
+    file_path = os.path.join('uploads', 'sample_files', 'example_excel_format.xlsx')
     response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=sample_excel_format.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=example_excel_format.xlsx'
     return response;
 
 # TODO: Update
