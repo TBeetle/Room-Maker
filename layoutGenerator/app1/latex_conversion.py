@@ -11,6 +11,8 @@ latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},
 latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
 latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
 
+# Define LaTeX template for windows
+latex_windows_template = "\\draw[window, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
 # Iterate through rows and generate LaTeX code
 # Iterate through rows and generate LaTeX code for walls and furniture
 latex_code = ""
