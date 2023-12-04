@@ -4,23 +4,35 @@
 
 {% block content %}
 
-    <div class="samples">
-        <a href="{% url 'download-sample-excel' %}" download>
-            <button>Download Sample Excel File</button>
-        </a>
-        <button>Download Sample CSV File</button>
-        <button>Download Sample JSON File</button>
+<header class="py-5">
+    <div class="container px-lg-5">
+        <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
+            <div class="m-4 m-lg-5">
+                <h1 class="display-5 fw-bold">Upload File:</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3 mt-4 text-center">
+                        <input type="file" name="uploaded_file">
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-lg upload-file-btn" value="CONVERT">
+                </form>
+            </div>
+        </div>
     </div>
+</header>
 
-    <h1>Upload a File:</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="uploaded_file">
-        <input type="submit" value="CONVERT">
-    </form>
 
-    {% if file_name %}
-        <p>Uploaded file: {{ file_name }}</p>
-    {% endif %}
+<section class=" py-4">
+    <div class="container px-lg-5">
+        <div class="download-sample-files text-center">
+            <p class="mb-2">Download sample file formats:</p>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary" a href="{% url 'download-sample-excel' %}">Excel</button>
+                <button type="button" class="btn btn-sm btn-secondary" a href="#">CSV</button>
+                <button type="button" class="btn btn-sm btn-secondary" a href="#">JSON</button>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
