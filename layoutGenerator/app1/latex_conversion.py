@@ -1,27 +1,21 @@
 import pandas as pd
-
+import subprocess
 
 # Read Excel data
-#excel_data = pd.read_excel('C:\\Users\\Grant Ward\\Desktop\\UofSC School\\Senior Design\\example.xlsx')
+excel_data = pd.read_excel('/Users/tylerbeetle/Desktop/SeniorDesign/TheBackyardigans/layoutGenerator/uploads/sample_files/example_excel_format.xlsx')
 
-# Construct the raw GitHub URL
-excel_data = pd.read_excel('https://raw.githubusercontent.com/TBeetle/TheBackyardigans/ward_layoutconversion/layoutGenerator/uploads/imported_files/test-file.xlsx')
-
-# Define LaTeX template for walls
+# Define LaTeX template
 latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
 
 # Define LaTeX template for furniture
 latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
 latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
 
-#Define LAteX for template for windows
-latex_windows_template = "\\draw[window] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
-
 # Iterate through rows and generate LaTeX code
 # Iterate through rows and generate LaTeX code for walls and furniture
 latex_code = ""
 for index, row in excel_data.iterrows():
-    if row['Type'] == 'Exterior' and index < len(excel_data) - 1 and row['Description' == 'WALL']:
+    if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
         x1 = row['X']
         y1 = row['Y']
         if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
@@ -51,6 +45,7 @@ for index, row in excel_data.iterrows():
         y = row['Y']
         latex_code += latex_furniture_template.format(width, height, table_name, x, y)
         latex_code += latex_furniture_label_template.format(f"{table_name}.center", row['Descriptor'])
+ 
 
 # Complete LaTeX code with autopopulated walls
 complete_latex_code = f"""
@@ -144,7 +139,19 @@ complete_latex_code = f"""
 \\end{{figure}}
 \\end{{document}}
 """
+# Print or save LaTeX code
+print(complete_latex_code)
 
-# You can save it to a .tex file if needed
-with open('output.tex', 'w') as f:
+# Save LaTeX code to a .tex file
+tex_file_path = 'output.tex'
+with open(tex_file_path, 'w') as f:
     f.write(complete_latex_code)
+
+# Run the LaTeX compiler (lualatex) to generate the PDF
+process = subprocess.run(['lualatex', tex_file_path])
+
+# Check if the compilation was successful
+if process.returncode == 0:
+    print("PDF generated successfully.")
+else:
+    print("Error during PDF generation. Check the LaTeX log for details.")
