@@ -1,20 +1,27 @@
 import pandas as pd
 
-# Read Excel data
-excel_data = pd.read_excel('C:\\Users\\Grant Ward\\Desktop\\UofSC School\\Senior Design\\example.xlsx')
 
-# Define LaTeX template
+# Read Excel data
+#excel_data = pd.read_excel('C:\\Users\\Grant Ward\\Desktop\\UofSC School\\Senior Design\\example.xlsx')
+
+# Construct the raw GitHub URL
+excel_data = pd.read_excel('https://raw.githubusercontent.com/TBeetle/TheBackyardigans/ward_layoutconversion/layoutGenerator/uploads/imported_files/test-file.xlsx')
+
+# Define LaTeX template for walls
 latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
 
 # Define LaTeX template for furniture
 latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
 latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
 
+#Define LAteX for template for windows
+latex_windows_template = "\\draw[window] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+
 # Iterate through rows and generate LaTeX code
 # Iterate through rows and generate LaTeX code for walls and furniture
 latex_code = ""
 for index, row in excel_data.iterrows():
-    if row['Type'] == 'Exterior' and index < len(excel_data) - 1:
+    if row['Type'] == 'Exterior' and index < len(excel_data) - 1 and row['Description' == 'WALL']:
         x1 = row['X']
         y1 = row['Y']
         if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
@@ -25,6 +32,17 @@ for index, row in excel_data.iterrows():
             x2 = excel_data.at[index + 1, 'X']
             y2 = excel_data.at[index + 1, 'Y']
         latex_code += latex_walls_template.format(x1, y1, x2, y2)
+    elif row['Type'] == 'Exterior' and index < len(excel_data) - 1 and row['Description' == 'WINDOW']:
+        x1 = row['X']
+        y1 = row['Y']
+        if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
+            # Use the current row's coordinates for the last window before the furniture
+            x2 = row['X']
+            y2 = row['Y']
+        else:
+            x2 = excel_data.at[index + 1, 'X']
+            y2 = excel_data.at[index + 1, 'Y']
+        latex_code += latex_windows_template.format(x1, y1, x2, y2)
     elif row['Type'] == 'Furniture':
         width = row['width']
         height = row['height']
