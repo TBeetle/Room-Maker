@@ -6,9 +6,11 @@
     <section class=" py-4">
         <div class="container px-lg-5">
             <div class="download-sample-files text-center">
-                <p class="mb-2">Download TeX/PDF file formats:</p>
+                <p class="mb-2">Download PDF/TeX file formats:</p>
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-pdf' %}" style="color:inherit">PDF</a></button>
+                    <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-tex' %}" style="color:inherit">TeX</a></button>
+                    <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-zip' %}" style="color:inherit">Both</a></button>
                 </div>
             </div>
         </div>

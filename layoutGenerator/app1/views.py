@@ -12,6 +12,8 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import UploadedFile
 from django.shortcuts import HttpResponse
+import zipfile
+import app1.latex_conversion as lc
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
@@ -47,32 +49,35 @@ def ImportPage(request):
             saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
 
             if file_extension == 'xlsx':
-                # Convert Excel to CSV
-                df = pd.read_excel(saved_file_path)
-                csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
-                csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
-                df.to_csv(csv_file_path, index=False)
+                lc.conversion(saved_file_path)
 
-                # Save the converted CSV file as a new UploadedFile instance
-                with open(csv_file_path, 'rb') as csv_file:
-                    # Create ContentFile to represent contents of CSV file
-                    csv_content = ContentFile(csv_file.read())
-                    # Create UploadedFile instance with uploaded CSV file
-                    converted_file_instance = UploadedFile(
-                        file_name=csv_file_name,
-                        file=csv_content,
-                        )
+            # if file_extension == 'xlsx':
+            #     # Convert Excel to CSV
+            #     df = pd.read_excel(saved_file_path)
+            #     csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
+            #     csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
+            #     df.to_csv(csv_file_path, index=False)
+
+            #     # Save the converted CSV file as a new UploadedFile instance
+            #     with open(csv_file_path, 'rb') as csv_file:
+            #         # Create ContentFile to represent contents of CSV file
+            #         csv_content = ContentFile(csv_file.read())
+            #         # Create UploadedFile instance with uploaded CSV file
+            #         converted_file_instance = UploadedFile(
+            #             file_name=csv_file_name,
+            #             file=csv_content,
+            #             )
                     
-                    if request.user.is_authenticated:
-                        converted_file_instance.user = request.user
-                    converted_file_instance.save()
+            #         if request.user.is_authenticated:
+            #             converted_file_instance.user = request.user
+            #         converted_file_instance.save()
 
-                file_name = converted_file_instance.file_name
-            else:
-                file_name = uploaded_file_instance.file_name
+            #     file_name = converted_file_instance.file_name
+            # else:
+            #     file_name = uploaded_file_instance.file_name
 
             # Redirect to export page
-            return redirect("export-page")
+            return redirect("export")
         
     return render(request, 'import.html')
 
@@ -99,7 +104,7 @@ def download_sample_json(request):
     return response
 
 def download_pdf(request):
-    file_path = os.path.join('uploads', 'imported_files', 'output.pdf') # Make sure the file exists and this path is correct
+    file_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Make sure the file exists and this path is correct
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/pdf')
@@ -107,6 +112,36 @@ def download_pdf(request):
             return response
     else:
         return HttpResponse("File not found", status=404)
+    
+def download_tex(request):
+    file_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Update this path to your .tex file
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/x-tex')
+            response['Content-Disposition'] = 'attachment; filename=output.tex'
+            return response
+    else:
+        return HttpResponse("File not found", status=404)
+
+def download_zip(request):
+    pdf_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Path to your PDF file
+    tex_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Path to your Tex file
+
+    # Check if both files exist
+    if os.path.exists(pdf_path) and os.path.exists(tex_path):
+        # Create a zip file
+        zip_file_path = os.path.join('uploads', 'imported_files', 'output.zip')
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            zipf.write(pdf_path, os.path.basename(pdf_path))
+            zipf.write(tex_path, os.path.basename(tex_path))
+
+        # Serve the zip file for download
+        with open(zip_file_path, 'rb') as zip_file:
+            response = HttpResponse(zip_file.read(), content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename=output.zip'
+            return response
+    else:
+        return HttpResponse("One or more files not found", status=404)
 
 # %******************** Export File Page ****************************%
 
