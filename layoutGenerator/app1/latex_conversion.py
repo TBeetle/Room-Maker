@@ -1,6 +1,7 @@
 import pandas as pd
 import subprocess
 import os
+import shutil
 
 # Read Excel data
 excel_data = pd.read_excel(os.path.join('..', 'uploads', 'sample_files', 'example_excel_format.xlsx'))
@@ -156,5 +157,20 @@ process = subprocess.run(['lualatex', tex_file_path])
 # Check if the compilation was successful
 if process.returncode == 0:
     print("PDF generated successfully.")
+
+     # Specify the destination folder
+    pdf_destination_folder = os.path.join('..', 'uploads', 'imported_files', 'output.pdf')
+    tex_destination_folder = os.path.join('..', 'uploads', 'imported_files', 'output.tex')
+    aux_destination_folder = os.path.join('..', 'uploads', 'imported_files', 'output.aux')
+    log_destination_folder = os.path.join('..', 'uploads', 'imported_files', 'output.log')
+
+
+
+    # Move the generated PDF to the destination folder
+    shutil.move('output.pdf', pdf_destination_folder)
+    shutil.move('output.tex', tex_destination_folder)
+    shutil.move('output.aux', aux_destination_folder)
+    shutil.move('output.log', log_destination_folder)
+
 else:
     print("Error during PDF generation. Check the LaTeX log for details.")
