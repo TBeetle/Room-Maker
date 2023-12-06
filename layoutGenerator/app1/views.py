@@ -13,6 +13,7 @@ from django.conf import settings
 from .models import UploadedFile
 from django.shortcuts import HttpResponse
 import zipfile
+import app1.latex_conversion as lc
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
@@ -48,32 +49,35 @@ def ImportPage(request):
             saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
 
             if file_extension == 'xlsx':
-                # Convert Excel to CSV
-                df = pd.read_excel(saved_file_path)
-                csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
-                csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
-                df.to_csv(csv_file_path, index=False)
+                lc.conversion(saved_file_path)
 
-                # Save the converted CSV file as a new UploadedFile instance
-                with open(csv_file_path, 'rb') as csv_file:
-                    # Create ContentFile to represent contents of CSV file
-                    csv_content = ContentFile(csv_file.read())
-                    # Create UploadedFile instance with uploaded CSV file
-                    converted_file_instance = UploadedFile(
-                        file_name=csv_file_name,
-                        file=csv_content,
-                        )
+            # if file_extension == 'xlsx':
+            #     # Convert Excel to CSV
+            #     df = pd.read_excel(saved_file_path)
+            #     csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
+            #     csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
+            #     df.to_csv(csv_file_path, index=False)
+
+            #     # Save the converted CSV file as a new UploadedFile instance
+            #     with open(csv_file_path, 'rb') as csv_file:
+            #         # Create ContentFile to represent contents of CSV file
+            #         csv_content = ContentFile(csv_file.read())
+            #         # Create UploadedFile instance with uploaded CSV file
+            #         converted_file_instance = UploadedFile(
+            #             file_name=csv_file_name,
+            #             file=csv_content,
+            #             )
                     
-                    if request.user.is_authenticated:
-                        converted_file_instance.user = request.user
-                    converted_file_instance.save()
+            #         if request.user.is_authenticated:
+            #             converted_file_instance.user = request.user
+            #         converted_file_instance.save()
 
-                file_name = converted_file_instance.file_name
-            else:
-                file_name = uploaded_file_instance.file_name
+            #     file_name = converted_file_instance.file_name
+            # else:
+            #     file_name = uploaded_file_instance.file_name
 
             # Redirect to export page
-            return redirect("export-page")
+            return redirect("export")
         
     return render(request, 'import.html')
 
