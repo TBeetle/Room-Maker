@@ -1,8 +1,9 @@
 import pandas as pd
 import subprocess
+import os
 
 # Read Excel data
-excel_data = pd.read_excel('C:\\Users\\Grant Ward\\Desktop\\UofSC School\\TheBackyardigans\\layoutGenerator\\uploads\\sample_files\\example_excel_format.xlsx')
+excel_data = pd.read_excel(os.path.join('..', 'uploads', 'sample_files', 'example_excel_format.xlsx'))
 
 # Define LaTeX template
 latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
