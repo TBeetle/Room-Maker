@@ -165,10 +165,6 @@ def conversion(file):
         tex_destination_folder = os.path.join('uploads', 'imported_files', 'output.tex')
         aux_destination_folder = os.path.join('uploads', 'imported_files', 'output.aux')
         log_destination_folder = os.path.join('uploads', 'imported_files', 'output.log')
-        output_path = os.path.join('uploads', 'imported_files', 'output.png')
-        png = convert_from_path(pdf_destination_folder)
-        for i, image in enumerate(png):
-            image.save(f'{output_path}', 'PNG')
 
 
 
@@ -177,6 +173,11 @@ def conversion(file):
         shutil.move('output.tex', tex_destination_folder)
         shutil.move('output.aux', aux_destination_folder)
         shutil.move('output.log', log_destination_folder)
+        output_path = os.path.join('uploads', 'imported_files', 'output.png')
+        os.remove(output_path)
+        png = convert_from_path(pdf_destination_folder)
+        for i, image in enumerate(png):
+            image.save(f'{output_path}', 'PNG')
 
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
