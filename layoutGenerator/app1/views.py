@@ -78,19 +78,24 @@ def ImportPage(request):
                     converted_file_instance.save()
 
                 # Set file_name to correct name for display or further use
-                file_name = converted_file_instance.file_name               
+                file_name = converted_file_instance.file_name
 
-            # Save using UploadedFile model
-            uploaded_file_instance = UploadedFile(file=uploaded_file,)
-            
-            if request.user.is_authenticated:
-                uploaded_file_instance.user = request.user
-            uploaded_file_instance.save()
-            
-            # Determine the path of the saved file
-            saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+                # Call conversion code
+                lc.conversion(excel_file_path)   
 
+            # If Excel: Convert as normal
             if file_extension == 'xlsx':
+                # Save using UploadedFile model
+                uploaded_file_instance = UploadedFile(file=uploaded_file,)
+                
+                if request.user.is_authenticated:
+                    uploaded_file_instance.user = request.user
+                uploaded_file_instance.save()
+                
+                # Determine the path of the saved file
+                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+
+                # Call conversion code
                 lc.conversion(saved_file_path)
           
             # Redirect to export page
@@ -98,7 +103,7 @@ def ImportPage(request):
         
     return render(request, 'import.html')
 
-# Views for downloading sample files 
+#  Download sample Excel file for formmating
 from django.http import FileResponse
 def download_sample_excel(request):
     file_path = os.path.join('uploads', 'sample_files', 'example_excel_format.xlsx')
@@ -106,18 +111,18 @@ def download_sample_excel(request):
     response['Content-Disposition'] = 'attachment; filename=example_excel_format.xlsx'
     return response
 
-# TODO: Update
+# Download sample CSV file for formmating
 def download_sample_csv(request):
-    file_path = os.path.join('uploads', 'sample_files', 'sample_excel.xlsx')
+    file_path = os.path.join('uploads', 'sample_files', 'example_csv_format.csv')
     response = FileResponse(open(file_path, 'rb'))
-    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=example_csv_format.csv'
     return response
 
-# TODO: Update
+#  Download sample JSON file for formmating
 def download_sample_json(request):
-    file_path = os.path.join('sample_files', 'sample_excel.xlsx')
+    file_path = os.path.join('uploads', 'sample_files', 'example_json_format.json')
     response = FileResponse(open(file_path, 'rb'))
-    response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=example_json_format.json'
     return response
 
 def download_pdf(request):
