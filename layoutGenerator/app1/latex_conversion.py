@@ -1,8 +1,9 @@
 import pandas as pd
 import subprocess
+import os
 
 # Read Excel data
-excel_data = pd.read_excel('/Users/tylerbeetle/Desktop/SeniorDesign/TheBackyardigans/layoutGenerator/uploads/sample_files/example_excel_format.xlsx')
+excel_data = pd.read_excel(os.path.join('..', 'uploads', 'sample_files', 'example_excel_format.xlsx'))
 
 # Define LaTeX template
 latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
@@ -28,7 +29,7 @@ for index, row in excel_data.iterrows():
             x2 = excel_data.at[index + 1, 'X']
             y2 = excel_data.at[index + 1, 'Y']
         latex_code += latex_walls_template.format(x1, y1, x2, y2)
-    elif row['Type'] == 'Exterior' and index < len(excel_data) - 1 and row['Description' == 'WINDOW']:
+    elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
         x1 = row['X']
         y1 = row['Y']
         if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
