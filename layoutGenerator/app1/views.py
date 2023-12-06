@@ -162,17 +162,20 @@ def download_zip(request):
 
 # %******************** Export File Page ****************************%
 
+@login_required(login_url="login")
 def ExportPage(request):
     return render(request, "export.html")
 
 # %******************** Layout Library Page ****************************%
 
+@login_required(login_url="login")
 def LayoutLibraryPage(request):
     return render(request, "layout-library.html")
 
 
 # %******************** Settings Pages ****************************%
 
+@login_required(login_url="login")
 def SettingsPage(request):
     return render(request, "settings.html")
 
