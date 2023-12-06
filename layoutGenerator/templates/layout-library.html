@@ -3,5 +3,81 @@
 {% block title %} Layout Library {% endblock %}
 
 {% block content %}
-    <p>View your converted layouts here.</p>
+    <p>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hover and Display Alt Text</title>
+        
+            <style>
+                /* Centered title */
+                h1 {
+                    text-align: center;
+                    margin-bottom: 50px;
+                }
+                /* Style for the image container */
+                .image-container {
+                    display: flex;
+                    justify-content: space-around;
+                    position: relative;
+                    margin-top: 20px;
+                }
+        
+                /* Style for the image wrapper */
+                .image-container div {
+                    position: relative;
+                    cursor: pointer;
+                    border: 2px solid black; /* Border color for the image */
+                    border-radius: 5px;
+                }
+        
+                /* Style for the alt text overlay */
+                .alt-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: rgba(0, 0, 0, 0.7);
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                    transform: translateY(-50%); /* Adjust for vertical centering */
+                }
+        
+                /* Show the alt text overlay on hover */
+                .image-container div:hover .alt-overlay {
+                    opacity: 1;
+                }
+            </style>
+        </head>
+        <body>
+        
+        <!-- Centered title -->
+<h1>Layout Library </h1>
+        <!-- Container for the images with alt text overlay -->
+        <div class="image-container">
+            <div>
+                <img src="../uploads/images/layoutexample1.png" alt="Broad Neighborhood - Hallway" width="300" height="300">
+                <div class="alt-overlay">Broad Neighborhood - Hallway</div>
+            </div>
+            <div>
+                <img src="../uploads/images/layoutexample2.png" alt="Broad Neighborhood - Activity Room" width="300" height="300">
+                <div class="alt-overlay">Broad Neighborhood - Activity Room</div>
+            </div>
+            <div>
+                <img src="../uploads/images/layoutexample3.png" alt="Broad Neighborhood - Carolina Room" width="300" height="300">
+                <div class="alt-overlay">Broad Neighborhood - Carolina Room</div>
+            </div>
+        </div>
+        
+        </body>
+        </html>
+        
+    </p>
 {% endblock %}
