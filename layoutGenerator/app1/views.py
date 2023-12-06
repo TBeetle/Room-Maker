@@ -31,10 +31,52 @@ def ImportPage(request):
 
         # File extension validation:
         file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
-        valid_extensions = ['xlsx', 'json', 'csv', 'xls']
+        valid_extensions = ['xlsx', 'json', 'csv']
         if file_extension not in valid_extensions:
-            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, xls, json, or csv)."
+            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv)."
         else:
+
+            # If CSV: Convert CSV file into Excel to prepare for conversion
+            if file_extension == "csv":
+                # Create an UploadedFile instance for the original uploaded file
+                uploaded_file_instance = UploadedFile(file=uploaded_file,)
+
+                if request.user.is_authenticated:
+                    uploaded_file_instance.user = request.user
+                uploaded_file_instance.save()
+
+                # Determine the path of the saved file
+                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+
+                # Read CSV into a DataFrame
+                df = pd.read_csv(saved_file_path)
+
+                # Rename the file to an Excel file
+                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)    # Split file name frmo extension
+                converted_file_name = f"{prefix_file_name}.xlsx"
+
+                # Create a new Excel workbook
+                excel_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_file_name)
+                df.to_excel(excel_file_path, index=False)
+
+                # Save the converted Excel file as a new UploadedFile instance
+                with open(excel_file_path, 'rb') as excel_file:
+                    # Create ContentFile to represent contents of Excel File
+                    excel_content = ContentFile(excel_file.read())
+                    # Create UploadedFile instance with the uploaded Excel file
+                    converted_file_instance = UploadedFile(
+                        file_name= converted_file_name,
+                        file=excel_content,
+                    )
+                    # Save file path
+                    converted_file_instance.file_path = excel_file_path
+                    if request.user.is_authenticated:
+                        converted_file_instance.user = request.user
+                    converted_file_instance.save()
+
+                # Set file_name to correct name for display or further use
+                file_name = converted_file_instance.file_name               
+
             # Save using UploadedFile model
             uploaded_file_instance = UploadedFile(file=uploaded_file,)
             
@@ -42,36 +84,8 @@ def ImportPage(request):
                 uploaded_file_instance.user = request.user
             uploaded_file_instance.save()
             
-            # Determine the path of the saved file
-            saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
-
-            if file_extension == 'xlsx':
-                # Convert Excel to CSV
-                df = pd.read_excel(saved_file_path)
-                csv_file_name = uploaded_file.name.replace('.xlsx', '.csv')
-                csv_file_path = os.path.join(settings.MEDIA_ROOT, csv_file_name)
-                df.to_csv(csv_file_path, index=False)
-
-                # Save the converted CSV file as a new UploadedFile instance
-                with open(csv_file_path, 'rb') as csv_file:
-                    # Create ContentFile to represent contents of CSV file
-                    csv_content = ContentFile(csv_file.read())
-                    # Create UploadedFile instance with uploaded CSV file
-                    converted_file_instance = UploadedFile(
-                        file_name=csv_file_name,
-                        file=csv_content,
-                        )
-                    
-                    if request.user.is_authenticated:
-                        converted_file_instance.user = request.user
-                    converted_file_instance.save()
-
-                file_name = converted_file_instance.file_name
-            else:
-                file_name = uploaded_file_instance.file_name
-
             # Redirect to export page
-            return redirect("export-page")
+            return redirect("export")
         
     return render(request, 'import.html')
 
