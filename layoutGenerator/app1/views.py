@@ -11,6 +11,7 @@ import os
 from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import UploadedFile
+from django.shortcuts import HttpResponse
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
@@ -81,14 +82,14 @@ def download_sample_excel(request):
     file_path = os.path.join('uploads', 'sample_files', 'example_excel_format.xlsx')
     response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=example_excel_format.xlsx'
-    return response;
+    return response
 
 # TODO: Update
 def download_sample_csv(request):
     file_path = os.path.join('uploads', 'sample_files', 'sample_excel.xlsx')
     response = FileResponse(open(file_path, 'rb'))
     response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
-    return response;
+    return response
 
 # TODO: Update
 def download_sample_json(request):
@@ -96,6 +97,16 @@ def download_sample_json(request):
     response = FileResponse(open(file_path, 'rb'))
     response['Content-Disposition'] = 'attachment; filename=sample_excel.xlsx'
     return response
+
+def download_pdf(request):
+    file_path = os.path.join('uploads', 'imported_files', 'output.pdf') # Make sure the file exists and this path is correct
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename=output.pdf'
+            return response
+    else:
+        return HttpResponse("File not found", status=404)
 
 # %******************** Export File Page ****************************%
 

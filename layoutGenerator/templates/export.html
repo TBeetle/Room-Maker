@@ -3,5 +3,14 @@
 {% block title %} Export File {% endblock %}
 
 {% block content %}
-    <p>Export a file.</p>
+    <section class=" py-4">
+        <div class="container px-lg-5">
+            <div class="download-sample-files text-center">
+                <p class="mb-2">Download TeX/PDF file formats:</p>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-pdf' %}" style="color:inherit">PDF</a></button>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
