@@ -41,6 +41,8 @@ urlpatterns += [
     path('download/sample_csv/', views.download_sample_csv, name="download-sample-csv"),
     path('download/sample_json/', views.download_sample_json, name="download-sample-json"),
     path('download/pdf', views.download_pdf, name='download-pdf'),
+    path('download/tex', views.download_tex, name='download-tex'),
+    path('download/zip', views.download_zip, name='download-zip'),
 ]
 
 # Serving media files during development

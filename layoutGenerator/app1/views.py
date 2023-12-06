@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import UploadedFile
 from django.shortcuts import HttpResponse
+import zipfile
 
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
@@ -99,7 +100,7 @@ def download_sample_json(request):
     return response
 
 def download_pdf(request):
-    file_path = os.path.join('uploads', 'imported_files', 'output.pdf') # Make sure the file exists and this path is correct
+    file_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Make sure the file exists and this path is correct
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/pdf')
@@ -107,6 +108,36 @@ def download_pdf(request):
             return response
     else:
         return HttpResponse("File not found", status=404)
+    
+def download_tex(request):
+    file_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Update this path to your .tex file
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/x-tex')
+            response['Content-Disposition'] = 'attachment; filename=output.tex'
+            return response
+    else:
+        return HttpResponse("File not found", status=404)
+
+def download_zip(request):
+    pdf_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Path to your PDF file
+    tex_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Path to your Tex file
+
+    # Check if both files exist
+    if os.path.exists(pdf_path) and os.path.exists(tex_path):
+        # Create a zip file
+        zip_file_path = os.path.join('uploads', 'imported_files', 'output.zip')
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            zipf.write(pdf_path, os.path.basename(pdf_path))
+            zipf.write(tex_path, os.path.basename(tex_path))
+
+        # Serve the zip file for download
+        with open(zip_file_path, 'rb') as zip_file:
+            response = HttpResponse(zip_file.read(), content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename=output.zip'
+            return response
+    else:
+        return HttpResponse("One or more files not found", status=404)
 
 # %******************** Export File Page ****************************%
 
