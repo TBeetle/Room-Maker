@@ -2,6 +2,7 @@ import pandas as pd
 import subprocess
 import os
 import shutil
+from pdf2image import convert_from_path
 
 def conversion(file):
     # Read Excel data
@@ -164,6 +165,10 @@ def conversion(file):
         tex_destination_folder = os.path.join('uploads', 'imported_files', 'output.tex')
         aux_destination_folder = os.path.join('uploads', 'imported_files', 'output.aux')
         log_destination_folder = os.path.join('uploads', 'imported_files', 'output.log')
+        output_path = os.path.join('uploads', 'imported_files', 'output.png')
+        png = convert_from_path(pdf_destination_folder)
+        for i, image in enumerate(png):
+            image.save(f'{output_path}', 'PNG')
 
 
 
