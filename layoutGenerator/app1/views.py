@@ -23,9 +23,13 @@ from django.http import HttpResponseBadRequest
 
 # Home page view of the website, where users can upload a file
 @login_required(login_url="login")
+# %******************** Import File Page ****************************%
+
+# Home page view of the website, where users can upload a file
+@login_required(login_url="login")
 def ImportPage(request):
 
-    file_name = None # Initialize the file name variable
+    file_name = None  # Initialize the file name variable
     error_message = None
 
     # Ensure request is a POST and that a file was uploaded:
@@ -55,7 +59,7 @@ def ImportPage(request):
                 df = pd.read_csv(saved_file_path)
 
                 # Rename the file to an Excel file
-                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)    # Split file name frmo extension
+                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)  # Split file name from extension
                 converted_file_name = f"{prefix_file_name}.xlsx"
 
                 # Create a new Excel workbook
@@ -68,7 +72,7 @@ def ImportPage(request):
                     excel_content = ContentFile(excel_file.read())
                     # Create UploadedFile instance with the uploaded Excel file
                     converted_file_instance = UploadedFile(
-                        file_name= converted_file_name,
+                        file_name=converted_file_name,
                         file=excel_content,
                     )
                     # Save file path
@@ -81,26 +85,70 @@ def ImportPage(request):
                 file_name = converted_file_instance.file_name
 
                 # Call conversion code
-                lc.conversion(excel_file_path)   
+                lc.conversion(excel_file_path)
 
-            # If Excel: Convert as normal
-            if file_extension == 'xlsx':
-                # Save using UploadedFile model
+            # If JSON: Convert JSON file into Excel to prepare for conversion
+            elif file_extension == "json":
+                # Create an UploadedFile instance for the original uploaded file
                 uploaded_file_instance = UploadedFile(file=uploaded_file,)
-                
+
                 if request.user.is_authenticated:
                     uploaded_file_instance.user = request.user
                 uploaded_file_instance.save()
-                
+
+                # Determine the path of the saved file
+                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+
+                # Read JSON into a DataFrame
+                df = pd.read_json(saved_file_path, orient='records')
+
+                # Rename the file to an Excel file
+                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)  # Split file name from extension
+                converted_file_name = f"{prefix_file_name}.xlsx"
+
+                # Create a new Excel workbook
+                excel_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_file_name)
+                df.to_excel(excel_file_path, index=False)
+
+                # Save the converted Excel file as a new UploadedFile instance
+                with open(excel_file_path, 'rb') as excel_file:
+                    # Create ContentFile to represent contents of Excel File
+                    excel_content = ContentFile(excel_file.read())
+                    # Create UploadedFile instance with the uploaded Excel file
+                    converted_file_instance = UploadedFile(
+                        file_name=converted_file_name,
+                        file=excel_content,
+                    )
+                    # Save file path
+                    converted_file_instance.file_path = excel_file_path
+                    if request.user.is_authenticated:
+                        converted_file_instance.user = request.user
+                    converted_file_instance.save()
+
+                # Set file_name to correct name for display or further use
+                file_name = converted_file_instance.file_name
+
+                # Call conversion code
+                lc.conversion(excel_file_path)
+
+            # If Excel: Call conversion code directly
+            elif file_extension == 'xlsx':
+                # Save using UploadedFile model
+                uploaded_file_instance = UploadedFile(file=uploaded_file,)
+
+                if request.user.is_authenticated:
+                    uploaded_file_instance.user = request.user
+                uploaded_file_instance.save()
+
                 # Determine the path of the saved file
                 saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
 
                 # Call conversion code
                 lc.conversion(saved_file_path)
-          
+
             # Redirect to export page
             return redirect("export")
-        
+
     return render(request, 'import.html')
 
 #  Download sample Excel file for formmating
@@ -125,6 +173,10 @@ def download_sample_json(request):
     response['Content-Disposition'] = 'attachment; filename=example_json_format.json'
     return response
 
+    
+
+# %******************** Export File Page ****************************%
+
 def download_pdf(request):
     file_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Make sure the file exists and this path is correct
     if os.path.exists(file_path):
@@ -134,7 +186,7 @@ def download_pdf(request):
             return response
     else:
         return HttpResponse("File not found", status=404)
-    
+
 def download_tex(request):
     file_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Update this path to your .tex file
     if os.path.exists(file_path):
@@ -165,7 +217,6 @@ def download_zip(request):
     else:
         return HttpResponse("One or more files not found", status=404)
 
-# %******************** Export File Page ****************************%
 
 @login_required(login_url="login")
 def ExportPage(request):
