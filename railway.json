@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "cd layoutGenerator && apt-get install texlive-full && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn layoutGenerator.wsgi",
+        "startCommand": "cd layoutGenerator && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn layoutGenerator.wsgi",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10
     }
