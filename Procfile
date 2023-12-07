@@ -1,1 +1,1 @@
-web: gunicorn layoutGenerator.wsgi --log-file -
+web: gunicorn layoutGenerator.wsgi
