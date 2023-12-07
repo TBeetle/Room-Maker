@@ -27,7 +27,9 @@ SECRET_KEY = "django-insecure-h2jmjz-4_ep&4z$u()6nz*-_u^spkr%s_js4crs#fazw^mtwp8
 DEBUG = True
 
 ALLOWED_HOSTS = ['thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
+
 CRSF_TRUSTED_ORIGINS = ['thebackyardigans-production-cbc3.up.railway.app']
+
 
 # Application definition
 
