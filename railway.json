@@ -5,7 +5,7 @@
         "nixPkgs": "texliveFull"
     },
     "build": {
-        "builder": "NIXPACKS",
+        "builder": "NIXPACKS"
     },
     "deploy": {
         "startCommand": "cd layoutGenerator && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn layoutGenerator.wsgi",
