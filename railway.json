@@ -1,9 +1,11 @@
 {
     "$schema": "https://railway.app/railway.schema.json",
-    "build": {
-        "builder": "NIXPACKS",
+    "setup": {
         "aptPkgs": "texliveFull",
         "nixPkgs": "texliveFull"
+    }
+    "build": {
+        "builder": "NIXPACKS",
     },
     "deploy": {
         "startCommand": "cd layoutGenerator && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn layoutGenerator.wsgi",
