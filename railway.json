@@ -1,8 +1,7 @@
 {
     "$schema": "https://railway.app/railway.schema.json",
     "setup": {
-        "aptPkgs": "texliveFull",
-        "nixPkgs": "texliveFull"
+        "nixPkgs": "texliveSmall"
     },
     "build": {
         "builder": "NIXPACKS"
