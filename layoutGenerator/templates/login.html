@@ -90,11 +90,11 @@
 <body>
   <div class="login-container">
     <form method="post" class="login-form">
+      {% csrf_token %}
         <h2>Login</h2>
         <div class="company-logo">
             <img src="https://www.asset-us.com/static/images/asset_primary_logo_tm.png" alt="Company Logo">
         </div>
-        {% csrf_token %} 
         <label for="username">Username</label>
         <input type="text" placeholder="Username" id="username" name="username">
 
