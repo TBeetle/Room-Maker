@@ -21,7 +21,6 @@ from django.http import HttpResponseBadRequest
 # %******************** Import File Page ****************************%
 
 # Home page view of the website, where users can upload a file
-@csrf_exempt
 @login_required(login_url="login")
 def ImportPage(request):
 
