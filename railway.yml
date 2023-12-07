@@ -1,0 +1,15 @@
+# railway.yml
+
+plugins:
+  - name: python
+    version: 3.11.6
+
+# Build Configuration
+build:
+  env: python=3.11.6
+  scripts:
+    - pipenv install --deploy --ignore-pipfile
+
+# Run Configuration
+run:
+  web: pipenv run gunicorn layoutGenerator.wsgi:application
