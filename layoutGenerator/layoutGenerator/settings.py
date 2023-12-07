@@ -27,7 +27,11 @@ SECRET_KEY = "django-insecure-h2jmjz-4_ep&4z$u()6nz*-_u^spkr%s_js4crs#fazw^mtwp8
 DEBUG = True
 
 # Permissions for deployment
-ALLOWED_HOSTS = ['thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
+ALLOWED_HOSTS = [
+    'thebackyardigans-production-cbc3.up.railway.app',
+    'backyardigansdesignlabs.com',
+    '127.0.0.1',
+]
 CSRF_TRUSTED_ORIGINS = ['https://thebackyardigans-production-cbc3.up.railway.app']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
