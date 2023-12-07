@@ -28,8 +28,9 @@ DEBUG = True
 
 # Permissions for deployment
 ALLOWED_HOSTS = ['thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
-CRSF_TRUSTED_ORIGINS = ['https://thebackyardigans-production-cbc3.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://thebackyardigans-production-cbc3.up.railway.app']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 
