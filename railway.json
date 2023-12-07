@@ -3,7 +3,7 @@
     "setup": {
         "aptPkgs": "texliveFull",
         "nixPkgs": "texliveFull"
-    }
+    },
     "build": {
         "builder": "NIXPACKS",
     },
