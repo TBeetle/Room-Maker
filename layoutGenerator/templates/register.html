@@ -99,11 +99,11 @@
 <body>
   <div class="register-container">
     <form action="" method="post" class="register-form">
+      {% csrf_token %}
         <h2>Create an Account</h2>
         <div class="company-logo">
             <img src="https://www.asset-us.com/static/images/asset_primary_logo_tm.png" alt="Company Logo">
         </div>
-        {% csrf_token %} 
         <label for="username">Username</label>
         <input type="text" placeholder="Username" name="username" id="username">
 
