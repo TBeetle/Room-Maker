@@ -26,9 +26,9 @@ SECRET_KEY = "django-insecure-h2jmjz-4_ep&4z$u()6nz*-_u^spkr%s_js4crs#fazw^mtwp8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
+ALLOWED_HOSTS = ['https://thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
 
-CRSF_TRUSTED_ORIGINS = ['thebackyardigans-production-cbc3.up.railway.app']
+CRSF_TRUSTED_ORIGINS = ['https://thebackyardigans-production-cbc3.up.railway.app']
 
 
 # Application definition
