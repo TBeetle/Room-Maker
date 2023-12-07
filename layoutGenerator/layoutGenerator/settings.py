@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['thebackyardigans-production-cbc3.up.railway.app', 'backyardigansdesignlabs.com',]
 
+CRSF_TRUSTED_ORIGINS = ['thebackyardigans-production-cbc3.up.railway.app']
+
 
 # Application definition
 
