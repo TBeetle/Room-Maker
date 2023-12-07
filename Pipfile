@@ -8,6 +8,7 @@ django = "*"
 pandas = "*"
 openpyxl = "*"
 pdf2image = "*"
+gunicorn = "*"
 
 [dev-packages]
 
