@@ -17,7 +17,7 @@ def conversion(file):
 
     # Define LaTeX template for windows
     latex_windows_template = "\\draw[window, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
-    # Iterate through rows and generate LaTeX code
+
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
@@ -166,13 +166,13 @@ def conversion(file):
         aux_destination_folder = os.path.join('uploads', 'imported_files', 'output.aux')
         log_destination_folder = os.path.join('uploads', 'imported_files', 'output.log')
 
-
-
         # Move the generated PDF to the destination folder
         shutil.move('output.pdf', pdf_destination_folder)
         shutil.move('output.tex', tex_destination_folder)
         shutil.move('output.aux', aux_destination_folder)
         shutil.move('output.log', log_destination_folder)
+
+        # Delete current output.png and replace with updated one
         output_path = os.path.join('uploads', 'imported_files', 'output.png')
         os.remove(output_path)
         png = convert_from_path(pdf_destination_folder)
