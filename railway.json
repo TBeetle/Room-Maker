@@ -7,7 +7,7 @@
         "setup": {
           "aptPkgs": ["...", "texlive-full", "wget"],
           "cmds": [
-            "wget https://zlib.net/fossils/zlib-1.2.11.tar.gz && tar -xzf zlib-1.2.11.tar.gz && cd zlib-1.2.11 && ./configure && make && sudo make install"
+            "wget https://zlib.net/current/zlib.tar.gz && tar -xzf zlib.tar.gz && cd zlib-1.3 && ./configure && make && sudo make install"
           ]
         }
       }
