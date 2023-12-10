@@ -5,7 +5,10 @@
     "nixpacksPlan": {
       "phases": {
         "setup": {
-          "aptPkgs": ["...", "texlive-full", "zlib1g-dev=1.2.11"]
+          "aptPkgs": ["...", "texlive-full"],
+          "cmds": [
+            "wget https://www.zlib.net/zlib-1.2.11.tar.gz && tar -xzf zlib-1.2.11.tar.gz && cd zlib-1.2.11 && ./configure && make && sudo make install"
+          ]
         }
       }
     }
