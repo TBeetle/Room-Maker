@@ -30,6 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'thebackyardigans-production-cbc3.up.railway.app',
     'backyardigansdesignlabs.com',
+    'thebackyardigans-test.up.railway.app',
     '127.0.0.1',
 ]
 CSRF_TRUSTED_ORIGINS = ['https://thebackyardigans-production-cbc3.up.railway.app']
