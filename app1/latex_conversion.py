@@ -173,10 +173,10 @@ def conversion(file):
         shutil.move('output.log', log_destination_folder)
 
         # Delete current output.png and replace with updated one
-        output_path = os.path.join('uploads', 'imported_files', 'output.png')
-        png = convert_from_path(pdf_destination_folder)
-        for i, image in enumerate(png):
-            image.save(f'{output_path}', 'PNG')
+        # output_path = os.path.join('uploads', 'imported_files', 'output.png')
+        # png = convert_from_path(pdf_destination_folder)
+        # for i, image in enumerate(png):
+        #     image.save(f'{output_path}', 'PNG')
 
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
