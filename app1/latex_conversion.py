@@ -174,7 +174,6 @@ def conversion(file):
 
         # Delete current output.png and replace with updated one
         output_path = os.path.join('uploads', 'imported_files', 'output.png')
-        os.remove(output_path)
         png = convert_from_path(pdf_destination_folder)
         for i, image in enumerate(png):
             image.save(f'{output_path}', 'PNG')
