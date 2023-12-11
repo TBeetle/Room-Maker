@@ -6,7 +6,7 @@
     "nixpacksPlan": {
       "phases": {
         "setup": {
-          "aptPkgs": ["...", "texlive-full", "texlive-luatex"]
+          "aptPkgs": ["...", "poppler", "texlive-full", "texlive-luatex"]
         }
       }
     }
