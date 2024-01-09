@@ -1,15 +1,7 @@
 {
   "$schema": "https://schema.up.railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "nixpacksVersion": "1.15.0",
-    "nixpacksPlan": {
-      "phases": {
-        "setup": {
-          "aptPkgs": ["...", "texlive-full", "texlive-luatex"]
-        }
-      }
-    }
+    "builder": "DOCKERFILE"
   },
   "deploy": {
     "startCommand": "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn layoutGenerator.wsgi",
