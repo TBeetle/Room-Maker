@@ -35,7 +35,7 @@ def ImportPage(request):
         file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
         valid_extensions = ['xlsx', 'json', 'csv']
         if file_extension not in valid_extensions:
-            error_message = "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv)."
+            messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
         else:
 
             # If CSV: Convert CSV file into Excel to prepare for conversion
