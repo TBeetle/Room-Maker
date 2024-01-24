@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, admin
 from django.core.files.base import ContentFile
-from django.utils.text import slugify
+from django.utils.text import slugify, get_valid_filename
 
 import pandas as pd
 import os
@@ -23,14 +23,9 @@ from django.http import HttpResponseBadRequest
 
 # %******************** Import File Page ****************************%
 
-from django.core.files.storage import FileSystemStorage
-
 # Home page view of the website, where users can upload a file
 @login_required(login_url="login")
 def ImportPage(request):
-
-    file_name = None  # Initialize the file name variable
-    error_message = None
 
     # Ensure request is a POST and that a file was uploaded:
     if request.method == "POST" and request.FILES:
@@ -44,7 +39,8 @@ def ImportPage(request):
         else:
 
             # Rename file to have no spaces
-            uploaded_file.name = uploaded_file.name.replace(" ", "_")
+            uploaded_file.name = get_valid_filename(uploaded_file.name)
+            print("File name: " + uploaded_file.name)
 
             # Create an UploadedFile instance with base file
             uploaded_file_instance = UploadedFile(
@@ -53,9 +49,10 @@ def ImportPage(request):
                 )
 
             # Define path to uploaded JSON/CSV file - /uploads/imported_files/<filename>
-            uploaded_filename = uploaded_file_instance.file.name.replace(" ", "_")
+            uploaded_filename = uploaded_file_instance.file.name
+            print("uploaded_filename: " + uploaded_filename)
             uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', uploaded_filename)
-            print("CHECK: Uploaded CSV/JSON File Path: " + uploaded_file_path)
+            print("Uploaded CSV/JSON File Path: " + uploaded_file_path)
             print("Uploaded file name: " + uploaded_filename)
 
             # Save UploadedFile instance to server

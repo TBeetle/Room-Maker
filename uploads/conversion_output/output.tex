@@ -93,8 +93,10 @@
 \draw[wall, line cap=round] (50.00,125.00) -- (100.00,125.00) coordinate (c);
 \draw[wall, line cap=round] (100.00,125.00) -- (100.00,75.00) coordinate (c);
 \draw[wall, line cap=round] (100.00,75.00) -- (100.00,75.00) coordinate (c);
-\node[furniture, rectangle, minimum width=18.00cm, minimum height=18.00cm](table) at (40,90.0) {};
-\node[furniture-label] at (table.center) {Table};
+\draw[window, line cap=round] (100.00,75.00) -- (100.00,25.00) coordinate (c);
+\draw[window, line cap=round] (100.00,25.00) -- (100.00,25.00) coordinate (c);
+\draw[wall, line cap=round] (100.00,25.00) -- (100.00,0.00) coordinate (c);
+\draw[wall, line cap=round] (100.00,0.00) -- (0.00,0.00) coordinate (c);
 
 
         \end{tikzpicture}
