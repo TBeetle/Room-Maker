@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 from django.urls import (
     reverse,
 )  # Generate URLs of individual objects through reversing URL patterns
@@ -12,17 +13,15 @@ from django.urls import (
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import FileExtensionValidator
+from datetime import datetime
 
 
 # Represents an uploaded file, storing a predefined file imported by the user to be converted into a LaTeX / PDF file
 class UploadedFile(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE
-    )  # Identifier of user who uploaded file
-    uploaded_at = models.DateTimeField(
-        auto_now_add=True
-    )  # Timestamp indicating when file was uploaded
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Identifier of user who uploaded file
+    uploaded_at = models.DateTimeField(auto_now_add=True)  # Timestamp indicating when file was uploaded
 
+    # Original file uploaded by user
     file = models.FileField(
         upload_to="imported_files/",
         default="placeholder.txt",
@@ -32,25 +31,21 @@ class UploadedFile(models.Model):
             FileExtensionValidator(allowed_extensions=["xlsx", "json", "csv", "xls"])
         ],
     )
-    # Store uplaaded file
 
-    file_name = models.CharField(
-        max_length=255, default=""
-    )  # Added to track name of file
+    file_name = models.CharField(max_length=255, default="")
+
     file_path = models.CharField(
         max_length=255, blank=True
-    )  # Path to uploaded file on server - why do we need this?
+    )  # Path to uploaded file on server
+
     file_type = models.CharField(max_length=10)  # Store file type (Excel, JSON, or CSV)
 
     def save(self, *args, **kwargs):
         # Set default value for file_name to the uploaded file's name
         if not self.file_name:
-            self.file_name = self.file.name
+            self.file_name = self.file.name.replace(" ", "_")
 
         super(UploadedFile, self).save(*args, **kwargs)
-        
-        return self, self.file
-
 
     def __str__(self):
         return self.file_name
@@ -58,12 +53,12 @@ class UploadedFile(models.Model):
 
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
-    # TODO: Update Github schema with file_name
     file_name = models.CharField(max_length=255)
-    # TODO: Update 'userid' with 'user'
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Links to associated UploadedFile
     original_file = models.ForeignKey(UploadedFile, on_delete=models.CASCADE)
-    created_at = models.DateTimeField
 
     # To hold LaTeX code
     latex_code = models.FileField(

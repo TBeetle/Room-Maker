@@ -3,14 +3,15 @@ from .models import UploadedFile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.contrib import messages, admin
 from django.core.files.base import ContentFile
+from django.utils.text import slugify
 
 import pandas as pd
 import os
 from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import UploadedFile
+from .models import UploadedFile, ConvertedFile
 from django.shortcuts import HttpResponse
 import zipfile
 import app1.latex_conversion as lc
@@ -18,7 +19,11 @@ import app1.latex_conversion as lc
 # Modules for handling file validation:
 from django.http import HttpResponseBadRequest
 
+
+
 # %******************** Import File Page ****************************%
+
+from django.core.files.storage import FileSystemStorage
 
 # Home page view of the website, where users can upload a file
 @login_required(login_url="login")
@@ -38,112 +43,71 @@ def ImportPage(request):
             messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
         else:
 
-            # If CSV: Convert CSV file into Excel to prepare for conversion
-            if file_extension == "csv":
-                # Create an UploadedFile instance for the original uploaded file
-                uploaded_file_instance = UploadedFile(file=uploaded_file,)
+            # Rename file to have no spaces
+            uploaded_file.name = uploaded_file.name.replace(" ", "_")
 
-                if request.user.is_authenticated:
-                    uploaded_file_instance.user = request.user
-                uploaded_file_instance.save()
+            # Create an UploadedFile instance with base file
+            uploaded_file_instance = UploadedFile(
+                file=uploaded_file,
+                user=request.user,
+                )
 
-                # Determine the path of the saved file
-                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+            # Define path to uploaded JSON/CSV file - /uploads/imported_files/<filename>
+            uploaded_filename = uploaded_file_instance.file.name.replace(" ", "_")
+            uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', uploaded_filename)
+            print("CHECK: Uploaded CSV/JSON File Path: " + uploaded_file_path)
+            print("Uploaded file name: " + uploaded_filename)
 
-                # Read CSV into a DataFrame
-                df = pd.read_csv(saved_file_path)
+            # Save UploadedFile instance to server
+            uploaded_file_instance.file_name = uploaded_filename
+            uploaded_file_instance.save()
 
-                # Rename the file to an Excel file
-                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)  # Split file name from extension
-                converted_file_name = f"{prefix_file_name}.xlsx"
+            print("CHECK 1 COMPLETE: File Uploaded to /imported_files")
 
-                # Create a new Excel workbook
-                excel_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_file_name)
-                df.to_excel(excel_file_path, index=False)
+            # Convert file from CSV/JSON to Excel
+            if file_extension != 'xlsx':
+                if file_extension == "csv":
+                    # Read CSV into a dataframe
+                    df = pd.read_csv(uploaded_file_path)
 
-                # Save the converted Excel file as a new UploadedFile instance
-                with open(excel_file_path, 'rb') as excel_file:
-                    # Create ContentFile to represent contents of Excel File
+                if file_extension == "json":
+                    # Read JSON into a dataframe
+                    df = pd.read_json(uploaded_file_path)
+
+                # Rename file
+                prefix_filename, _ = os.path.splitext(uploaded_filename)
+                converted_filename = f"{prefix_filename}.xlsx"
+
+                # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx
+                excel_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_filename)
+                df.to_excel(excel_filepath, index=False)
+
+                # Update UploadedFile with new converted Excel File
+                with open(excel_filepath, 'rb') as excel_file:
+                    # Create ContentFile to hold contents of Excel file
                     excel_content = ContentFile(excel_file.read())
-                    # Create UploadedFile instance with the uploaded Excel file
-                    converted_file_instance = UploadedFile(
-                        file_name=converted_file_name,
-                        file=excel_content,
-                    )
-                    # Save file path
-                    converted_file_instance.file_path = excel_file_path
-                    if request.user.is_authenticated:
-                        converted_file_instance.user = request.user
-                    converted_file_instance.save()
+                    
+                    # Update UploadedFile instance with:
+                    uploaded_file_instance.file_name = converted_filename   # Add .xlsx
+                    uploaded_file_instance.file = excel_content # Update file with Excel file contens
+                    uploaded_file_instance.file_path = excel_filepath   # Add filepath: uploads/imported_files/<file>.xlsx
 
-                # Set file_name to correct name for display or further use
-                file_name = converted_file_instance.file_name
-
-                # Call conversion code
-                lc.conversion(excel_file_path)
-
-            # If JSON: Convert JSON file into Excel to prepare for conversion
-            elif file_extension == "json":
-                # Create an UploadedFile instance for the original uploaded file
-                uploaded_file_instance = UploadedFile(file=uploaded_file,)
-
-                if request.user.is_authenticated:
-                    uploaded_file_instance.user = request.user
+                # Updated path to Excel file
+                uploaded_file_path = excel_filepath
+                print("Uploaded File Path: " + uploaded_file_path)
                 uploaded_file_instance.save()
-
-                # Determine the path of the saved file
-                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
-
-                # Read JSON into a DataFrame
-                df = pd.read_json(saved_file_path, orient='records')
-
-                # Rename the file to an Excel file
-                prefix_file_name, _ = os.path.splitext(uploaded_file_instance.file_name)  # Split file name from extension
-                converted_file_name = f"{prefix_file_name}.xlsx"
-
-                # Create a new Excel workbook
-                excel_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_file_name)
-                df.to_excel(excel_file_path, index=False)
-
-                # Save the converted Excel file as a new UploadedFile instance
-                with open(excel_file_path, 'rb') as excel_file:
-                    # Create ContentFile to represent contents of Excel File
-                    excel_content = ContentFile(excel_file.read())
-                    # Create UploadedFile instance with the uploaded Excel file
-                    converted_file_instance = UploadedFile(
-                        file_name=converted_file_name,
-                        file=excel_content,
-                    )
-                    # Save file path
-                    converted_file_instance.file_path = excel_file_path
-                    if request.user.is_authenticated:
-                        converted_file_instance.user = request.user
-                    converted_file_instance.save()
-
-                # Set file_name to correct name for display or further use
-                file_name = converted_file_instance.file_name
-
-                # Call conversion code
-                lc.conversion(excel_file_path)
-
-            # If Excel: Call conversion code directly
-            elif file_extension == 'xlsx':
-                # Save using UploadedFile model
-                uploaded_file_instance = UploadedFile(file=uploaded_file,)
-
-                if request.user.is_authenticated:
-                    uploaded_file_instance.user = request.user
+            else:
+                uploaded_file_instance.file_path = uploaded_file_path
                 uploaded_file_instance.save()
+            
+            # Error checking:
+            print("*** File name: " + uploaded_file_instance.file_name)
+            print("*** File path: " + uploaded_file_instance.file_path)
 
-                # Determine the path of the saved file
-                saved_file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file_instance.file.name)
+            # Call conversion code on file from /uploads/imported_files/<filename>
+            lc.conversion(uploaded_file_path)
 
-                # Call conversion code
-                lc.conversion(saved_file_path)
-
-            # Redirect to export page
             return redirect("export")
-
     return render(request, 'import.html')
 
 #  Download sample Excel file for formmating
@@ -173,7 +137,7 @@ def download_sample_json(request):
 # %******************** Export File Page ****************************%
 
 def download_pdf(request):
-    file_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Make sure the file exists and this path is correct
+    file_path = os.path.join('uploads', 'conversion_output', 'output.pdf')  # Make sure the file exists and this path is correct
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/pdf')
@@ -183,7 +147,7 @@ def download_pdf(request):
         return HttpResponse("File not found", status=404)
 
 def download_tex(request):
-    file_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Update this path to your .tex file
+    file_path = os.path.join('uploads', 'conversion_output', 'output.tex')  # Update this path to your .tex file
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/x-tex')
@@ -193,13 +157,13 @@ def download_tex(request):
         return HttpResponse("File not found", status=404)
 
 def download_zip(request):
-    pdf_path = os.path.join('uploads', 'imported_files', 'output.pdf')  # Path to your PDF file
-    tex_path = os.path.join('uploads', 'imported_files', 'output.tex')  # Path to your Tex file
+    pdf_path = os.path.join('uploads', 'conversion_output', 'output.pdf')  # Path to your PDF file
+    tex_path = os.path.join('uploads', 'conversion_output', 'output.tex')  # Path to your Tex file
 
     # Check if both files exist
     if os.path.exists(pdf_path) and os.path.exists(tex_path):
         # Create a zip file
-        zip_file_path = os.path.join('uploads', 'imported_files', 'output.zip')
+        zip_file_path = os.path.join('uploads', 'conversion_output', 'output.zip')
         with zipfile.ZipFile(zip_file_path, 'w') as zipf:
             zipf.write(pdf_path, os.path.basename(pdf_path))
             zipf.write(tex_path, os.path.basename(tex_path))
@@ -229,6 +193,20 @@ def LayoutLibraryPage(request):
 @login_required(login_url="login")
 def SettingsPage(request):
     return render(request, "settings.html")
+
+@login_required(login_url="login")
+def StyleSettingsPage(request):
+    # Retrieve user-specific default layout settings
+    default_style_settings = DefaultStyleSettings.objects.get_or_create(user=request.user)
+
+    #TODO: Handle form submission for user to update their default layout settings
+    # if request.method == 'POST':
+        # form = DefaultStyleSettingsForm(request.POST, instance=default_style_settings)
+        # if form.is_valid():
+        #    form.save()
+        #    return redirect('settings') # Redirect to settings page after editing
+
+    return render(request, "style-settings.html")
 
 # %******************** User Registration ****************************%
 

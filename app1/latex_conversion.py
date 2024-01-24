@@ -146,7 +146,7 @@ def conversion(file):
     \\end{{document}}
     """
     # Print or save LaTeX code
-    print(complete_latex_code)
+    # print(complete_latex_code)
 
     # Save LaTeX code to a .tex file
     tex_file_path = 'output.tex'
@@ -160,11 +160,16 @@ def conversion(file):
     if process.returncode == 0:
         print("PDF generated successfully.")
 
+
+        # TODO: Once .tex code and PDF are successfully generated, we need to:
+        #       (1). Save them both to a ConvertedFile model associated with the logged-in user
+        #      
+
         # Specify the destination folder
-        pdf_destination_folder = os.path.join('uploads', 'imported_files', 'output.pdf')
-        tex_destination_folder = os.path.join('uploads', 'imported_files', 'output.tex')
-        aux_destination_folder = os.path.join('uploads', 'imported_files', 'output.aux')
-        log_destination_folder = os.path.join('uploads', 'imported_files', 'output.log')
+        pdf_destination_folder = os.path.join('uploads', 'conversion_output', 'output.pdf')
+        tex_destination_folder = os.path.join('uploads', 'conversion_output', 'output.tex')
+        aux_destination_folder = os.path.join('uploads', 'conversion_output', 'output.aux')
+        log_destination_folder = os.path.join('uploads', 'conversion_output', 'output.log')
 
         # Move the generated PDF to the destination folder
         shutil.move('output.pdf', pdf_destination_folder)
