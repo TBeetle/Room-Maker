@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.text import slugify
+from layoutGenerator import settings
+import os
 from django.urls import (
     reverse,
 )  # Generate URLs of individual objects through reversing URL patterns
@@ -15,6 +16,9 @@ from django.dispatch import receiver
 from django.core.validators import FileExtensionValidator
 from datetime import datetime
 
+def get_user_subfolder(instance, filename):
+    # Returns the path to a user's specific subfolder in 'imported_files'
+    return f'imported_files/{instance.user.username}/{filename}'
 
 # Represents an uploaded file, storing a predefined file imported by the user to be converted into a LaTeX / PDF file
 class UploadedFile(models.Model):
@@ -23,7 +27,7 @@ class UploadedFile(models.Model):
 
     # Original file uploaded by user
     file = models.FileField(
-        upload_to="imported_files/",
+        upload_to=get_user_subfolder,
         default="placeholder.txt",
         blank=True,
         null=True,
@@ -44,6 +48,10 @@ class UploadedFile(models.Model):
         # Set default value for file_name to the uploaded file's name
         if not self.file_name:
             self.file_name = self.file.name.replace(" ", "_")
+
+        # Create a subdirectory for user in 'imported_files' if it does not exist
+        user_folder = os.path.join(settings.MEDIA_ROOT, 'imported_files', self.user.username)
+        os.makedirs(user_folder, exist_ok=True)
 
         super(UploadedFile, self).save(*args, **kwargs)
 

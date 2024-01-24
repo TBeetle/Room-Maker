@@ -30,6 +30,7 @@ def ImportPage(request):
     # Ensure request is a POST and that a file was uploaded:
     if request.method == "POST" and request.FILES:
         uploaded_file = request.FILES["uploaded_file"]
+        username = request.user.username
 
         # File extension validation:
         file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
@@ -51,7 +52,7 @@ def ImportPage(request):
             # Define path to uploaded JSON/CSV file - /uploads/imported_files/<filename>
             uploaded_filename = uploaded_file_instance.file.name
             print("uploaded_filename: " + uploaded_filename)
-            uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', uploaded_filename)
+            uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, uploaded_filename)
             print("Uploaded CSV/JSON File Path: " + uploaded_file_path)
             print("Uploaded file name: " + uploaded_filename)
 
@@ -76,7 +77,7 @@ def ImportPage(request):
                 converted_filename = f"{prefix_filename}.xlsx"
 
                 # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx
-                excel_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', converted_filename)
+                excel_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, converted_filename)
                 df.to_excel(excel_filepath, index=False)
 
                 # Update UploadedFile with new converted Excel File
@@ -103,6 +104,8 @@ def ImportPage(request):
 
             # Call conversion code on file from /uploads/imported_files/<filename>
             lc.conversion(uploaded_file_path)
+
+            # After conversion, create a ConvertedFile instance and store the produced LaTeX code & PDF
 
             return redirect("export")
     return render(request, 'import.html')
