@@ -2,7 +2,7 @@ import pandas as pd
 import subprocess
 import os
 import shutil
-from pdf2image import convert_from_path
+#from pdf2image import convert_from_path
 
 def conversion(file):
 
