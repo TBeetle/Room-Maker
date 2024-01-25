@@ -61,23 +61,27 @@ class UploadedFile(models.Model):
 
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
-    file_name = models.CharField(max_length=255)
+    
+    file_name = models.CharField(max_length=255) # Stores the PREFIX (without extension)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    file_path = models.CharField(max_length=255, default="NONE")
 
     # Links to associated UploadedFile
-    original_file = models.ForeignKey(UploadedFile, on_delete=models.CASCADE)
+    uploaded_file = models.ForeignKey(UploadedFile, on_delete=models.CASCADE)
 
-    # To hold LaTeX code
-    latex_code = models.FileField(
-        upload_to="latex_files/",
-        default="default-layout.tex",
-        blank=True,
-        null=True,
-        validators=[FileExtensionValidator(allowed_extensions=["tex"])],
-    )
+    # Reference to latex file in form 'uploads/imported_files/<username>/file_name.tex'
+    latex_file = models.CharField(max_length=255,
+                                  default= os.path.join(settings.MEDIA_ROOT,'conversion_output', 'output.tex'))
 
-    # TODO: add file field for PDF associated with layout
+    # Reference to PDF file in form 'uploads/imported_files/<username>/file_name.pdf
+    pdf_file = models.CharField(max_length=255,
+                                default= os.path.join(settings.MEDIA_ROOT,'conversion_output', 'output.pdf'))
+
+    def save(self, *args, **kwargs):
+        # Set default value for file_name from uploaded_file
+        if not self.file_name:
+            self.file_name = self.uploaded_file.file_name
 
     def __str__(self):
         return self.file_name

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages, admin
 from django.core.files.base import ContentFile
 from django.utils.text import slugify, get_valid_filename
+from shutil import copyfile
 
 import pandas as pd
 import os
@@ -105,7 +106,32 @@ def ImportPage(request):
             # Call conversion code on file from /uploads/imported_files/<filename>
             lc.conversion(uploaded_file_path)
 
-            # After conversion, create a ConvertedFile instance and store the produced LaTeX code & PDF
+            # Place .pdf and .tex files into user's subfolder at /uploads/imported_files/<username>/
+            prefix_filename, _ = os.path.splitext(uploaded_file_instance.file_name)
+            
+            source_tex_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
+            source_pdf_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
+            destination_tex_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.tex")
+            destination_pdf_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.pdf")
+
+            copyfile(source_tex_path, destination_tex_path)
+            copyfile(source_pdf_path, destination_pdf_path)
+
+            # Make ConvertedFile to link UploadedFile with output
+            converted_file = ConvertedFile(
+                file_name=prefix_filename, # *NOTE* stores prefix without extension
+                user = request.user,
+                file_path = uploaded_file_instance.file_path,
+                latex_file = destination_tex_path,
+                pdf_file = destination_pdf_path,
+            )
+            converted_file.save()
+            
+            # TODO: return converted_file and return to export page
+
+            # Error checking - ensures that convertedfile exists
+            print(f"Converted file prefix: {converted_file.file_name}")
+            print(f"Converted file file_path: {converted_file.file_path}")
 
             return redirect("export")
     return render(request, 'import.html')
