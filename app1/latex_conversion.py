@@ -2,11 +2,12 @@ import pandas as pd
 import subprocess
 import os
 import shutil
-from pdf2image import convert_from_path
+#from pdf2image import convert_from_path
 
 def conversion(file):
+
     # Read Excel data
-    excel_data = pd.read_excel(os.path.join('..', 'uploads', 'sample_files', file))
+    excel_data = pd.read_excel(os.path.join('..', 'uploads', 'imported_files', file))
 
     # Define LaTeX template
     latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
@@ -152,6 +153,8 @@ def conversion(file):
     tex_file_path = 'output.tex'
     with open(tex_file_path, 'w') as f:
         f.write(complete_latex_code)
+
+    # TODO: create a new ConvertedFile for the user and upload the 'output.tex' 
 
     # Run the LaTeX compiler (lualatex) to generate the PDF
     process = subprocess.run(['lualatex', tex_file_path])
