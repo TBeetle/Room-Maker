@@ -24,21 +24,21 @@ class Migration(migrations.Migration):
             name="file_path",
             field=models.CharField(default="", max_length=255),
         ),
-        migrations.AlterField(
-            model_name="convertedfile",
-            name="latex_code",
-            field=models.FileField(
-                blank=True,
-                default="default-layout.tex",
-                null=True,
-                upload_to="latex_files/",
-                validators=[
-                    django.core.validators.FileExtensionValidator(
-                        allowed_extensions=["tex"]
-                    )
-                ],
-            ),
-        ),
+        #migrations.AlterField(
+        #    model_name="convertedfile",
+        #    name="latex_code",
+        #    field=models.FileField(
+        #        blank=True,
+        #        default="default-layout.tex",
+        #        null=True,
+        #        upload_to="latex_files/",
+        #        validators=[
+        #            django.core.validators.FileExtensionValidator(
+        #                allowed_extensions=["tex"]
+        #            )
+        #        ],
+        #    ),
+        #),
         migrations.AlterField(
             model_name="uploadedfile",
             name="file",
