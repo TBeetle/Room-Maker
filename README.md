@@ -47,7 +47,11 @@ We are planning on deploying using Railway, but this is subject to change.
 
 # Testing
 
-Not applicable at this point in time.
+In our project we have two primary types of tests that are being run: unit test and behavioral test. Both of these types of
+tests have their own python file and are within the tests folder.
+
+'/tests/unit_tests.py'
+'/tests/behavioral_tests.py'
 
 ## Testing Technology
 
@@ -55,7 +59,36 @@ Not applicable at this time.
 
 ## Running Tests
 
-Not applicable at this time.
+To run Unit Test:
+
+python manage.py test app1.tests.unit_tests
+
+Behaviorial test setup:
+
+Helpful Guide-
+
+https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windows-e02202ac2b08
+
+Install Selenium-
+
+pip install selenium
+
+Install Chromedriver and place within your system wide directory-
+
+More helpful links to download Chromedriver
+https://chromedriver.chromium.org/getting-started
+https://chromedriver.chromium.org/downloads
+https://googlechromelabs.github.io/chrome-for-testing/
+
+To run Behaviorial Test:
+
+Within Terminal One:
+
+python manage.py runserver
+
+Within Terminal Two:
+
+python manage.py test app1.tests.behavioral_tests
 
 # Authors
 
