@@ -7,6 +7,7 @@ class TestUploadedFile(TestCase):
         # Create a user for testing
         self.user = User.objects.create(username="testuser")
 
+    # Unit Test
     def test_user_upload_path(self):
         # Create an instance of UploadedFile
         uploaded_file = UploadedFile(
