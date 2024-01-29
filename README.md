@@ -55,7 +55,7 @@ tests have their own python file and are within the tests folder.
 
 ## Testing Technology
 
-Not applicable at this time.
+Not applicable at this time
 
 ## Running Tests
 
