@@ -9,6 +9,7 @@ pandas = "*"
 openpyxl = "*"
 pdf2image = "*"
 gunicorn = "*"
+selenium = "*"
 
 [dev-packages]
 
