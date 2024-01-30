@@ -12,7 +12,7 @@ import pandas as pd
 import os
 from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import UploadedFile, ConvertedFile
+from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSettings
 from django.shortcuts import HttpResponse
 import zipfile
 import app1.latex_conversion as lc
@@ -103,6 +103,25 @@ def ImportPage(request):
             print("*** File name: " + uploaded_file_instance.file_name)
             print("*** File path: " + uploaded_file_instance.file_path)
 
+            admin_user = User.objects.get(username='admin')
+            # Query for DefaultStyleSettings where the user is admin
+            default_styling = DefaultStyleSettings.objects.filter(user=admin_user).first()
+
+            # Create individual StyleSettings for layout
+            layout_style = StyleSettings(
+                user = request.user,
+                name = converted_filename,
+                font_type = default_styling.font_type,
+                font_color = default_styling.font_color,
+                font_size = default_styling.font_size,
+                wall_color = default_styling.wall_color,
+                furniture_color = default_styling.furniture_color,
+                orientation_type = "vertical"
+            )
+            layout_style.save()
+
+            print("User's default style settings: " + layout_style.font_color +" size: " + layout_style.font_type)
+
             # Call conversion code on file from /uploads/imported_files/<filename>
             lc.conversion(uploaded_file_path)
 
@@ -117,6 +136,8 @@ def ImportPage(request):
             copyfile(source_tex_path, destination_tex_path)
             copyfile(source_pdf_path, destination_pdf_path)
 
+            # TODO - verify that ConvertedFile object is created and properly linked with StyleSettings
+            
             # Make ConvertedFile to link UploadedFile with output
             converted_file = ConvertedFile(
                 file_name=prefix_filename, # *NOTE* stores prefix without extension
@@ -124,10 +145,9 @@ def ImportPage(request):
                 file_path = uploaded_file_instance.file_path,
                 latex_file = destination_tex_path,
                 pdf_file = destination_pdf_path,
+                style_settings = layout_style,
             )
             converted_file.save()
-            
-            # TODO: return converted_file and return to export page
 
             # Error checking - ensures that convertedfile exists
             print(f"Converted file prefix: {converted_file.file_name}")

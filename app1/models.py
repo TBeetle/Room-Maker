@@ -59,15 +59,52 @@ class UploadedFile(models.Model):
         return self.file_name
 
 
+# Represents the settings for styling associated with an individual layout
+class StyleSettings(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    # Text labels
+    font_type = models.CharField(max_length=255) #TODO: Set default
+    font_size = models.IntegerField() # TODO: Set default
+    font_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    # Colors using hex <#FFFFFF>
+    wall_color = models.CharField(max_length=7, default="#FFFFFF")
+    furniture_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    # Orientation of PDF - horizontal or vertical
+    orientation_type = models.CharField(max_length=255, default = "vertical")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# Stores default style settings for users, providing defaults for each layout they generate
+class DefaultStyleSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # Text labels
+    font_type = models.CharField(max_length=30, default="Arial") #TODO: Set default
+    font_size = models.IntegerField(default=0) # TODO: Set default
+    font_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    # Colors
+    wall_color = models.CharField(max_length=7, default="#FFFFFF")
+    furniture_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
-    
     file_name = models.CharField(max_length=255) # Stores the PREFIX (without extension)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     file_path = models.CharField(max_length=255, default="NONE")
 
-    # Links to associated UploadedFile
+    # link to associated StyleSettings
+    style_settings = models.ForeignKey(StyleSettings, on_delete=models.CASCADE,
+                                       null=True)
+
+    # Link to associated UploadedFile
     uploaded_file = models.ForeignKey(UploadedFile, on_delete=models.CASCADE)
 
     # Reference to latex file in form 'uploads/imported_files/<username>/file_name.tex'
@@ -87,28 +124,5 @@ class ConvertedFile(models.Model):
         return self.file_name
 
 
-# Represents a user-defined layout, storing various style settings
-class Layout(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    # TODO: Eventually update these to store pre-defined color/font settings instead of charfields ??
-
-    font_type = models.CharField(max_length=255)
-    font_size = models.IntegerField()
-    font_color = models.CharField(max_length=7)  # Use a hex color code
-
-    boundary_colors = models.TextField()
-    orientation_type = models.CharField(max_length=255)
-
-    image_path = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
-# Stores default style settings for users, providing defaults for new layouts and ensuring consistency
-class UserSettings(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    default_font_type = models.CharField(max_length=255)
-    default_font_size = models.IntegerField()
-    default_font_color = models.CharField(max_length=7)
-    default_boundary_colors = models.TextField()  # Use a hex color code
-    created_at = models.DateTimeField(auto_now_add=True)
