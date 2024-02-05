@@ -3,81 +3,181 @@
 {% block title %} Layout Library {% endblock %}
 
 {% block content %}
-    <p>
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hover and Display Alt Text</title>
-        
-            <style>
-                /* Centered title */
-                h1 {
-                    text-align: center;
-                    margin-top: 50px;
-                }
-                /* Style for the image container */
-                .image-container {
-                    display: flex;
-                    justify-content: space-around;
-                    position: relative;
-                    margin-top: 20px;
-                }
-        
-                /* Style for the image wrapper */
-                .image-container div {
-                    position: relative;
-                    cursor: pointer;
-                    border: 2px solid black; /* Border color for the image */
-                    border-radius: 5px;
-                }
-        
-                /* Style for the alt text overlay */
-                .alt-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background-color: rgba(0, 0, 0, 0.7);
-                    color: #fff;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                    transform: translateY(-50%); /* Adjust for vertical centering */
-                }
-        
-                /* Show the alt text overlay on hover */
-                .image-container div:hover .alt-overlay {
-                    opacity: 1;
-                }
-            </style>
-        </head>
-        <body>
-        
-        <!-- Centered title -->
-<h1>Layout Library</h1>
-        <!-- Container for the images with alt text overlay -->
-        <div class="image-container">
-            <div>
-                <img src="../uploads/images/layoutexample1.png" alt="Broad Neighborhood - Hallway" width="300" height="300">
-                <div class="alt-overlay">Broad Neighborhood - Hallway</div>
-            </div>
-            <div>
-                <img src="../uploads/images/layoutexample2.png" alt="Broad Neighborhood - Activity Room" width="300" height="300">
-                <div class="alt-overlay">Broad Neighborhood - Activity Room</div>
-            </div>
-            <div>
-                <img src="../uploads/images/layoutexample3.png" alt="Broad Neighborhood - Carolina Room" width="300" height="300">
-                <div class="alt-overlay">Broad Neighborhood - Carolina Room</div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover and Display Alt Text</title>
+
+    <style>
+        /* Centered title */
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Style for the image container */
+        .image-container {
+            display: flex;
+            flex-wrap: wrap; /* Enable wrapping to create new rows */
+            justify-content: space-around;
+            position: relative;
+            margin-top: 20px;
+            min-height: 600px; /* Set a minimum height for scrolling */
+        }
+
+        /* Style for each image wrapper */
+        .image-container div {
+            box-sizing: border-box;
+            width: calc(33.33% - 20px); /* Set width for each image, considering margin */
+            margin: 10px;
+            position: relative;
+            cursor: pointer;
+            border: 2px solid black; /* Border color for the image */
+            border-radius: 5px;
+        }
+
+        /* Style for the alt text overlay */
+        .alt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            transform: translateY(-50%); /* Adjust for vertical centering */
+        }
+
+        /* Show the alt text overlay on hover */
+        .image-container div:hover .alt-overlay {
+            opacity: 1;
+        }
+
+        .image-container.hidden {
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Set overflow for the entire page */
+        html, body {
+            overflow-y: auto;
+        }
+    </style>
+
+    <!-- Search functionality -->
+    <script>
+        /*document.addEventListener('DOMContentLoaded', function () {
+            // Function to filter images based on search input
+            function filterImages(searchTerm) {
+                const imageContainers = document.querySelectorAll('.image-container div');
+    
+                imageContainers.forEach(function (container) {
+                    const altOverlay = container.querySelector('.alt-overlay');
+                    const altText = altOverlay.textContent.toLowerCase();
+                    const isVisible = altText.includes(searchTerm.toLowerCase());
+    
+                    container.style.display = isVisible ? 'block' : 'none';
+                });
+            }
+    
+            // Event listener for the search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value;
+                filterImages(searchTerm);
+            });
+    
+            // Initial filtering to handle any default state
+            filterImages(searchInput.value);
+        });*/
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to filter images based on search input
+            function filterImages(searchTerm) {
+                const imageContainers = document.querySelectorAll('.image-container div');
+
+                imageContainers.forEach(function (container) {
+                    const img = container.querySelector('img');
+                    const altText = img.getAttribute('alt').toLowerCase();
+                    const isVisible = altText.includes(searchTerm.toLowerCase());
+
+                    container.style.display = isVisible ? 'block' : 'none';
+                });
+            }
+
+            // Event listener for the search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value;
+                filterImages(searchTerm);
+            });
+
+            // Initial filtering to handle any default state
+            filterImages(searchInput.value);
+        });
+
+
+
+    </script>              
+    
+    
+</head>
+<body>
+
+    <!-- Centered title -->
+    <h1>Layout Library</h1>
+    <input type="text" id="searchInput" placeholder="Search by layout name">
+
+    <!-- Container for the images with alt text overlay -->
+    <div class="image-container">
+        <div>
+            <img src="../uploads/images/layoutexample1.png" alt="Broad Neighborhood - Hallway" width="300" height="300">
+            <div class="alt-overlay">Broad Neighborhood - Hallway</div>
         </div>
-        
-        </body>
-        </html>
-        
-    </p>
+        <div>
+            <img src="../uploads/images/layoutexample2.png" alt="Broad Neighborhood - Activity Room" width="300" height="300">
+            <div class="alt-overlay">Broad Neighborhood - Activity Room</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="Broad Neighborhood - Carolina Room" width="300" height="300">
+            <div class="alt-overlay">Broad Neighborhood - Carolina Room</div>
+        </div>
+        <!-- Add more images here -->
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 1" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 1</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 2" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 2</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 3" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 3</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 4" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 4</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 5" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 5</div>
+        </div>
+        <div>
+            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 6" width="300" height="300">
+            <div class="alt-overlay">New Layout Example 6</div>
+        </div>
+    </div>
+
+</body>
+</html>
 {% endblock %}
