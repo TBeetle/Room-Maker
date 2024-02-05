@@ -2,85 +2,145 @@
 
 {% block title %} Settings {% endblock %}
 
+{% block styling %}
+<style>
+    body {
+        background: #ccc;
+    }
+
+    #room {
+        width: 400px;
+        height: 300px;
+        border: 2px solid #000;
+        position: relative;
+    }
+
+    .wall, .furniture, .window {
+        position: absolute;
+    }
+
+    .wall {
+        width: 100%;
+        height: 100%;
+    }
+
+    .furniture, .window {
+        width: 50px;
+        height: 30px;
+        background-color: #ccc;
+        border: 1px solid #000;
+        text-align: center;
+        line-height: 30px;
+    }
+    .image-container {
+        display: flex;
+        justify-content: space-around;
+        position: relative;
+        margin-top: 20px;
+        float: right;
+        bottom: 150px;
+        right: 150px;
+    }
+    
+    /* Style for the image wrapper */
+    .image-container div {
+        position: relative;
+        cursor: pointer;
+        border: 2px solid black; /* Border color for the image */
+        border-radius: 5px;
+    }
+
+    .list-group-item {
+        color:#fff;
+        background-color: #212529;
+        border: none;
+    }
+
+    .list-group-item.active {
+        color:#fff;
+        border: none;
+        background-color: #4395e7;
+        font-weight: bold;
+    }
+
+
+    
+</style>
+<script>
+    // Javascript for switching the 2 views between settings page:
+    //  Default Style Settings & Account Settings
+    document.addEventListener("DOMContentLoaded", function() {
+        const accountSettingsTab = document.getElementById("accountSettingsTab");
+        const defaultStyleSettingsTab = document.getElementById("defaultStyleSettingsTab");
+        const accountSettingsContent = document.getElementById("accountSettings");
+        const defaultStyleSettingsContent = document.getElementById("defaultStyleSettings");
+
+        accountSettingsTab.addEventListener("click", function() {
+            accountSettingsTab.classList.add("active");
+            defaultStyleSettingsTab.classList.remove("active");
+            accountSettingsContent.classList.remove("d-none");
+            defaultStyleSettingsContent.classList.add("d-none");
+        });
+
+        defaultStyleSettingsTab.addEventListener("click", function() {
+            accountSettingsTab.classList.remove("active");
+            defaultStyleSettingsTab.classList.add("active");
+            accountSettingsContent.classList.add("d-none");
+            defaultStyleSettingsContent.classList.remove("d-none");
+        });
+    });
+
+    // Ensure that style settings are the default view when page loads
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("accountSettings").classList.add("d-none");
+    })
+</script>
+
+{% endblock %}
+
+
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Layout Settings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
 
-        #room {
-            width: 400px;
-            height: 300px;
-            border: 2px solid #000;
-            position: relative;
-        }
+    <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 75; height: 100; margin-top:10%; border-radius: 10px;">
 
-        .wall, .furniture, .window {
-            position: absolute;
-        }
 
-        .wall {
-            width: 100%;
-            height: 100%;
-        }
+            <div class="row">
+                <!--Sidebar for settings-->
+                <div class="col-3 bg-dark p-0">
+                    <div class="sidebar">
+                        <ul class="list-group mt-5" style="border-radius:0">
+                            <li class="list-group-item active" id="defaultStyleSettingsTab">Default Style Settings</li>
+                            <li class="list-group-item" id="accountSettingsTab">Account Settings</li>
+                        </ul>
+                    </div>
+                </div>
 
-        .furniture, .window {
-            width: 50px;
-            height: 30px;
-            background-color: #ccc;
-            border: 1px solid #000;
-            text-align: center;
-            line-height: 30px;
-        }
-        .image-container {
-            display: flex;
-            justify-content: space-around;
-            position: relative;
-            margin-top: 20px;
-            float: right;
-            bottom: 150px;
-            right: 150px;
-        }
+                <!--Settings main content-->
+                <div class="col">
+                    <div class="p-5" id="defaultStyleSettings">
+                            <h1 class="display-5 fw-bold">Default Style Settings</h1>
+                            <hr>
+    
+                            <label for="wallThickness">Wall Thickness:</label>
+                            <input type="range" id="wallThickness" min="1" max="20" value="2" disabled>
+                            <br>
+                            <label for="wallColor">Wall Color:</label>
+                            <input type="color" id="wallColor" value="#000" disabled>
+                            <br>
+                            <label for="furnitureColor">Furniture Color:</label>
+                            <input type="color" id="furnitureColor" value="#ccc" disabled>
+                            <br>
+                            <label for="windowColor">Window Color:</label>
+                            <input type="color" id="windowColor" value="#ccc" disabled>
+                    </div>
+
+                    <div class="p-5" id="accountSettings">
+                        <h1 class="display-5 fw-bold">Account Settings</h1>
+                        <hr>
+                    </div>
+                </div>
+            </div>
         
-        /* Style for the image wrapper */
-        .image-container div {
-            position: relative;
-            cursor: pointer;
-            border: 2px solid black; /* Border color for the image */
-            border-radius: 5px;
-        }
-
-        #settings {
-            border: 2px solid black;
-        }
-        
-    </style>
-</head>
-<body>
- <main class="container">
-    <div class="bg-body-tertiary p-5">
-        <p>Here is where the settings will go.</p>
-        <div id="settings">
-            <label for="wallThickness">Wall Thickness:</label>
-            <input type="range" id="wallThickness" min="1" max="20" value="2" disabled>
-            <br>
-            <label for="wallColor">Wall Color:</label>
-            <input type="color" id="wallColor" value="#000" disabled>
-            <br>
-            <label for="furnitureColor">Furniture Color:</label>
-            <input type="color" id="furnitureColor" value="#ccc" disabled>
-            <br>
-            <label for="windowColor">Window Color:</label>
-            <input type="color" id="windowColor" value="#ccc" disabled>
-        </div>
     </div>
- </main>
-</body>
-</html>
+
 {% endblock %}
