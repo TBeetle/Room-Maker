@@ -42,8 +42,6 @@ class UploadedFile(models.Model):
         max_length=255, blank=True
     )  # Path to uploaded file on server
 
-    file_type = models.CharField(max_length=10)  # Store file type (Excel, JSON, or CSV)
-
     def save(self, *args, **kwargs):
         # Set default value for file_name to the uploaded file's name
         if not self.file_name:
@@ -95,7 +93,7 @@ class DefaultStyleSettings(models.Model):
 
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
-    file_name = models.CharField(max_length=255) # Stores the PREFIX (without extension)
+    file_name = models.CharField(max_length=255, default="name") # Stores the PREFIX (without extension)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     file_path = models.CharField(max_length=255, default="NONE")
@@ -119,6 +117,7 @@ class ConvertedFile(models.Model):
         # Set default value for file_name from uploaded_file
         if not self.file_name:
             self.file_name = self.uploaded_file.file_name
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.file_name

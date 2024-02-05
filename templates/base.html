@@ -11,21 +11,22 @@
      <!-- Favicon -->
      <link rel="icon" href="{% static '../uploads/images/asset_primary_logo_tm.png' %}" type="image/x-icon">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">  
+    {% block styling %}
+    {% endblock %}  
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
+    <!-- Top Navigation Bar -->
+    <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-primary">
+        <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand">
                 <img src="https://www.asset-us.com/static/images/asset-logo-horizontal-tm.png" alt="ASSET Logo" width="130" height="30" class="d-inline-block align-top">
             </a>
-
             <!-- Links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item ">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'import' %}">Import</a>
                     </li>
                     <li class="nav-item">
@@ -46,14 +47,14 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mt-4">
+    <main class="container-fluid mt-5">
             {% block content %} {% endblock %}
-    </div>
+    </main>
 
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 </body>
 
 </html>

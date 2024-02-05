@@ -2,14 +2,7 @@
 
 {% block title %} Layout Library {% endblock %}
 
-{% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hover and Display Alt Text</title>
-
+{% block styling %}
     <style>
         /* Centered title */
         h1 {
@@ -128,56 +121,71 @@
 
 
     </script>              
-    
-    
-</head>
-<body>
+{% endblock %}
 
-    <!-- Centered title -->
-    <h1>Layout Library</h1>
-    <input type="text" id="searchInput" placeholder="Search by layout name">
+{% block content %}
+    
+    <div class="container mt-3 w-75">
+        <div class = "row">
+            <h1 class="display-5 fw-bold mt-5">Layout Library</h1>
+        </div>
 
-    <!-- Container for the images with alt text overlay -->
-    <div class="image-container">
-        <div>
-            <img src="../uploads/images/layoutexample1.png" alt="Broad Neighborhood - Hallway" width="300" height="300">
-            <div class="alt-overlay">Broad Neighborhood - Hallway</div>
+        <div class="container mb-5">
+            <input type="text" id="searchInput" placeholder="Search by layout name">
         </div>
-        <div>
-            <img src="../uploads/images/layoutexample2.png" alt="Broad Neighborhood - Activity Room" width="300" height="300">
-            <div class="alt-overlay">Broad Neighborhood - Activity Room</div>
+
+        <!--Display user's layouts in rows of 3-->
+        <div class = "row">
+            {% for layout in layouts %}
+            <div class = "col-md-4">
+                <div class="card mb-3">
+                    <img src="../uploads/images/layoutexample1.png">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ layout.file_name }} </h5>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
         </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="Broad Neighborhood - Carolina Room" width="300" height="300">
-            <div class="alt-overlay">Broad Neighborhood - Carolina Room</div>
-        </div>
-        <!-- Add more images here -->
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 1" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 1</div>
-        </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 2" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 2</div>
-        </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 3" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 3</div>
-        </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 4" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 4</div>
-        </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 5" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 5</div>
-        </div>
-        <div>
-            <img src="../uploads/images/layoutexample3.png" alt="New Layout Example 6" width="300" height="300">
-            <div class="alt-overlay">New Layout Example 6</div>
+        <div class="row">
+        {% endif %}
+        {% endfor %}
         </div>
     </div>
 
-</body>
-</html>
+    <!--Pagination controls-->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if layouts.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ layouts.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&lsaquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            {% for num in layouts.paginator.page_range %}
+            <li class="page-item {% if num == layouts.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if layouts.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ layouts.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&rsaquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ layouts.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
 {% endblock %}

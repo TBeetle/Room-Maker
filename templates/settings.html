@@ -55,30 +55,32 @@
             border: 2px solid black; /* Border color for the image */
             border-radius: 5px;
         }
+
+        #settings {
+            border: 2px solid black;
+        }
         
     </style>
 </head>
 <body>
-    <h1>Room Layout Settings</h1>
-
-    <div id="settings">
-        <label for="wallThickness">Wall Thickness:</label>
-        <input type="range" id="wallThickness" min="1" max="20" value="2" disabled>
-        <br>
-        <label for="wallColor">Wall Color:</label>
-        <input type="color" id="wallColor" value="#000" disabled>
-        <br>
-        <label for="furnitureColor">Furniture Color:</label>
-        <input type="color" id="furnitureColor" value="#ccc" disabled>
-        <br>
-        <label for="windowColor">Window Color:</label>
-        <input type="color" id="windowColor" value="#ccc" disabled>
+ <main class="container">
+    <div class="bg-body-tertiary p-5">
+        <p>Here is where the settings will go.</p>
+        <div id="settings">
+            <label for="wallThickness">Wall Thickness:</label>
+            <input type="range" id="wallThickness" min="1" max="20" value="2" disabled>
+            <br>
+            <label for="wallColor">Wall Color:</label>
+            <input type="color" id="wallColor" value="#000" disabled>
+            <br>
+            <label for="furnitureColor">Furniture Color:</label>
+            <input type="color" id="furnitureColor" value="#ccc" disabled>
+            <br>
+            <label for="windowColor">Window Color:</label>
+            <input type="color" id="windowColor" value="#ccc" disabled>
+        </div>
     </div>
-    <div class="image-container">
-    <div>
-        <img id="image-viewer" img src="../uploads/images/test_picture.png" alt="Test Picture" width="340" height="560">
-    </div>
-</div>
+ </main>
 </body>
 </html>
 {% endblock %}
