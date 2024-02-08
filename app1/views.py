@@ -238,7 +238,18 @@ def download_zip(request):
 
 @login_required(login_url="login")
 def ExportPage(request):
-    return render(request, "export.html")
+    # Get user's most recent layout
+    layout = ConvertedFile.objects.filter(user=request.user).order_by('-created_at').first()
+    context = {
+        'layout': layout,
+    }
+    return render(request, "export.html", context)
+
+# %******************** Edit Styling of Layout Page ****************************%
+
+@login_required
+def EditLayoutStylePage(request):
+    return render(request, "edit-style.html")
 
 # %******************** Layout Library Page ****************************%
 

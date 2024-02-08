@@ -90,7 +90,7 @@
         });
     });
 
-    // Ensure that style settings are the default view when page loads
+    // Make sure that StyleSettings are the primary view when the page loads
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("accountSettings").classList.add("d-none");
     })
@@ -117,6 +117,7 @@
 
                 <!--Settings main content-->
                 <div class="col">
+                    <!--Default Style Settings-->
                     <div class="p-5" id="defaultStyleSettings">
                             <h1 class="display-5 fw-bold">Default Style Settings</h1>
                             <hr>
@@ -134,9 +135,24 @@
                             <input type="color" id="windowColor" value="#ccc" disabled>
                     </div>
 
+                    <!--Account Settings-->
                     <div class="p-5" id="accountSettings">
                         <h1 class="display-5 fw-bold">Account Settings</h1>
                         <hr>
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label"><b>Email:</b></label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="example@asset.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputPassword1" class="form-label"><b>Change Password:</b></label>
+                            <input type="password" id="inputPassword1" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputPassword2" class="form-label"><b>Confirm Changes:</b></label>
+                            <input type="password" id="inputPassword2" class="form-control">
+                        </div>
+
+                        <!-- TODO: Update form to accept new input; add a save changes button-->
                     </div>
                 </div>
             </div>
