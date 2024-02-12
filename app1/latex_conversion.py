@@ -2,7 +2,7 @@ import pandas as pd
 import subprocess
 import os
 import shutil
-#from pdf2image import convert_from_path
+from pdf2image import convert_from_path
 
 def conversion(file):
 
@@ -163,11 +163,6 @@ def conversion(file):
     if process.returncode == 0:
         print("PDF generated successfully.")
 
-
-        # TODO: Once .tex code and PDF are successfully generated, we need to:
-        #       (1). Save them both to a ConvertedFile model associated with the logged-in user
-        #      
-
         # Specify the destination folder
         pdf_destination_folder = os.path.join('uploads', 'conversion_output', 'output.pdf')
         tex_destination_folder = os.path.join('uploads', 'conversion_output', 'output.tex')
@@ -181,10 +176,10 @@ def conversion(file):
         shutil.move('output.log', log_destination_folder)
 
         # Delete current output.png and replace with updated one
-        # output_path = os.path.join('uploads', 'imported_files', 'output.png')
-        # png = convert_from_path(pdf_destination_folder)
-        # for i, image in enumerate(png):
-        #     image.save(f'{output_path}', 'PNG')
+        output_path = os.path.join('uploads', 'conversion_output', 'output.png')
+        png = convert_from_path(pdf_destination_folder)
+        for i, image in enumerate(png):
+            image.save(f'{output_path}', 'PNG')
 
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")

@@ -63,13 +63,25 @@ class StyleSettings(models.Model):
     name = models.CharField(max_length=255)
 
     # Text labels
-    font_type = models.CharField(max_length=255) #TODO: Set default
+    text_decoration = models.CharField(max_length=255, default="")  # Allowed values: bold, italicized, underlined
+    font_type = models.CharField(max_length=255) # Font type; TODO get default value
     font_size = models.IntegerField() # TODO: Set default
     font_color = models.CharField(max_length=7, default="#FFFFFF")
 
     # Colors using hex <#FFFFFF>
     wall_color = models.CharField(max_length=7, default="#FFFFFF")
+    door_color = models.CharField(max_length=7, default="#FFFFFF")
     furniture_color = models.CharField(max_length=7, default="#FFFFFF")
+    window_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    # Boundary widths
+    wall_width = models.IntegerField()
+    door_width = models.IntegerField()
+    furniture_width = models.IntegerField()
+    window_width = models.IntegerField()
+
+    # TODO: Add Metadata styling
+
 
     # Orientation of PDF - horizontal or vertical
     orientation_type = models.CharField(max_length=255, default = "vertical")
@@ -81,13 +93,22 @@ class DefaultStyleSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Text labels
-    font_type = models.CharField(max_length=30, default="Arial") #TODO: Set default
-    font_size = models.IntegerField(default=0) # TODO: Set default
+    text_decoration = models.CharField(max_length=255, default="")  # Allowed values: bold, italicized, underlined
+    font_type = models.CharField(max_length=255) # Font type; TODO get default value
+    font_size = models.IntegerField() # TODO: Set default
     font_color = models.CharField(max_length=7, default="#FFFFFF")
 
-    # Colors
+    # Colors using hex <#FFFFFF>
     wall_color = models.CharField(max_length=7, default="#FFFFFF")
+    door_color = models.CharField(max_length=7, default="#FFFFFF")
     furniture_color = models.CharField(max_length=7, default="#FFFFFF")
+    window_color = models.CharField(max_length=7, default="#FFFFFF")
+
+    # Boundary widths
+    wall_width = models.IntegerField()
+    door_width = models.IntegerField()
+    furniture_width = models.IntegerField()
+    window_width = models.IntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -112,6 +133,10 @@ class ConvertedFile(models.Model):
     # Reference to PDF file in form 'uploads/imported_files/<username>/file_name.pdf
     pdf_file = models.CharField(max_length=255,
                                 default= os.path.join(settings.MEDIA_ROOT,'conversion_output', 'output.pdf'))
+    
+    # Reference to PNG in form 'uploads/imported_files/<username>/file_name.png
+    image = models.CharField(max_length=255,
+                             default = os.path.join(settings.MEDIA_ROOT,'conversion_output', 'output.png'))
 
     def save(self, *args, **kwargs):
         # Set default value for file_name from uploaded_file
@@ -121,7 +146,3 @@ class ConvertedFile(models.Model):
 
     def __str__(self):
         return self.file_name
-
-
-
-

@@ -117,11 +117,18 @@ def ImportPage(request):
                     layout_style = StyleSettings(
                         user = request.user,
                         name = converted_filename,
+                        text_decoration = default_styling.text_decoration,
                         font_type = default_styling.font_type,
                         font_color = default_styling.font_color,
                         font_size = default_styling.font_size,
                         wall_color = default_styling.wall_color,
+                        door_color = default_styling.door_color,
                         furniture_color = default_styling.furniture_color,
+                        window_color = default_styling.window_color,
+                        wall_width = default_styling.wall_width,
+                        door_width = default_styling.door_width,
+                        furniture_width = default_styling.furniture_width,
+                        window_width = default_styling.window_width,
                         orientation_type = "vertical"
                     )
                     layout_style.save()
@@ -131,18 +138,19 @@ def ImportPage(request):
                     # Call conversion code on file from /uploads/imported_files/<filename>
                     lc.conversion(uploaded_file_path)
 
-                    # Place .pdf and .tex files into user's subfolder at /uploads/imported_files/<username>/
+                    # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
                     prefix_filename, _ = os.path.splitext(uploaded_file_instance.file_name)
                     
                     source_tex_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
                     source_pdf_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
+                    source_png_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.png')
                     destination_tex_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.tex")
                     destination_pdf_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.pdf")
+                    destination_png_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.png")
 
                     copyfile(source_tex_path, destination_tex_path)
                     copyfile(source_pdf_path, destination_pdf_path)
-
-                    # TODO - verify that ConvertedFile object is created and properly linked with StyleSettings
+                    copyfile(source_png_path, destination_png_path)
                     
                     # Make ConvertedFile to link UploadedFile with output
                     converted_file = ConvertedFile(
@@ -153,6 +161,7 @@ def ImportPage(request):
                         latex_file = destination_tex_path,
                         pdf_file = destination_pdf_path,
                         style_settings = layout_style,
+                        image = destination_png_path,
                     )
                     converted_file.full_clean()
                     converted_file.save(force_insert=True)
@@ -161,7 +170,7 @@ def ImportPage(request):
                     print(f"Converted file prefix: {converted_file.file_name}")
                     print(f"Converted file file_path: {converted_file.file_path}")
 
-                    return redirect("export")
+                    return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
             logger.error("Error occurred during import: %s", e)
             messages.error(request, "An error occurred during import.")
@@ -237,13 +246,23 @@ def download_zip(request):
 
 
 @login_required(login_url="login")
-def ExportPage(request):
-    # Get user's most recent layout
-    layout = ConvertedFile.objects.filter(user=request.user).order_by('-created_at').first()
+def ExportPage(request, layout_id):
+    # Retreive layout based on layout id
+    layout = ConvertedFile.objects.get(id=layout_id)
     context = {
         'layout': layout,
     }
     return render(request, "export.html", context)
+
+# Support view for serving images through Django instead of directly through file system
+def serve_image(request, image_path):
+    absolute_path = os.path.join(settings.MEDIA_ROOT, image_path)
+    # Open the image file in binary
+    with open(absolute_path, 'rb') as f:
+        image_data = f.read()
+    content_type = 'image/png' # Set content type as .png image for HTTP response
+    # Create HTTP response with image data and content type
+    return HttpResponse(image_data, content_type=content_type)
 
 # %******************** Edit Styling of Layout Page ****************************%
 

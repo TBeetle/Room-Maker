@@ -65,6 +65,11 @@
         html, body {
             overflow-y: auto;
         }
+
+        .card-img-top {
+            max-width: 100%; /* Ensure image does not exceed its container's width */
+            height: auto; /* Maintain aspect ratio */
+        }
     </style>
 
     <!-- Search functionality -->
@@ -111,9 +116,11 @@
             {% for layout in layouts %}
             <div class = "col-md-4">
                 <div class="card mb-3">
-                    <img src="../uploads/images/layoutexample1.png">
+                    <a href="{% url 'export-layout' layout.id %}">
+                        <img src="{% url 'serve-image' layout.image %}" class="card-img-top">
+                    </a>
                     <div class="card-body">
-                        <h5 class="card-title">{{ layout.file_name }} </h5>
+                        <h5 class="card-title">{{ layout.file_name }}</h5>
                     </div>
                 </div>
             </div>
