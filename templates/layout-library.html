@@ -69,41 +69,16 @@
 
     <!-- Search functionality -->
     <script>
-        /*document.addEventListener('DOMContentLoaded', function () {
-            // Function to filter images based on search input
-            function filterImages(searchTerm) {
-                const imageContainers = document.querySelectorAll('.image-container div');
-    
-                imageContainers.forEach(function (container) {
-                    const altOverlay = container.querySelector('.alt-overlay');
-                    const altText = altOverlay.textContent.toLowerCase();
-                    const isVisible = altText.includes(searchTerm.toLowerCase());
-    
-                    container.style.display = isVisible ? 'block' : 'none';
-                });
-            }
-    
-            // Event listener for the search input
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function () {
-                const searchTerm = this.value;
-                filterImages(searchTerm);
-            });
-    
-            // Initial filtering to handle any default state
-            filterImages(searchInput.value);
-        });*/
         document.addEventListener('DOMContentLoaded', function () {
-            // Function to filter images based on search input
-            function filterImages(searchTerm) {
-                const imageContainers = document.querySelectorAll('.image-container div');
+            // Function to filter layouts based on search input
+            function filterLayouts(searchTerm) {
+                const layoutCards = document.querySelectorAll('.card');
 
-                imageContainers.forEach(function (container) {
-                    const img = container.querySelector('img');
-                    const altText = img.getAttribute('alt').toLowerCase();
-                    const isVisible = altText.includes(searchTerm.toLowerCase());
+                layoutCards.forEach(function (card) {
+                    const layoutName = card.querySelector('.card-title').textContent.toLowerCase();
+                    const isVisible = layoutName.includes(searchTerm.toLowerCase());
 
-                    container.style.display = isVisible ? 'block' : 'none';
+                    card.parentNode.style.display = isVisible ? 'block' : 'none';
                 });
             }
 
@@ -111,15 +86,12 @@
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', function () {
                 const searchTerm = this.value;
-                filterImages(searchTerm);
+                filterLayouts(searchTerm);
             });
 
             // Initial filtering to handle any default state
-            filterImages(searchInput.value);
+            filterLayouts(searchInput.value);
         });
-
-
-
     </script>              
 {% endblock %}
 
