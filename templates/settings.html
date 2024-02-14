@@ -74,6 +74,7 @@
         const defaultStyleSettingsTab = document.getElementById("defaultStyleSettingsTab");
         const accountSettingsContent = document.getElementById("accountSettings");
         const defaultStyleSettingsContent = document.getElementById("defaultStyleSettings");
+        const saveChangesButton = document.getElementById("saveChangesButton");
 
         accountSettingsTab.addEventListener("click", function() {
             accountSettingsTab.classList.add("active");
@@ -101,9 +102,7 @@
 
 {% block content %}
 
-    <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 75; height: 100; margin-top:10%; border-radius: 10px;">
-
-
+    <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
             <div class="row">
                 <!--Sidebar for settings-->
                 <div class="col-3 bg-dark p-0">
@@ -139,20 +138,40 @@
                     <div class="p-5" id="accountSettings">
                         <h1 class="display-5 fw-bold">Account Settings</h1>
                         <hr>
-                        <div class="mb-3">
-                            <label for="emailInput" class="form-label"><b>Email:</b></label>
-                            <input type="email" class="form-control" id="emailInput" placeholder="example@asset.com">
-                        </div>
-                        <div class="mb-3">
-                            <label for="inputPassword1" class="form-label"><b>Change Password:</b></label>
-                            <input type="password" id="inputPassword1" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="inputPassword2" class="form-label"><b>Confirm Changes:</b></label>
-                            <input type="password" id="inputPassword2" class="form-control">
-                        </div>
+                        {% if messages %}
+                                    <div class="alert alert-success" role="alert">
+                                        <ul>
+                                            {% for message in messages %}
+                                                <li>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-5">
+                                <label for="email" class="form-label bold-label" placeholder="{{ updated_email }}"><b>Email:</b></label>
+                                {{ form.email }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="inputPassword1" class="form-label bold-label"><b>Enter new password:</b></label>
+                                {{ form.inputPassword1 }}
+                            </div>
+                            <div class="mb-5">
+                                <label for="inputPassword2" class="form-label bold-label"><b>Confirm changes:</b></label>
+                                {{ form.inputPassword2 }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label bold-label"><b>Confirm current password to save changes:</b></label>
+                                {{ form.currentPassword }}
+                            </div>
 
-                        <!-- TODO: Update form to accept new input; add a save changes button-->
+                            <div class="mb-3 align-items-right">
+                                <button type="submit" id="saveChangesButton" class="btn btn-primary">Save Changes</button>
+                                
+                            </div>
+                        </form>
+                        
                     </div>
                 </div>
             </div>

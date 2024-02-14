@@ -296,9 +296,30 @@ def LayoutLibraryPage(request):
 
 # %******************** Settings Pages ****************************%
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import redirect
+from .forms import AccountSettingsForm
+
 @login_required(login_url="login")
 def SettingsPage(request):
-    return render(request, "settings.html")
+    context = {}
+    if request.method == 'POST':
+        # TODO: Update form so that when a user changes their email and returns to Account Settings, it correctly previews the updated email.
+        form = AccountSettingsForm(request.user, request.POST, initial={'email': request.user.email})
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Changes have been saved.")
+            updated_email = form.cleaned_data.get('email')
+            return render(request, "settings.html", {'form': form, 'updated_email': updated_email})
+        else:
+            print(form.errors)
+            messages.error(request, 'Changes not saved.')
+    else:
+        # pre-populate the form with the currently logged-in user's email address upon GET request
+        form = AccountSettingsForm(request.user, initial={'email': request.user.email})
+
+    return render(request, "settings.html", {'form' : form})
 
 @login_required(login_url="login")
 def StyleSettingsPage(request):
