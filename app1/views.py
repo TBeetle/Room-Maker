@@ -136,8 +136,9 @@ def ImportPage(request):
                     print("User's default style settings: " + layout_style.font_color +" size: " + layout_style.font_type)
 
                     # Call conversion code on file from /uploads/imported_files/<filename>
-                    lc.conversion(uploaded_file_path)
-
+                    lc.conversion(uploaded_file_path, layout_style)
+                    print("Tyler Test")
+                    
                     # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
                     prefix_filename, _ = os.path.splitext(uploaded_file_instance.file_name)
                     

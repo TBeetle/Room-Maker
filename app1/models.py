@@ -146,3 +146,16 @@ class ConvertedFile(models.Model):
 
     def __str__(self):
         return self.file_name
+    
+    def convert_to_latex(self):
+        try:
+            # Retrieve the user's default style settings
+            default_style_settings = DefaultStyleSettings.objects.get(user=self.user)
+            
+            # Call the conversion function with the default style settings
+            latex_code = conversion(self.file, default_style_settings)
+            
+            # Return or save the LaTeX code as needed
+        except DefaultStyleSettings.DoesNotExist:
+            # Handle case where default style settings are not found
+            print("Default style settings not found for the user.")

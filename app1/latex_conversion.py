@@ -4,25 +4,34 @@ import os
 import shutil
 from pdf2image import convert_from_path
 
-def conversion(file):
+def conversion(file, style_settings):
 
     # Read Excel data
     excel_data = pd.read_excel(os.path.join('..', 'uploads', 'imported_files', file))
 
     # Define LaTeX template
-    latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+    latex_walls_template = "\\draw[wall, line cap=round, color={{{}}}] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+   
+    # Check the number of placeholders in the string
+    num_placeholders = latex_walls_template.count('{}')
+    print("Number of placeholders:", num_placeholders)
+    # Check the number of values being passed
+    num_values = 4  # Adjust this based on the actual number of values you're passing
+    print("Number of values:", num_values)
 
     # Define LaTeX template for furniture
-    latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
+    latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm, color={{{}}}]({}) at ({},{}) {{}};\n"
     latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
 
     # Define LaTeX template for windows
-    latex_windows_template = "\\draw[window, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+    latex_windows_template = "\\draw[window, line cap=round, color={{{}}}] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
 
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
+            wall_color = style_settings.wall_color
+            wall_width = style_settings.wall_width
             x1 = row['X']
             y1 = row['Y']
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
@@ -32,19 +41,27 @@ def conversion(file):
             else:
                 x2 = excel_data.at[index + 1, 'X']
                 y2 = excel_data.at[index + 1, 'Y']
-            latex_code += latex_walls_template.format(x1, y1, x2, y2)
+            latex_code += latex_walls_template.format(wall_color, x1, y1, x2, y2)
         elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
+            window_color = style_settings.window_color
+            window_width = style_settings.window_width
             x1 = row['X']
             y1 = row['Y']
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
                 # Use the current row's coordinates for the last window before the furniture
+                furniture_color = style_settings.furniture_color
+                furniture_width = style_settings.furniture_width
                 x2 = row['X']
                 y2 = row['Y']
             else:
+                furniture_color = style_settings.furniture_color
+                furniture_width = style_settings.furniture_width
                 x2 = excel_data.at[index + 1, 'X']
                 y2 = excel_data.at[index + 1, 'Y']
             latex_code += latex_windows_template.format(x1, y1, x2, y2)
         elif row['Type'] == 'Furniture':
+            furniture_width = style_settings.furniture_width
+            furniture_color = style_settings.furniture_color
             width = row['width']
             height = row['height']
             table_name = row['Descriptor'].lower()

@@ -1,0 +1,11 @@
+Type,Descriptor,X,Y,width,height
+Furniture,TABLE,26,34.5,24,24
+Furniture,TABLE,30,80,24,24
+Exterior,WALL,106.25,17.75		
+Exterior,WALL,106.25,15.75		
+Exterior,WALL,91.5,15.75		
+Exterior,WALL,91.5,0		
+Exterior,WALL,50,0		
+Exterior,WALL,50,100		
+Exterior,WALL,23.5,100		
+Exterior,WALL,23.5,2		
