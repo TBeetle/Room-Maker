@@ -141,3 +141,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Set up project to store uploaded files
 MEDIA_URL = "/uploads/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
+
+# Password reset
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
