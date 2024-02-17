@@ -28,8 +28,6 @@ urlpatterns = [
     path("import/", views.ImportPage, name="import"),
     path("accounts/login/", views.LoginPage, name="login"),
     path("", RedirectView.as_view(url="import/", permanent=True)),
-    # path("export/", views.ExportPage, name="export"),
-    path("edit-layout/", views.EditLayoutStylePage, name="edit-layout"),
     path("accounts/logout/", views.LogoutPage, name='logout'),
     path('layout-library/', views.LayoutLibraryPage, name="layout-library"),
     path('settings', views.SettingsPage, name='settings'),
@@ -53,6 +51,7 @@ urlpatterns += [
 # Map to a layout's unique ID to a view function rendering idvl export page
 urlpatterns += [
     path('export/<int:layout_id>', views.ExportPage, name="export-layout"),
+    path('edit/<int:layout_id>', views.EditLayoutStylePage, name='edit-layout')
 ]
 
 

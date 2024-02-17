@@ -311,6 +311,34 @@ def EditLayoutStylePage(request, layout_id):
         'form': form
     }
     return render(request, "edit-style.html", context)
+from .forms import UpdateStyleSettingsForm
+from django.shortcuts import render, get_object_or_404, redirect
+
+@login_required(login_url="login")
+def EditLayoutStylePage(request, layout_id):
+    
+    layout = get_object_or_404(ConvertedFile, id=layout_id)
+    style_settings_instance = layout.style_settings 
+
+    # TODO - Ensure that saving the form will update the associated style_settings model
+    if request.method == "POST":
+        form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
+        if form.is_valid():
+            form.save()
+            print(f"FORM STYLE SETTINGS CHECK: Wall Thickness = {style_settings_instance.wall_width}")
+            print(f"Wall Color = {style_settings_instance.wall_color}")
+            print("Form successfully saved.")
+            # TODO: Display success message
+            # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF
+            return redirect('edit-layout', layout_id=layout_id)
+    else:
+        form = UpdateStyleSettingsForm(instance=style_settings_instance)
+
+    context = {
+        'layout': layout,
+        'form': form
+    }
+    return render(request, "edit-style.html", context)
 
 # %******************** Layout Library Page ****************************%
 

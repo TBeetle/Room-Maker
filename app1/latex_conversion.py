@@ -22,6 +22,7 @@ def conversion(file, style_settings):
     # Define LaTeX template for furniture
     latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
     latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
+    print("check")
 
     # Define LaTeX template for windows
     latex_windows_template = "\\draw[window, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
