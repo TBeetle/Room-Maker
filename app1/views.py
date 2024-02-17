@@ -291,23 +291,20 @@ def EditLayoutStylePage(request):
 
 @login_required(login_url="login")
 def LayoutLibraryPage(request):
-
-    # Get user's created layouts
     user_layouts = ConvertedFile.objects.filter(user=request.user).order_by('-created_at')
+    paginator = Paginator(user_layouts, 9)  # Show 3 layouts per page
 
-    # Paginate by a maximum of 9 layouts at a time
-    paginator = Paginator(user_layouts, 9) 
-    page = request.GET.get('page')
+    page_number = request.GET.get('page')
     try:
-        user_layouts = paginator.page(1)
+        layouts = paginator.page(page_number)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        layouts = paginator.page(1)
     except EmptyPage:
-        user_layouts = paginator.page(paginator.num_pages)
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        layouts = paginator.page(paginator.num_pages)
 
-    context = {
-        'layouts': user_layouts,
-    }
-
-    return render(request, "layout-library.html", context)
+    return render(request, 'layout-library.html', {'layouts': layouts})
 
 
 # %******************** Settings Pages ****************************%
