@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from .models import StyleSettings
+from .models import StyleSettings, DefaultStyleSettings
 
 from django import forms
 from django.forms import ModelForm
@@ -59,6 +59,34 @@ class AccountSettingsForm(forms.Form):
 class UpdateStyleSettingsForm(ModelForm):
     class Meta:
         model = StyleSettings
+        fields = ('text_decoration', 'font_type', 'font_size', 'font_color',
+                  'wall_color', 'door_color', 'furniture_color', 'window_color',
+                  'wall_width', 'door_width', 'furniture_width', 'window_width')
+        widgets = {
+            'text_decoration': forms.Select(attrs={'class': 'form-control'}),
+            'font_type': forms.Select(attrs={'class': 'form-control'}),
+            'font_size': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
+                                             'min':2, 'max':12, 'step':1}),
+            'font_color': forms.TextInput(attrs={'type': 'color'}),
+            
+            'wall_color': forms.TextInput(attrs={'type': 'color'}),
+            'door_color': forms.TextInput(attrs={'type': 'color'}),
+            'furniture_color': forms.TextInput(attrs={'type': 'color'}),
+            'window_color': forms.TextInput(attrs={'type': 'color'}),
+
+            'wall_width': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
+                                             'min':2, 'max':12, 'step':1}),
+            'door_width': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
+                                             'min':2, 'max':12, 'step':1}),
+            'furniture_width': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
+                                             'min':2, 'max':12, 'step':1}),
+            'window_width': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
+                                             'min':2, 'max':12, 'step':1}),
+        }
+
+class UpdateDefaultStyleSettingsForm(ModelForm):
+    class Meta:
+        model = DefaultStyleSettings
         fields = ('text_decoration', 'font_type', 'font_size', 'font_color',
                   'wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width')

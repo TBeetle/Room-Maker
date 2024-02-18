@@ -3,11 +3,14 @@ import subprocess
 import os
 import shutil
 from pdf2image import convert_from_path
+from django.conf import settings
 
 def conversion(file, style_settings):
 
     # Read Excel data
-    excel_data = pd.read_excel(os.path.join('..', 'uploads', 'imported_files', file))
+    excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
+    print("CALLING CONVERSION CODE:")
+    print(file)
 
     # Define LaTeX template
     latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
@@ -173,10 +176,10 @@ def conversion(file, style_settings):
         print("PDF generated successfully.")
 
         # Specify the destination folder
-        pdf_destination_folder = os.path.join('uploads', 'conversion_output', 'output.pdf')
-        tex_destination_folder = os.path.join('uploads', 'conversion_output', 'output.tex')
-        aux_destination_folder = os.path.join('uploads', 'conversion_output', 'output.aux')
-        log_destination_folder = os.path.join('uploads', 'conversion_output', 'output.log')
+        pdf_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
+        tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
+        aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
+        log_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.log')
 
         # Move the generated PDF to the destination folder
         shutil.move('output.pdf', pdf_destination_folder)
@@ -185,7 +188,7 @@ def conversion(file, style_settings):
         shutil.move('output.log', log_destination_folder)
 
         # Delete current output.png and replace with updated one
-        output_path = os.path.join('uploads', 'conversion_output', 'output.png')
+        output_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.png')
         png = convert_from_path(pdf_destination_folder)
         for i, image in enumerate(png):
             image.save(f'{output_path}', 'PNG')

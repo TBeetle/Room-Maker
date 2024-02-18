@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.text import get_valid_filename
 from shutil import copyfile
+from django.conf import settings
 
 import pandas as pd
 import os
@@ -99,9 +100,11 @@ def ImportPage(request):
                             # Read JSON into a dataframe
                             df = pd.read_json(uploaded_file_path)
 
-                        # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx
+                        # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx, relative to MEDIA_ROOT
                         excel_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, converted_filename)
+                        print("Path to new Excel workbook:" + excel_filepath)
                         df.to_excel(excel_filepath, index=False)
+                        
 
                         # Update UploadedFile with new converted Excel File
                         with open(excel_filepath, 'rb') as excel_file:
@@ -314,13 +317,14 @@ def EditLayoutStylePage(request, layout_id):
 from .forms import UpdateStyleSettingsForm
 from django.shortcuts import render, get_object_or_404, redirect
 
+
+# Allows user to update the styling of a specific layout
 @login_required(login_url="login")
 def EditLayoutStylePage(request, layout_id):
     
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     style_settings_instance = layout.style_settings 
 
-    # TODO - Ensure that saving the form will update the associated style_settings model
     if request.method == "POST":
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
         if form.is_valid():
@@ -350,10 +354,15 @@ def LayoutLibraryPage(request):
 
     # Paginate by a maximum of 9 layouts at a time
     paginator = Paginator(user_layouts, 9) 
-    page = request.GET.get('page')
+
+    page_number = request.GET.get('page')
     try:
+        user_layouts = paginator.page(page_number)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
         user_layouts = paginator.page(1)
     except EmptyPage:
+        # If page is out of range, deliver last page of results
         user_layouts = paginator.page(paginator.num_pages)
 
     context = {
@@ -368,11 +377,33 @@ def LayoutLibraryPage(request):
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import redirect
-from .forms import AccountSettingsForm
+from .forms import AccountSettingsForm, UpdateDefaultStyleSettingsForm
 
+# Settings page allowing user to update their Default Style Settings
 @login_required(login_url="login")
 def SettingsPage(request):
-    context = {}
+
+    # Get user-specific DefaultStyleSettings
+    style_settings_instance = get_object_or_404(DefaultStyleSettings, user=request.user)
+
+    if request.method == 'POST':
+        form = UpdateDefaultStyleSettingsForm(request.POST, instance=style_settings_instance)
+        if form.is_valid(): 
+            form.save()
+            messages.success(request, "Style settings have been updated.")
+            return render(request, "default-style-settings.html", {'form': form})
+        else:
+            messages.error(request, "Style settings have not been applied.")
+
+    else:
+        # Pre-populate the form with user's current style settings
+        form = UpdateDefaultStyleSettingsForm(instance=style_settings_instance)
+
+    return render(request, "default-style-settings.html", {'form' : form})
+
+@login_required(login_url="login")
+def AccountSettingsPage(request):
+
     if request.method == 'POST':
         # TODO: Update form so that when a user changes their email and returns to Account Settings, it correctly previews the updated email.
         form = AccountSettingsForm(request.user, request.POST, initial={'email': request.user.email})
@@ -380,7 +411,7 @@ def SettingsPage(request):
             form.save()
             messages.success(request, "Changes have been saved.")
             updated_email = form.cleaned_data.get('email')
-            return render(request, "settings.html", {'form': form, 'updated_email': updated_email})
+            return render(request, "account-settings.html", {'form': form, 'updated_email': updated_email})
         else:
             print(form.errors)
             messages.error(request, 'Changes not saved.')
@@ -388,21 +419,7 @@ def SettingsPage(request):
         # pre-populate the form with the currently logged-in user's email address upon GET request
         form = AccountSettingsForm(request.user, initial={'email': request.user.email})
 
-    return render(request, "settings.html", {'form' : form})
-
-@login_required(login_url="login")
-def StyleSettingsPage(request):
-    # Retrieve user-specific default layout settings
-    default_style_settings = DefaultStyleSettings.objects.get_or_create(user=request.user)
-
-    #TODO: Handle form submission for user to update their default layout settings
-    # if request.method == 'POST':
-        # form = DefaultStyleSettingsForm(request.POST, instance=default_style_settings)
-        # if form.is_valid():
-        #    form.save()
-        #    return redirect('settings') # Redirect to settings page after editing
-
-    return render(request, "style-settings.html")
+    return render(request, "account-settings.html", {'form': form})
 
 # %******************** User Registration ****************************%
 
