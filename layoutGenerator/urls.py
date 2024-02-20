@@ -32,7 +32,10 @@ urlpatterns = [
     path("edit-layout/", views.EditLayoutStylePage, name="edit-layout"),
     path("accounts/logout/", views.LogoutPage, name='logout'),
     path('layout-library/', views.LayoutLibraryPage, name="layout-library"),
-    path('settings', views.SettingsPage, name='settings')]
+    path('settings', views.SettingsPage, name='settings'),
+    path('forgot-password/', views.ForgotPassword, name='forgot-password'),
+    path('reset-password/<uidb64>/<token>/', views.ResetPassword, name='reset-password'),
+]
 
 # Support serving PNG images in django app
 urlpatterns += [path('serve-image/<path:image_path>/', views.serve_image, name='serve-image')]
