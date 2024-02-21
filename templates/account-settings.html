@@ -66,37 +66,6 @@
 
     
 </style>
-<script>
-    // Javascript for switching the 2 views between settings page:
-    //  Default Style Settings & Account Settings
-    document.addEventListener("DOMContentLoaded", function() {
-        const accountSettingsTab = document.getElementById("accountSettingsTab");
-        const defaultStyleSettingsTab = document.getElementById("defaultStyleSettingsTab");
-        const accountSettingsContent = document.getElementById("accountSettings");
-        const defaultStyleSettingsContent = document.getElementById("defaultStyleSettings");
-        const saveChangesButton = document.getElementById("saveChangesButton");
-
-        accountSettingsTab.addEventListener("click", function() {
-            accountSettingsTab.classList.add("active");
-            defaultStyleSettingsTab.classList.remove("active");
-            accountSettingsContent.classList.remove("d-none");
-            defaultStyleSettingsContent.classList.add("d-none");
-        });
-
-        defaultStyleSettingsTab.addEventListener("click", function() {
-            accountSettingsTab.classList.remove("active");
-            defaultStyleSettingsTab.classList.add("active");
-            accountSettingsContent.classList.add("d-none");
-            defaultStyleSettingsContent.classList.remove("d-none");
-        });
-    });
-
-    // Make sure that StyleSettings are the primary view when the page loads
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("accountSettings").classList.add("d-none");
-    })
-</script>
-
 {% endblock %}
 
 
@@ -104,37 +73,23 @@
 
     <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
             <div class="row">
-                <!--Sidebar for settings-->
-                <div class="col-3 bg-dark p-0">
-                    <div class="sidebar">
-                        <ul class="list-group mt-5" style="border-radius:0">
-                            <li class="list-group-item active" id="defaultStyleSettingsTab">Default Style Settings</li>
-                            <li class="list-group-item" id="accountSettingsTab">Account Settings</li>
-                        </ul>
-                    </div>
+              <!--Sidebar for settings-->
+              <div class="col-3 bg-dark p-0">
+                <div class="sidebar">
+                    <ul class="list-group mt-5" style="border-radius:0">
+                        <li class="list-group-item" id="defaultStyleSettingsTab">
+                            <a class='nav-link' href="{% url 'settings' %}">Default Style Settings</a>
+                        </li>
+                        <li class="list-group-item active" id="accountSettingsTab">
+                            <a class='nav-link' href="{% url 'account-settings' %}">Account Settings</a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
 
-                <!--Settings main content-->
+                <!--Account Settings main content-->
                 <div class="col">
-                    <!--Default Style Settings-->
-                    <div class="p-5" id="defaultStyleSettings">
-                            <h1 class="display-5 fw-bold">Default Style Settings</h1>
-                            <hr>
-    
-                            <label for="wallThickness">Wall Thickness:</label>
-                            <input type="range" id="wallThickness" min="1" max="20" value="2" disabled>
-                            <br>
-                            <label for="wallColor">Wall Color:</label>
-                            <input type="color" id="wallColor" value="#000" disabled>
-                            <br>
-                            <label for="furnitureColor">Furniture Color:</label>
-                            <input type="color" id="furnitureColor" value="#ccc" disabled>
-                            <br>
-                            <label for="windowColor">Window Color:</label>
-                            <input type="color" id="windowColor" value="#ccc" disabled>
-                    </div>
-
-                    <!--Account Settings-->
+                    
                     <div class="p-5" id="accountSettings">
                         <h1 class="display-5 fw-bold">Account Settings</h1>
                         <hr>
@@ -171,9 +126,10 @@
                                 
                             </div>
                         </form>
-                        
                     </div>
+
                 </div>
+
             </div>
         
     </div>

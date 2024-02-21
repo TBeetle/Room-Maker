@@ -30,7 +30,8 @@ urlpatterns = [
     path("", RedirectView.as_view(url="import/", permanent=True)),
     path("accounts/logout/", views.LogoutPage, name='logout'),
     path('layout-library/', views.LayoutLibraryPage, name="layout-library"),
-    path('settings', views.SettingsPage, name='settings'),
+    path('default-style-settings/', views.SettingsPage, name='settings'),
+    path('account-settings/', views.AccountSettingsPage, name='account-settings'),
     path('forgot-password/', views.ForgotPassword, name='forgot-password'),
     path('reset-password/<uidb64>/<token>/', views.ResetPassword, name='reset-password'),
 ]
