@@ -5,31 +5,40 @@
 {% block content %}
 
 <header class="py-5">
-    <div class="container px-lg-5">
-        <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
+    <h1 class="display-5 fw-bold" style="text-align: center; color:#468ce9;padding-top: 10px;">LaTeX File Generator</h1>
+    <div class="container px-lg-5" style="padding: 60px;">
+        <div class="p-4 p-lg-5 bg-light rounded-3 text-center" id="drop-zone" style="border: 2px dashed #ccc; max-width: 800px; margin: 0 auto;">
             <div class="m-4 m-lg-5">
-                <h1 class="display-5 fw-bold">Upload File:</h1>
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3 mt-4 text-center">
-                        <input type="file" class="form-control" id="formFile" name="uploaded_file">
-                    </div>
+                        <input type="file" class="form-control" id="formFile" name="uploaded_file" style="display: none;">
+                        <label for="formFile" id="file-label"></label>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('formFile').click();">Upload</button>
+                        <br>
+                        
+                        <div style="padding-top: 5px;">
+                            <span style="color: gray;">Or drop file here</span>
+                        </div>
+                    </div>                    
                     {% if messages %}
                         <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
-                    <input type="submit" class="btn btn-primary btn-lg upload-file-btn" value="CONVERT">
-                </form>
+                </div>
             </div>
-        </div>
+            <div class="text-center" style="padding-top: 45px;">
+                <input type="submit" class="btn btn-primary btn-lg upload-file-btn" value="Convert" style="background-color: #468ce9;">
+            </div>
+                </form>
     </div>
 </header>
 
 
-<section class=" py-4">
+<section class="py-4" style="margin-top: -100px;">
     <div class="container px-lg-5">
         <div class="download-sample-files text-center">
             <p class="mb-2">Download sample file formats:</p>
@@ -41,5 +50,51 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dropZone = document.querySelector("#drop-zone"); // Select the drop zone div
+        const fileInput = document.querySelector("#formFile"); // Select the file input element
+        const fileLabel = document.querySelector("#file-label"); // Select the file label element
+
+        // Function to handle file drop
+        function handleFileDrop(event) {
+            event.preventDefault(); // Prevent default behavior
+            const files = event.dataTransfer.files; // Get the dropped files
+            if (files.length > 0) {
+                fileInput.files = files; // Update the file input with the dropped files
+                fileLabel.textContent = files[0].name; // Update the file label to display the selected file name
+            }
+            dropZone.classList.remove("dragover"); // Remove the dragover class
+        }
+
+        // Event listeners for drag and drop events
+        dropZone.addEventListener("dragover", function(event) {
+            event.preventDefault(); // Prevent default behavior
+            dropZone.classList.add("dragover"); // Add dragover class to visually indicate drop zone
+        });
+
+        dropZone.addEventListener("dragenter", function(event) {
+            event.preventDefault(); // Prevent default behavior
+            dropZone.classList.add("dragover"); // Add dragover class to visually indicate drop zone
+        });
+
+        dropZone.addEventListener("dragleave", function(event) {
+            event.preventDefault(); // Prevent default behavior
+            dropZone.classList.remove("dragover"); // Remove dragover class when leaving drop zone
+        });
+
+        dropZone.addEventListener("drop", handleFileDrop); // Add event listener for file drop
+
+        // Optional: Add click event listener to trigger file input click
+        fileLabel.addEventListener("click", function() {
+            fileInput.click();
+        });
+    });
+</script>
+
+</body>
+</html>
+
 
 {% endblock %}

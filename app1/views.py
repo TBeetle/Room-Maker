@@ -56,11 +56,15 @@ def ImportPage(request):
                 uploaded_file = request.FILES["uploaded_file"]
                 username = request.user.username
 
-                # File extension validation:
+                # File extension and file name validation:
                 file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
                 valid_extensions = ['xlsx', 'json', 'csv']
+                uploaded_files_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username)
+                file_path = os.path.join(uploaded_files_path, uploaded_file.name)
                 if file_extension not in valid_extensions:
                     messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
+                elif os.path.exists(file_path):
+                    messages.info(request, "File with the same name already exists. Please choose a different file name.")
                 else:
 
                     # Rename file to have no spaces
@@ -348,28 +352,20 @@ def EditLayoutStylePage(request, layout_id):
 
 @login_required(login_url="login")
 def LayoutLibraryPage(request):
-
-    # Get user's created layouts
     user_layouts = ConvertedFile.objects.filter(user=request.user).order_by('-created_at')
-
-    # Paginate by a maximum of 9 layouts at a time
-    paginator = Paginator(user_layouts, 9) 
+    paginator = Paginator(user_layouts, 9)  # Show 3 layouts per page
 
     page_number = request.GET.get('page')
     try:
-        user_layouts = paginator.page(page_number)
+        layouts = paginator.page(page_number)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        user_layouts = paginator.page(1)
+        layouts = paginator.page(1)
     except EmptyPage:
-        # If page is out of range, deliver last page of results
-        user_layouts = paginator.page(paginator.num_pages)
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        layouts = paginator.page(paginator.num_pages)
 
-    context = {
-        'layouts': user_layouts,
-    }
-
-    return render(request, "layout-library.html", context)
+    return render(request, 'layout-library.html', {'layouts': layouts})
 
 
 # %******************** Settings Pages ****************************%
