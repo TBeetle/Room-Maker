@@ -83,9 +83,9 @@
             \node[gray, left] at (-12,\i) {\SI{\value}{\inch}};
         }
 
-        \node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (26.0,34.5) {};
+        \node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (26,34.5) {};
 \node[furniture-label] at (table.center) {TABLE};
-\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (30.0,80.0) {};
+\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (30,80.0) {};
 \node[furniture-label] at (table.center) {TABLE};
 \draw[wall, line cap=round] (0.00,0.00) -- (0.00,100.00) coordinate (c);
 \draw[wall, line cap=round] (0.00,100.00) -- (50.00,100.00) coordinate (c);
@@ -94,9 +94,9 @@
 \draw[wall, line cap=round] (100.00,125.00) -- (100.00,75.00) coordinate (c);
 \draw[wall, line cap=round] (100.00,75.00) -- (100.00,75.00) coordinate (c);
 \draw[window, line cap=round] (100.00,75.00) -- (100.00,25.00) coordinate (c);
-\draw[window, line cap=round] (100.00,25.00) -- (50.00,30.00) coordinate (c);
-\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (50.0,30.0) {};
-\node[furniture-label] at (table.center) {TABLE};
+\draw[window, line cap=round] (100.00,25.00) -- (100.00,25.00) coordinate (c);
+\draw[wall, line cap=round] (100.00,25.00) -- (100.00,0.00) coordinate (c);
+\draw[wall, line cap=round] (100.00,0.00) -- (0.00,0.00) coordinate (c);
 
 
         \end{tikzpicture}
