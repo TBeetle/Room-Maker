@@ -228,42 +228,46 @@ def download_sample_json(request):
 
 # %******************** Export File Page ****************************%
 
-def download_pdf(request):
-    file_path = os.path.join('uploads', 'conversion_output', 'output.pdf')  # Make sure the file exists and this path is correct
+def download_pdf(request, layout_id):
+    layout = get_object_or_404(ConvertedFile, id=layout_id)
+    file_path = layout.pdf_file
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename=output.pdf'
+            response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
             return response
     else:
         return HttpResponse("File not found", status=404)
 
-def download_tex(request):
-    file_path = os.path.join('uploads', 'conversion_output', 'output.tex')  # Update this path to your .tex file
+def download_tex(request, layout_id):
+    layout = get_object_or_404(ConvertedFile, id=layout_id)
+    file_path = layout.latex_file
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/x-tex')
-            response['Content-Disposition'] = 'attachment; filename=output.tex'
+            response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
             return response
     else:
         return HttpResponse("File not found", status=404)
 
-def download_zip(request):
-    pdf_path = os.path.join('uploads', 'conversion_output', 'output.pdf')  # Path to your PDF file
-    tex_path = os.path.join('uploads', 'conversion_output', 'output.tex')  # Path to your Tex file
+def download_zip(request, layout_id):
+    layout = get_object_or_404(ConvertedFile, id=layout_id)
+    pdf_path = layout.pdf_file
+    tex_path = layout.latex_file
 
     # Check if both files exist
     if os.path.exists(pdf_path) and os.path.exists(tex_path):
         # Create a zip file
-        zip_file_path = os.path.join('uploads', 'conversion_output', 'output.zip')
+        zip_file_path = os.path.join('uploads', 'conversion_output', f'{layout_id}.zip')
         with zipfile.ZipFile(zip_file_path, 'w') as zipf:
             zipf.write(pdf_path, os.path.basename(pdf_path))
             zipf.write(tex_path, os.path.basename(tex_path))
 
         # Serve the zip file for download
         with open(zip_file_path, 'rb') as zip_file:
+            zip_file_name = os.path.basename(pdf_path).replace('.pdf', '') + '.zip'
             response = HttpResponse(zip_file.read(), content_type='application/zip')
-            response['Content-Disposition'] = 'attachment; filename=output.zip'
+            response['Content-Disposition'] = f'attachment; filename={zip_file_name}'
             return response
     else:
         return HttpResponse("One or more files not found", status=404)
@@ -513,6 +517,4 @@ def ResetPassword(request, uidb64, token):
         return redirect('login')  # Redirect to login page
 
     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
-
-
 

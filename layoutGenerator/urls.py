@@ -44,9 +44,9 @@ urlpatterns += [
     path('download/sample_excel/', views.download_sample_excel, name="download-sample-excel"),
     path('download/sample_csv/', views.download_sample_csv, name="download-sample-csv"),
     path('download/sample_json/', views.download_sample_json, name="download-sample-json"),
-    path('download/pdf', views.download_pdf, name='download-pdf'),
-    path('download/tex', views.download_tex, name='download-tex'),
-    path('download/zip', views.download_zip, name='download-zip'),
+    path('download/pdf/<int:layout_id>', views.download_pdf, name='download-pdf'),
+    path('download/tex/<int:layout_id>', views.download_tex, name='download-tex'),
+    path('download/zip/<int:layout_id>', views.download_zip, name='download-zip'),
 ]
 
 # Map to a layout's unique ID to a view function rendering idvl export page
