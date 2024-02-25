@@ -71,67 +71,76 @@
 
 {% block content %}
 
-    <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
-            <div class="row">
-              <!--Sidebar for settings-->
-              <div class="col-3 bg-dark p-0">
-                <div class="sidebar">
-                    <ul class="list-group mt-5" style="border-radius:0">
-                        <li class="list-group-item" id="defaultStyleSettingsTab">
-                            <a class='nav-link' href="{% url 'settings' %}">Default Style Settings</a>
-                        </li>
-                        <li class="list-group-item active" id="accountSettingsTab">
-                            <a class='nav-link' href="{% url 'account-settings' %}">Account Settings</a>
-                        </li>
-                    </ul>
-                </div>
+<div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
+    <div class="row">
+        <!--Sidebar for settings-->
+        <div class="col-3 bg-dark p-0">
+            <div class="sidebar">
+                <ul class="list-group mt-5" style="border-radius:0">
+                    <li class="list-group-item" id="defaultStyleSettingsTab">
+                        <a class='nav-link' href="{% url 'settings' %}">Default Style Settings</a>
+                    </li>
+                    <li class="list-group-item active" id="accountSettingsTab">
+                        <a class='nav-link' href="{% url 'account-settings' %}">Account Settings</a>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-                <!--Account Settings main content-->
-                <div class="col">
-                    
-                    <div class="p-5" id="accountSettings">
-                        <h1 class="display-5 fw-bold">Account Settings</h1>
-                        <hr>
-                        {% if messages %}
-                                    <div class="alert alert-success" role="alert">
-                                        <ul>
-                                            {% for message in messages %}
-                                                <li>{{ message }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-5">
-                                <label for="email" class="form-label bold-label" placeholder="{{ updated_email }}"><b>Email:</b></label>
-                                {{ form.email }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="inputPassword1" class="form-label bold-label"><b>Enter new password:</b></label>
-                                {{ form.inputPassword1 }}
-                            </div>
-                            <div class="mb-5">
-                                <label for="inputPassword2" class="form-label bold-label"><b>Confirm changes:</b></label>
-                                {{ form.inputPassword2 }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label bold-label"><b>Confirm current password to save changes:</b></label>
-                                {{ form.currentPassword }}
-                            </div>
-
-                            <div class="mb-3 align-items-right">
-                                <button type="submit" id="saveChangesButton" class="btn btn-primary">Save Changes</button>
-                                
-                            </div>
-                        </form>
+        <!--Account Settings main content-->
+        <div class="col">
+            <div class="p-5" id="accountSettings">
+                <h1 class="display-5 fw-bold">Account Settings</h1>
+                <hr>
+                {% if messages %}
+                    <div class="alert alert-success" role="alert">
+                        <ul>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
-
-                </div>
-
+                {% endif %}
+                <form method="post" class="account-settings">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label bold-label"><b>Email:</b></label>
+                        {{ form.email }}
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPassword1" class="form-label bold-label"><b>Enter new password:</b></label>
+                        {{ form.new_password1 }}
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPassword2" class="form-label bold-label"><b>Confirm new password:</b></label>
+                        {{ form.new_password2 }}
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label bold-label"><b>Enter current password:</b></label>
+                        {{ form.old_password }}
+                        
+                    </div>
+                
+                    <div class="mb-3 align-items-right">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                    
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </form>
             </div>
-        
+        </div>
     </div>
+</div>
 
 {% endblock %}
