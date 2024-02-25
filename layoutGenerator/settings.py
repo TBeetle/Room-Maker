@@ -138,6 +138,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Define BASE_DIR as the directory containing settings.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Set up project to store uploaded files
 MEDIA_URL = "/uploads/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")

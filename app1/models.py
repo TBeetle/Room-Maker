@@ -116,10 +116,34 @@ class StyleSettings(models.Model):
 # Stores default style settings for users, providing defaults for each layout they generate
 class DefaultStyleSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+    # Allowed text decoration
+    NO_DECORATION = 'none'
+    BOLD = 'bold'
+    UNDERLINE = 'underline'
+    ITALICS = 'italics'
+
+    TEXT_DECORATION_CHOICES = [
+        (NO_DECORATION, 'None'),
+        (BOLD, 'Bold'),
+        (UNDERLINE, 'Underline'),
+        (ITALICS, 'Italicize'),
+    ]
+
+    # Allowed fonts
+    DEFAULT = 'Default'
+    TIMES_NEW_ROMAN = 'Times New Roman'
+    ARIAL = 'Arial'
+
+    FONT_CHOICES = [
+        (DEFAULT, 'Default'),
+        (TIMES_NEW_ROMAN, 'Times New Roman'),
+        (ARIAL, 'Arial'),
+    ]
 
     # Text labels
-    text_decoration = models.CharField(max_length=255, default="")  # Allowed values: bold, italicized, underlined
-    font_type = models.CharField(max_length=255) # Font type; TODO get default value
+    text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
+    font_type = models.CharField(max_length=56, default=DEFAULT, choices=FONT_CHOICES) # Font type
     font_size = models.IntegerField() # TODO: Set default
     font_color = models.CharField(max_length=7, default="#FFFFFF")
 

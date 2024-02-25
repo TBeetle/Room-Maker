@@ -16,17 +16,18 @@
                         <label for="formFile" id="file-label"></label>
                         <button type="button" class="btn btn-secondary" onclick="document.getElementById('formFile').click();">Upload</button>
                         <br>
-
+     
                         <div style="padding-top: 5px;">
                             <span style="color: gray;">Or drop file here</span>
                         </div>
-                    </div>
+                    </div>                    
                     {% if messages %}
                         <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                  
                     {% endif %}
                 </div>
             </div>
