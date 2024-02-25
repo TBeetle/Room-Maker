@@ -5,7 +5,7 @@
 {% block content %}
 
 <header class="py-5">
-    <h1 class="display-5 fw-bold" style="text-align: center; color:#468ce9;padding-top: 10px;">LaTeX File Generator</h1>
+    <h1 class="display-5 fw-bold" style="text-align: center; padding-top: 10px;">LaTeX File Generator</h1>
     <div class="container px-lg-5" style="padding: 60px;">
         <div class="p-4 p-lg-5 bg-light rounded-3 text-center" id="drop-zone" style="border: 2px dashed #ccc; max-width: 800px; margin: 0 auto;">
             <div class="m-4 m-lg-5">
@@ -93,6 +93,32 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.querySelector("#formFile"); // Select the file input element
+        const fileLabel = document.querySelector("#file-label"); // Select the file label element
+
+        // Function to handle file selection
+        function handleFileSelection() {
+            const file = fileInput.files[0]; // Get the selected file
+            if (file) {
+                fileLabel.textContent = file.name; // Update the file label to display the selected file name
+            } else {
+                fileLabel.textContent = "No file selected"; // Display a message if no file is selected
+            }
+        }
+
+        // Event listener for file input change event
+        fileInput.addEventListener("change", handleFileSelection);
+
+        // Optional: Add click event listener to trigger file input click
+        fileLabel.addEventListener("click", function() {
+            fileInput.click();
+        });
+    });
+</script>
+
 
 </body>
 </html>
