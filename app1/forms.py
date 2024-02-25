@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from .models import StyleSettings, DefaultStyleSettings
+from .models import StyleSettings, DefaultStyleSettings, ConvertedFile
 
 from django import forms
 from django.forms import ModelForm
@@ -54,6 +54,27 @@ class AccountSettingsForm(forms.Form):
     class Meta:
         model = User
         fields = ('email',)
+
+class UpdateFileNameForm(ModelForm):
+    new_file_name = forms.CharField(label='New file name', max_length=48, required=False)
+
+    class Meta:
+        model = ConvertedFile
+        fields = ['new_file_name']
+
+    def clean_new_file_name(self):
+        new_file_name = self.cleaned_data['new_file_name']
+        # Cleaning data:
+        new_file_name = new_file_name.replace(' ', '_')
+        # Extract filename prefix without extension
+        if '.' in new_file_name:
+            new_file_name = new_file_name.split('.')[0]
+        # Check unique filename
+        user_files = ConvertedFile.objects.filter(user=self.instance.user)
+        if user_files.filter(file_name=new_file_name).exists():
+            raise forms.ValidationError("File name must be unique")
+
+        return new_file_name
 
 
 class UpdateStyleSettingsForm(ModelForm):

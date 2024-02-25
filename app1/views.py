@@ -16,6 +16,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSettings
 from django.shortcuts import HttpResponse
+from django.http import HttpResponseNotFound
 import zipfile
 import app1.latex_conversion as lc
 import six
@@ -272,25 +273,59 @@ def download_zip(request, layout_id):
     else:
         return HttpResponse("One or more files not found", status=404)
 
+from .forms import UpdateFileNameForm
+
+from shutil import move
 
 @login_required(login_url="login")
 def ExportPage(request, layout_id):
     # Retreive layout based on layout id
     layout = ConvertedFile.objects.get(id=layout_id)
+    print("layout name: " + layout.file_name)
+    print("pdf file: " + layout.pdf_file)
+
+    if request.method == 'POST':
+        update_file_name_form = UpdateFileNameForm(request.POST, instance=layout)
+        if update_file_name_form.is_valid():
+            new_file_name = update_file_name_form.cleaned_data['new_file_name']
+            old_file_name = layout.file_name
+            layout.file_name = new_file_name
+            layout.save()
+
+            # rename associated files in user's uploaded file directory
+            user_directory = os.path.join(settings.MEDIA_ROOT, 'imported_files', request.user.username)
+            for file_extension in ['.pdf', '.tex', '.png', '.xlsx']:
+                old_file_path = os.path.join(user_directory, f"{old_file_name}{file_extension}")
+                new_file_path = os.path.join(user_directory, f"{new_file_name}{file_extension}")
+                if os.path.exists(old_file_path):
+                    move(old_file_path, new_file_path)
+            
+            # update database for associated files
+
+            print("File name updated successfully")
+            return redirect('export-layout', layout.id)
+    else:
+        update_file_name_form = UpdateFileNameForm(instance=layout, initial={'new_file_name': layout.file_name})
+
     context = {
         'layout': layout,
+        'update_file_name_form': update_file_name_form,
     }
-    return render(request, "export.html", context)
+    return render(request, 'export.html', context)
 
 # Support view for serving images through Django instead of directly through file system
 def serve_image(request, image_path):
     absolute_path = os.path.join(settings.MEDIA_ROOT, image_path)
-    # Open the image file in binary
-    with open(absolute_path, 'rb') as f:
-        image_data = f.read()
-    content_type = 'image/png' # Set content type as .png image for HTTP response
-    # Create HTTP response with image data and content type
-    return HttpResponse(image_data, content_type=content_type)
+    try:
+        # Open the image file in binary
+        with open(absolute_path, 'rb') as f:
+            image_data = f.read()
+        content_type = 'image/png' # Set content type as .png image for HTTP response
+        # Create HTTP response with image data and content type
+        return HttpResponse(image_data, content_type=content_type)
+    except FileNotFoundError:
+            # Handle the case where the file is not found
+            return HttpResponseNotFound("Image not found")
 
 # %******************** Edit Styling of Layout Page ****************************%
 
@@ -433,8 +468,13 @@ def RegisterPage(request):
             messages.info(request, "Passwords do not match!")
             # return HttpResponse("Passwords do not match!")
         else:
+            # Create a new user
             my_user = User.objects.create_user(uname, email, pass1)
             my_user.save()
+            # create new default style settings
+            default_style_settings = DefaultStyleSettings(user=my_user)
+            default_style_settings.save()
+
             return redirect('login')
         # print(uname, email, pass1, pass2)
 

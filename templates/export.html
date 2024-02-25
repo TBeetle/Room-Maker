@@ -72,9 +72,21 @@
                     <button type="button" class="btn btn-md btn-secondary float-end"><a href="{% url 'edit-layout' layout.id %}" style="color:inherit">Edit Style ></a></button>
                 </div>
 
+                <!-- Form for user to update file name-->
                 <div class="mb-3 p-3 text-start">
-                    <label for="fileNameInput" class="form-label">File Name:</label>
-                    <input type="text" class="form-control" id="fileNameInput" placeholder="{{ layout.file_name }}.tex">
+                    <form method="post" id="updateFileNameForm">
+                        <div class="row">
+                            {% csrf_token %}
+                            <label for="id_new_file_name", class="form-label"><b>File name:</b></label>
+                            {{ update_file_name_form.new_file_name }}
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col text-end">
+                                <button type="submit" class="btn btn-primary btn-sm" style="width:40%">Save Name Changes</button>
+                            </div>
+                        </div>
+                    
+                    </form>
                 </div>
 
                 <div class="mt-3 mb-3 p-3">

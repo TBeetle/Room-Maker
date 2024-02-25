@@ -144,7 +144,7 @@ class DefaultStyleSettings(models.Model):
     # Text labels
     text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
     font_type = models.CharField(max_length=56, default=DEFAULT, choices=FONT_CHOICES) # Font type
-    font_size = models.IntegerField() # TODO: Set default
+    font_size = models.IntegerField(default=2) # TODO: Set defaults
     font_color = models.CharField(max_length=7, default="#FFFFFF")
 
     # Colors using hex <#FFFFFF>
@@ -154,10 +154,10 @@ class DefaultStyleSettings(models.Model):
     window_color = models.CharField(max_length=7, default="#FFFFFF")
 
     # Boundary widths
-    wall_width = models.IntegerField()
-    door_width = models.IntegerField()
-    furniture_width = models.IntegerField()
-    window_width = models.IntegerField()
+    wall_width = models.IntegerField(default=2)
+    door_width = models.IntegerField(default=2)
+    furniture_width = models.IntegerField(default=2)
+    window_width = models.IntegerField(default=2)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -191,6 +191,14 @@ class ConvertedFile(models.Model):
         # Set default value for file_name from uploaded_file
         if not self.file_name:
             self.file_name = self.uploaded_file.file_name
+
+        # update paths for latex_file and pdf_file if the file_name is changed
+        old_prefix = os.path.splitext(os.path.basename(self.latex_file))[0]
+        new_prefix = os.path.splitext(self.file_name)[0]
+        self.latex_file = self.latex_file.replace(old_prefix, new_prefix)
+        self.pdf_file = self.pdf_file.replace(old_prefix, new_prefix)
+        self.image = self.image.replace(old_prefix, new_prefix)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
