@@ -436,25 +436,29 @@ def SettingsPage(request):
 
     return render(request, "default-style-settings.html", {'form' : form})
 
+# %******************* Account Settings ****************************%
+
+from django.contrib.auth import update_session_auth_hash
+from .forms import AccountSettingsForm
+
 @login_required(login_url="login")
 def AccountSettingsPage(request):
-
+    user = request.user
     if request.method == 'POST':
-        # TODO: Update form so that when a user changes their email and returns to Account Settings, it correctly previews the updated email.
-        form = AccountSettingsForm(request.user, request.POST, initial={'email': request.user.email})
+        form = AccountSettingsForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Changes have been saved.")
-            updated_email = form.cleaned_data.get('email')
-            return render(request, "account-settings.html", {'form': form, 'updated_email': updated_email})
-        else:
-            print(form.errors)
-            messages.error(request, 'Changes not saved.')
+            old_password = form.cleaned_data.get('old_password')
+            new_password = form.cleaned_data.get('new_password1')
+            if old_password and new_password:
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Password updated successfully.')
+            messages.success(request, 'Account settings updated successfully.')
     else:
-        # pre-populate the form with the currently logged-in user's email address upon GET request
-        form = AccountSettingsForm(request.user, initial={'email': request.user.email})
-
-    return render(request, "account-settings.html", {'form': form})
+        form = AccountSettingsForm(instance=user)
+    return render(request, 'account-settings.html', {'form': form})
 
 # %******************** User Registration ****************************%
 
@@ -462,11 +466,23 @@ def RegisterPage(request):
     if request.method=='POST':
         uname = request.POST.get('username')
         email = request.POST.get('email')
+        email = email.lower()
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
-        if pass1 != pass2:
+        # Check if any field is empty
+        if not uname or not email or not pass1 or not pass2:
+            messages.error(request, 'All fields are required.')
+
+        # Check if email or username is already in use
+        elif User.objects.filter(username=uname).exists():
+            messages.error(request, 'Username is already in use.')
+
+        elif User.objects.filter(email=email.lower()).exists():
+            messages.error(request, 'Email is already in use.')
+        
+        elif pass1 != pass2:
             messages.info(request, "Passwords do not match!")
-            # return HttpResponse("Passwords do not match!")
+
         else:
             # Create a new user
             my_user = User.objects.create_user(uname, email, pass1)
@@ -557,4 +573,3 @@ def ResetPassword(request, uidb64, token):
         return redirect('login')  # Redirect to login page
 
     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
-
