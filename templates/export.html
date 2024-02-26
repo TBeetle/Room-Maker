@@ -104,7 +104,15 @@
             </div>
             <p class="mt-3 btn-group-subtext"></p><img src="{{ layout.image }}" alt="View in browser" onclick="viewImageInBrowser('{{ layout.image }}')" style="color: #0000EE"></p>
         </div>
-    
+          <!-- Inserted Delete Button -->
+          <div class="mt-3">
+            <form action="{% url 'delete_layout_test' layout.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-lg btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
 {% endblock %}

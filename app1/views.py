@@ -9,6 +9,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.text import get_valid_filename
 from shutil import copyfile
 from django.conf import settings
+from django.urls import reverse
+
 
 import pandas as pd
 import os
@@ -17,6 +19,7 @@ from django.conf import settings
 from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSettings
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseNotFound
+from django.http import HttpResponseRedirect
 import zipfile
 import app1.latex_conversion as lc
 import six
@@ -583,3 +586,16 @@ def ResetPassword(request, uidb64, token):
         return redirect('login')  # Redirect to login page
 
     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
+
+# %******************** Delete button ****************************%
+@login_required(login_url="login")
+def delete_layout_test(request, layout_id):
+    try:
+        layout = ConvertedFile.objects.get(id=layout_id, user=request.user)  # Ensure the user can only delete their own layouts
+        layout.delete()
+        messages.success(request, "Layout deleted successfully.")
+    except ConvertedFile.DoesNotExist:
+        messages.error(request, "Layout not found.")
+    except Exception as e:
+        messages.error(request, "Error deleting layout: %s" % e)
+    return HttpResponseRedirect(reverse('layout-library'))
