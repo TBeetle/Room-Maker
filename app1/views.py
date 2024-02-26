@@ -473,6 +473,7 @@ def AccountSettingsPage(request):
     return render(request, 'account-settings.html', {'form': form})
 
 # %******************** User Registration ****************************%
+import re
 
 def RegisterPage(request):
     if request.method=='POST':
@@ -481,6 +482,7 @@ def RegisterPage(request):
         email = email.lower()
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
         # Check if any field is empty
         if not uname or not email or not pass1 or not pass2:
             messages.error(request, 'All fields are required.')
@@ -488,6 +490,9 @@ def RegisterPage(request):
         # Check if email or username is already in use
         elif User.objects.filter(username=uname).exists():
             messages.error(request, 'Username is already in use.')
+
+        elif not re.fullmatch(regex, email):
+            messages.error(request, 'Invalid email format.')
 
         elif User.objects.filter(email=email.lower()).exists():
             messages.error(request, 'Email is already in use.')
