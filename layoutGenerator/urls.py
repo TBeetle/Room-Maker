@@ -55,10 +55,7 @@ urlpatterns += [
     path('edit/<int:layout_id>', views.EditLayoutStylePage, name='edit-layout')
 ]
 
-# Delete Button
-urlpatterns += [
-    path('delete-layout-test/<int:layout_id>/', views.delete_layout_test, name='delete_layout_test'),
-]
+
 
 # Serving media files during development
 if settings.DEBUG:
