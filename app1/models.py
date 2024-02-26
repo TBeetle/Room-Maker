@@ -166,6 +166,7 @@ class ConvertedFile(models.Model):
     file_name = models.CharField(max_length=255, default="name") # Stores the PREFIX (without extension)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)   # Automatically updated to current date and time when saved
     file_path = models.CharField(max_length=255, default="NONE")
 
     # link to associated StyleSettings

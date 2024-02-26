@@ -389,22 +389,32 @@ def EditLayoutStylePage(request, layout_id):
 
 # %******************** Layout Library Page ****************************%
 
+from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import ConvertedFile
+from django.db.models import F
+
 @login_required(login_url="login")
 def LayoutLibraryPage(request):
-    user_layouts = ConvertedFile.objects.filter(user=request.user).order_by('-created_at')
-    paginator = Paginator(user_layouts, 9)  # Show 3 layouts per page
+    filter_value = request.GET.get('filter')
+    if filter_value == 'alphabetical':
+        user_layouts = ConvertedFile.objects.filter(user=request.user).order_by('file_name')
+    else:  # Default to 'last_modified'
+        user_layouts = ConvertedFile.objects.filter(user=request.user).order_by('-last_modified')
 
-    page_number = request.GET.get('page')
-    try:
-        layouts = paginator.page(page_number)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        layouts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        layouts = paginator.page(paginator.num_pages)
+    return render(request, 'layout-library.html', {'layouts': user_layouts, 'filter_value': filter_value})
 
-    return render(request, 'layout-library.html', {'layouts': layouts})
+    # paginator = Paginator(user_layouts, 9)  # Show 9 layouts per page
+
+    # page_number = request.GET.get('page')
+    # try:
+    #     layouts = paginator.page(page_number)
+    # except PageNotAnInteger:
+    #     layouts = paginator.page(1)
+    # except EmptyPage:
+    #     layouts = paginator.page(paginator.num_pages)
+
+    # return render(request, 'layout-library.html', {'layouts': layouts, 'filter_value': filter_value})
 
 
 # %******************** Settings Pages ****************************%
