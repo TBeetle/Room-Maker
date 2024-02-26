@@ -103,7 +103,16 @@
                 <button type="button" class="btn btn-lg btn-secondary"><a href="{% url 'download-zip' layout.id %}" style="color:inherit">Both</a></button>
             </div>
             <p class="mt-3 btn-group-subtext"></p><img src="{{ layout.image }}" alt="View in browser" onclick="viewImageInBrowser('{{ layout.image }}')" style="color: #0000EE"></p>
+            <!-- Inserted Delete Button -->
+            <div class="mt-3">
+                <form action="{% url 'delete_layout_test' layout.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-lg btn-danger">Delete</button>
+                </form>
+            </div>
+        
         </div>
+      </div>
     
     </div>
 
