@@ -592,6 +592,7 @@ def delete_layout_test(request, layout_id):
     try:
         layout = ConvertedFile.objects.get(id=layout_id, user=request.user)  # Ensure the user can only delete their own layouts
         layout.delete()
+        messages.success(request, "Layout deleted successfully.")
     except ConvertedFile.DoesNotExist:
         messages.error(request, "Layout not found.")
     except Exception as e:
