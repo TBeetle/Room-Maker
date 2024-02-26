@@ -145,13 +145,13 @@ class DefaultStyleSettings(models.Model):
     text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
     font_type = models.CharField(max_length=56, default=DEFAULT, choices=FONT_CHOICES) # Font type
     font_size = models.IntegerField(default=2) # TODO: Set defaults
-    font_color = models.CharField(max_length=7, default="#FFFFFF")
+    font_color = models.CharField(max_length=7, default="#000000")
 
     # Colors using hex <#FFFFFF>
-    wall_color = models.CharField(max_length=7, default="#FFFFFF")
-    door_color = models.CharField(max_length=7, default="#FFFFFF")
-    furniture_color = models.CharField(max_length=7, default="#FFFFFF")
-    window_color = models.CharField(max_length=7, default="#FFFFFF")
+    wall_color = models.CharField(max_length=7, default="#000000")
+    door_color = models.CharField(max_length=7, default="#000000")
+    furniture_color = models.CharField(max_length=7, default="#000000")
+    window_color = models.CharField(max_length=7, default="#000000")
 
     # Boundary widths
     wall_width = models.IntegerField(default=2)
