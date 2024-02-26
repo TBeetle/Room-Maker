@@ -43,18 +43,26 @@ def closest_color(requested_color):
 
 def conversion(file, layout_style):
 
-    color_name = webcolors.hex_to_rgb(layout_style.wall_color)
-    print("Color name ",color_name)
-    closet_color_name = closest_color(color_name)
-    print("Closest color name ",closet_color_name)
+    wall_color_name = webcolors.hex_to_rgb(layout_style.wall_color)
+    window_color_name = webcolors.hex_to_rgb(layout_style.window_color)
+    furniture_color_name = webcolors.hex_to_rgb(layout_style.furniture_color)
+    furniture_label_color_name = webcolors.hex_to_rgb(layout_style.font_color)
 
+
+    print("Color name ",wall_color_name)
+
+    closest_wall_color_name = closest_color(wall_color_name)
+    closest_window_color_name = closest_color(window_color_name)
+    closest_furniture_color_name = closest_color(furniture_color_name)
+    closest_furniture_label_color_name = closest_color(furniture_label_color_name)
+    print("Closest color name ",closest_wall_color_name)
+    
     # Read Excel data
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
     print("CALLING CONVERSION CODE:")
     print(file)
-
     # Define LaTeX template
-    latex_walls_template = "\\draw[wall, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(color=closet_color_name, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
+    latex_walls_template = "\\draw[wall, line width={width}pt, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=closest_wall_color_name, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
    
     # Check the number of placeholders in the string
     num_placeholders = latex_walls_template.count('{}')
@@ -64,12 +72,11 @@ def conversion(file, layout_style):
     print("Number of values:", num_values)
 
     # Define LaTeX template for furniture
-    latex_furniture_template = "\\node[furniture, rectangle, minimum width={:.2f}cm, minimum height={:.2f}cm]({}) at ({},{}) {{}};\n"
-    latex_furniture_label_template = "\\node[furniture-label] at ({}) {{{}}};\n"
-    print("check")
+    latex_furniture_template = "\\node[furniture, rectangle, minimum width={w1}cm, minimum height={h1}cm, color={color}]({a1}) at ({a2},{a3}) {{{a4}}};\n".format(w1='{:.2f}',h1='{:.2f}',color=closest_furniture_color_name,a1='{}',a2='{}',a3='{}',a4='{}')
+    latex_furniture_label_template = "\\node[furniture-label, text={color} ] at ({a1}) {a2};\n".format(color=closest_furniture_label_color_name, a1='{}', a2='{{{}}}')
 
     # Define LaTeX template for windows
-    latex_windows_template = "\\draw[window, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+    latex_windows_template = "\\draw[window,line width={width}pt, line cap=round, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=closest_window_color_name, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
 
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
