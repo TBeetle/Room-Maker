@@ -136,8 +136,8 @@ def ImportPage(request):
                     print("*** File path: " + uploaded_file_instance.file_path)
 
                     admin_user = User.objects.get(username='admin')
-                    # Query for DefaultStyleSettings where the user is admin -- TODO, update to logged in user
-                    default_styling = DefaultStyleSettings.objects.filter(user=admin_user).first()
+                    # Query for DefaultStyleSettings based on user preferences
+                    default_styling = DefaultStyleSettings.objects.filter(user=request.user).first()
 
                     # Create individual StyleSettings for layout
                     layout_style = StyleSettings(
@@ -159,11 +159,11 @@ def ImportPage(request):
                     )
                     layout_style.save()
 
-                    print("User's default style settings: " + layout_style.font_color +" size: " + layout_style.font_type)
+                    
 
                     # Call conversion code on file from /uploads/imported_files/<filename>
                     lc.conversion(uploaded_file_path, layout_style)
-                    print("Tyler Test")
+    
                     
                     # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
                     prefix_filename, _ = os.path.splitext(uploaded_file_instance.file_name)

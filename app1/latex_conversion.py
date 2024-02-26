@@ -4,8 +4,49 @@ import os
 import shutil
 from pdf2image import convert_from_path
 from django.conf import settings
+import webcolors
 
-def conversion(file, style_settings):
+xcolor_colors = {
+    'black': (0, 0, 0),
+    'blue': (0, 0, 255),
+    'brown': (165, 42, 42),
+    'cyan': (0, 255, 255),
+    'gray': (128, 128, 128),
+    'green': (0, 128, 0),
+    'lime': (0, 255, 0),
+    'magenta': (255, 0, 255),
+    'olive': (128, 128, 0),
+    'orange': (255, 165, 0),
+    'pink': (255, 192, 203),
+    'purple': (128, 0, 128),
+    'red': (255, 0, 0),
+    'teal': (0, 128, 128),
+    'violet': (238, 130, 238),
+    'white': (255, 255, 255),
+    'yellow': (255, 255, 0)
+}
+
+def closest_color(requested_color):
+    min_distance = float('inf')
+    closest_name = None
+    for name, rgb in xcolor_colors.items():
+        r_c, g_c, b_c = rgb
+        rd = (r_c - requested_color[0]) ** 2
+        gd = (g_c - requested_color[1]) ** 2
+        bd = (b_c - requested_color[2]) ** 2
+        distance = rd + gd + bd
+        if distance < min_distance:
+            min_distance = distance
+            closest_name = name
+    return closest_name
+
+
+def conversion(file, layout_style):
+
+    color_name = webcolors.hex_to_rgb(layout_style.wall_color)
+    print("Color name ",color_name)
+    closet_color_name = closest_color(color_name)
+    print("Closest color name ",closet_color_name)
 
     # Read Excel data
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
@@ -13,7 +54,7 @@ def conversion(file, style_settings):
     print(file)
 
     # Define LaTeX template
-    latex_walls_template = "\\draw[wall, line cap=round] ({:.2f},{:.2f}) -- ({:.2f},{:.2f}) coordinate (c);\n"
+    latex_walls_template = "\\draw[wall, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(color=closet_color_name, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
    
     # Check the number of placeholders in the string
     num_placeholders = latex_walls_template.count('{}')
@@ -45,7 +86,7 @@ def conversion(file, style_settings):
                 y2 = excel_data.at[index + 1, 'Y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
         elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
-            window_width = style_settings.window_width
+            window_width = layout_style.window_width
             x1 = row['X']
             y1 = row['Y']
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
