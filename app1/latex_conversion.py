@@ -78,13 +78,28 @@ def conversion(file, layout_style):
     # Define LaTeX template for windows
     latex_windows_template = "\\draw[window,line width={width}pt, line cap=round, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=closest_window_color_name, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
 
+    # Define LaTeX template for sensors
+    latex_sensor_template = "\\node[sensor](sensor) at ({s1},{s2}) {{{s3}}};\n".format(s1='{}',s2='{}',s3='{}')
+    latex_sensor_label_template = "\\node[sensor-label] at ({s1:.2f},{s2:.2f}) {{{s3} \\\\ ({s1:.2f}, {s2:.2f})}};\n"
+
+    # Define LaTeX template for cameras
+    latex_camera_template = "\\camera[rotate={c1}]({c2},{c3});\n".format(c1='{}',c2='{}',c3='{}')
+    latex_camera_label_template = "\\node[camera-label] at ({c1},{c2}) {c3};\n".format(c1='{}',c2='{}',c3='{{{}}}')
+
+    # Define LaTeX template for calibration locations
+    latex_calibration_template = "\\node[location]({l1}) at ({l2},{l3}) {{{l4}}};\n".format(l1='{}',l2='{}',l3='{}',l4='{}')
+    latex_calibration_label_template = "\\node[location-label] at ({l1}) {l2};\n".format(l1='{}',l2='{{{}}}')
+
+    # Define LaTeX template for doors
+    latex_door_template = "\\draw[door, rotate around={{{d1:.2f}:({d2:.2f},{d3:.2f})}}] ({d2:.2f},{d3:.2f}) -- ++({d4:.2f},{d5:.2f});\n"
+    
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
             x1 = row['X']
             y1 = row['Y']
-            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
+            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
                 # Use the current row's coordinates for the last wall before the furniture
                 x2 = row['X']
                 y2 = row['Y']
@@ -96,7 +111,7 @@ def conversion(file, layout_style):
             window_width = layout_style.window_width
             x1 = row['X']
             y1 = row['Y']
-            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] == 'Furniture':
+            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
                 # Use the current row's coordinates for the last window before the furniture
                 x2 = row['X']
                 y2 = row['Y']
@@ -104,6 +119,19 @@ def conversion(file, layout_style):
                 x2 = excel_data.at[index + 1, 'X']
                 y2 = excel_data.at[index + 1, 'Y']
             latex_code += latex_windows_template.format(x1, y1, x2, y2)
+        elif row['Descriptor'] == 'DOOR' and index < len(excel_data) - 1:
+            x = row['X']
+            y = row['Y']
+            door_angle = row['door_angle']
+            if(row['door_xory'] == 'x'):
+                door_x = row['door_length']
+                door_y = 0
+            elif(row['door_xory'] == 'y'):
+                door_x = 0
+                door_y = row['door_length']
+            
+            latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
+
         elif row['Type'] == 'Furniture':
             width = row['width']
             height = row['height']
@@ -112,7 +140,22 @@ def conversion(file, layout_style):
             y = row['Y']
             latex_code += latex_furniture_template.format(width, height, table_name, x, y)
             latex_code += latex_furniture_label_template.format(f"{table_name}.center", row['Descriptor'])
-    
+        elif row['Type'] == 'Sensor':
+            x = row['X']
+            y = row['Y']
+            latex_code += latex_sensor_template.format(x, y)
+            latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=row['Descriptor'])
+        elif row['Type'] == 'Camera':
+            x = row['X']
+            y = row['Y']
+            rotation = row['rotation']
+            latex_code += latex_camera_template.format(rotation, x, y)
+            latex_code += latex_camera_label_template.format(x, y, row['Descriptor'])
+        elif row['Type'] == 'Calibration':
+            x = row['X']
+            y = row['Y']
+            latex_code += latex_calibration_template.format(row['Descriptor'], x, y)
+            latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
@@ -154,12 +197,17 @@ def conversion(file, layout_style):
     \\tikzstyle{{sensor}} = [circle, draw, color=teal, fill=teal, inner sep=0.5mm]
     \\tikzstyle{{sensor-label}} = [above, yshift=2pt, fill=white, align=center, text=teal]
     \\tikzstyle{{location}} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
-    \\tikzstyle{{location-label}} = [below, yshift=-3pt, fill=white, text=violet]
+    \\tikzstyle{{location-label}} = [above, yshift=3pt, fill=white, text=violet]
     \\tikzstyle{{walking-path}} = [densely dashed, line width=0.25mm, -{{Stealth[length=4mm, width=2mm]}}]
     \\tikzstyle{{nav-arrow}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, green!60!black]
     \\tikzstyle{{nav-arrow2}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, violet]
+    
+    \\def\camera[#1](#2,#3){{
+	    \\node[circle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, anchor=center, #1] at (#2,#3) {{}};
+	    \\node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {{}}
+     }}
 
-    \\tikzstyle{{camera-label}} = [fill=white, text=blue!75!black]
+    \\tikzstyle{{camera-label}} = [fill=white, align=center, text=blue!75!black, above, yshift=5pt]
 
     % units
     \\usepackage{{siunitx}}
@@ -200,7 +248,7 @@ def conversion(file, layout_style):
             \\node[gray, left] at (-12,\\i) {{\\SI{{\\value}}{{\\inch}}}};
         }}
 
-        {latex_code}
+{latex_code}
 
         \\end{{tikzpicture}}
     \\end{{figure}}
@@ -228,13 +276,16 @@ def conversion(file, layout_style):
         tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
         aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
         log_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.log')
-
+        
         # Move the generated PDF to the destination folder
-        shutil.move('output.pdf', pdf_destination_folder)
-        shutil.move('output.tex', tex_destination_folder)
-        shutil.move('output.aux', aux_destination_folder)
-        shutil.move('output.log', log_destination_folder)
-
+        try:
+            shutil.move('output.pdf', pdf_destination_folder)
+            shutil.move('output.tex', tex_destination_folder)
+            shutil.move('output.aux', aux_destination_folder)
+            shutil.move('output.log', log_destination_folder)
+        except Exception as e:
+            print(f"Error moving files: {e}")
+        
         # Delete current output.png and replace with updated one
         output_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.png')
         png = convert_from_path(pdf_destination_folder)
