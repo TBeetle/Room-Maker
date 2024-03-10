@@ -62,6 +62,22 @@
         background-color: #4395e7;
         font-weight: bold;
     }
+
+    /* Styling for groups within the form */
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        flex: 1;
+        margin-right: 5%;
+    }
+
+    .form-group:last-child {
+        margin-right:0;
+    }
 </style>
 {% endblock %}
 
@@ -108,61 +124,102 @@
                             
                                 <div class="mt-3">
                                     <p>
-                                        <label for="font_type" class="form-label">Font: </label>
+                                        <label for="font_type" class="form-label">Default Font: </label>
                                         {{ form.font_type }}
                                     </p>
                                     <p>
                                         <label for="text_decoration" class="form-label">Text Decoration: </label>
                                         {{ form.text_decoration }}
                                     </p>
-                                    <p>
-                                        <label for="font_type" class="form-label">Text Color: </label>
-                                        {{ form.font_color }}
-                                    </p>
-                                    <p>
-                                        <label for="font_type" class="form-label">Text Size: </label>
-                                        {{ form.font_size }}
-                                    </p>
+                                    
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Boundary Labels:</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md=6">
+                                            <label for="font_type" class="form-label">Text Color: </label>
+                                            {{ form.font_color }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="font_type" class="form-label">Text Size: </label>
+                                            {{ form.font_size }}
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Sensor Labels</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="sensor_label_color">Sensor Label Color:</label>
+                                            {{ form.sensor_label_color }}                                           
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="camera_label_color">Camera Label Color:</label>
+                                            {{ form.camera_label_color }}
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Nav Arrow:</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="navigation_arrow_color">Color:</label>
+                                            {{ form.navigation_arrow_color }}
+                                        </div>
+                                        <div class="form-group col-md-6"></div>
+                                    </div>
 
                                 </div>
 
-                                <h3 class="fw-bold pt-3" style="color:#4395e7">Layout Boundaries</h3>
+                                <h3 class="fw-bold pt-3 mt-4" style="color:#4395e7">Layout Boundaries</h3>
                                 <div class="mt-3">
-                                    <p>
-                                        <label for="wall_width">Wall Thickness:</label>
-                                        {{ form.wall_width }}
-                                    </p>
-                                    <p>
-                                        <label for="wall_color">Wall Color:</label>
-                                        {{ form.wall_color }}
-                                    </p>
-                                    <p>
-                                        <label for="furniture_width">Furniture Thickness:</label>
-                                        {{ form.furniture_width }}
-                                    </p>
-                                    <p>
-                                        <label for="furniture_color">Furniture Color:</label>
-                                        {{ form.furniture_color }}
-                                    </p>
-                                    <p>
-                                        <label for="window_width">Window Thickness:</label>
-                                        {{ form.window_width }}
-                                    </p>
-                                    <p>
-                                        <label for="window_color">Window Color:</label>
-                                        {{ form.window_color }}
-                                    </p>
-                                    <p>
-                                        <label for="door_width">Door Thickness:</label>
-                                        {{ form.door_width }}
-                                    </p>
-                                    <p>
-                                        <label for="door_color">Door Color:</label>
-                                        {{ form.door_color }}
-                                    </p>
+                                    <h5 class="fw-bold" style="color:darkslategray; margin-left:8px">Walls</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="wall_color">Color:</label>
+                                            {{ form.wall_color }}                                           
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="wall_width">Thickness:</label>
+                                            {{ form.wall_width }}
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Doors</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="door_color">Color:</label>
+                                            {{ form.door_color }}                              
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="door_width">Thickness:</label>
+                                            {{ form.door_width }}
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Windows</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="window_color">Color:</label>
+                                            {{ form.window_color }}                               
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="window_width">Thickness:</label>
+                                            {{ form.window_width }}
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mt-4" style="color:darkslategray; margin-left:8px">Furniture</h5>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="furniture_color">Color:</label>
+                                            {{ form.furniture_color }}                            
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="furniture_width">Thickness:</label>
+                                            {{ form.furniture_width }}   
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="mt-3 d-flex">
+                                <div class="mt-5 d-flex">
                                     <button type="submit" class="btn btn-lg btn-primary">Save and Apply Changes</button>
                                 </div>
                             </form>

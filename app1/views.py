@@ -135,7 +135,6 @@ def ImportPage(request):
                     print("*** File name: " + uploaded_file_instance.file_name)
                     print("*** File path: " + uploaded_file_instance.file_path)
 
-                    admin_user = User.objects.get(username='admin')
                     # Query for DefaultStyleSettings based on user preferences
                     default_styling = DefaultStyleSettings.objects.filter(user=request.user).first()
 

@@ -37,12 +37,17 @@
     \tikzstyle{sensor} = [circle, draw, color=teal, fill=teal, inner sep=0.5mm]
     \tikzstyle{sensor-label} = [above, yshift=2pt, fill=white, align=center, text=teal]
     \tikzstyle{location} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
-    \tikzstyle{location-label} = [below, yshift=-3pt, fill=white, text=violet]
+    \tikzstyle{location-label} = [above, yshift=3pt, fill=white, text=violet]
     \tikzstyle{walking-path} = [densely dashed, line width=0.25mm, -{Stealth[length=4mm, width=2mm]}]
     \tikzstyle{nav-arrow} = [line width=0.25mm, {Stealth[length=4mm, width=2mm]}-, green!60!black]
     \tikzstyle{nav-arrow2} = [line width=0.25mm, {Stealth[length=4mm, width=2mm]}-, violet]
+    
+    \def\camera[#1](#2,#3){
+	    \node[circle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, anchor=center, #1] at (#2,#3) {};
+	    \node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {}
+     }
 
-    \tikzstyle{camera-label} = [fill=white, text=blue!75!black]
+    \tikzstyle{camera-label} = [fill=white, align=center, text=blue!75!black, above, yshift=5pt]
 
     % units
     \usepackage{siunitx}
@@ -83,20 +88,20 @@
             \node[gray, left] at (-12,\i) {\SI{\value}{\inch}};
         }
 
-        \node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (26,34.5) {};
-\node[furniture-label] at (table.center) {TABLE};
-\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm](table) at (30,80.0) {};
-\node[furniture-label] at (table.center) {TABLE};
-\draw[wall, line cap=round] (0.00,0.00) -- (0.00,100.00) coordinate (c);
-\draw[wall, line cap=round] (0.00,100.00) -- (50.00,100.00) coordinate (c);
-\draw[wall, line cap=round] (50.00,100.00) -- (50.00,125.00) coordinate (c);
-\draw[wall, line cap=round] (50.00,125.00) -- (100.00,125.00) coordinate (c);
-\draw[wall, line cap=round] (100.00,125.00) -- (100.00,75.00) coordinate (c);
-\draw[wall, line cap=round] (100.00,75.00) -- (100.00,75.00) coordinate (c);
-\draw[window, line cap=round] (100.00,75.00) -- (100.00,25.00) coordinate (c);
-\draw[window, line cap=round] (100.00,25.00) -- (100.00,25.00) coordinate (c);
-\draw[wall, line cap=round] (100.00,25.00) -- (100.00,0.00) coordinate (c);
-\draw[wall, line cap=round] (100.00,0.00) -- (0.00,0.00) coordinate (c);
+\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm, color=red](table) at (26,34.5) {};
+\node[furniture-label, text=red ] at (table.center) {TABLE};
+\node[furniture, rectangle, minimum width=24.00cm, minimum height=24.00cm, color=red](table) at (30,80.0) {};
+\node[furniture-label, text=red ] at (table.center) {TABLE};
+\draw[wall, line width=2pt, line cap=round, color =teal] (0.00,0.00) -- (0.00,100.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (0.00,100.00) -- (50.00,100.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (50.00,100.00) -- (50.00,125.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (50.00,125.00) -- (100.00,125.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (100.00,125.00) -- (100.00,75.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (100.00,75.00) -- (100.00,75.00) coordinate (c);
+\draw[window,line width=2pt, line cap=round, color=gray] (100.00,75.00) -- (100.00,25.00) coordinate (c);
+\draw[window,line width=2pt, line cap=round, color=gray] (100.00,25.00) -- (100.00,25.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (100.00,25.00) -- (100.00,0.00) coordinate (c);
+\draw[wall, line width=2pt, line cap=round, color =teal] (100.00,0.00) -- (0.00,0.00) coordinate (c);
 
 
         \end{tikzpicture}

@@ -85,53 +85,45 @@ class StyleSettings(models.Model):
         (ARIAL, 'Arial'),
     ]
 
-    # Predefined LaTeX colors
-    RED = 'red'
-    GREEN = 'green'
-    BLUE = 'blue'
-    CYAN = 'cyan'
-    MAGENTA = 'magenta'
-    YELLOW = 'yellow'
-    BLACK = 'black'
-    GRAY = 'gray'
-    WHITE = 'white'
-    DARKGRAY = 'darkgray'
-    LIGHTGRAY = 'lightgray'
-    BROWN = 'brown'
-    LIME = 'lime'
-    OLIVE = 'olive'
-    ORANGE = 'orange'
-    PINK = 'pink'
-    PURPLE = 'purple'
-    TEAL = 'teal'
-    VIOLET = 'violet'
-
     COLOR_CHOICES = [
-        (RED, 'Red'), (GREEN, 'Green'), (BLUE, 'Blue'), (CYAN, 'Cyan'),
-        (MAGENTA, 'Magenta'), (YELLOW, 'Yellow'), (BLACK, 'Black'), (GRAY, 'Gray'),
-        (WHITE, 'White'), (DARKGRAY, 'Dark Gray'), (LIGHTGRAY, 'Light Gray'), (BROWN, 'Brown'),
-        (LIME, 'Lime'), (OLIVE, 'Olive'), (ORANGE, 'Orange'), (PINK, 'Pink'), (PURPLE, 'Purple'),
-        (TEAL, 'Teal'), (VIOLET, 'Violet'),
+        ('red', 'Red'),
+        ('green', 'Green'),
+        ('blue', 'Blue'),
+        ('cyan', 'Cyan'),
+        ('magenta', 'Magenta'),
+        ('yellow', 'Yellow'),
+        ('black', 'Black'),
+        ('gray', 'Gray'),
+        ('white', 'White'),
+        ('darkgray', 'Dark Gray'),
+        ('lightgray', 'Light Gray'),
+        ('brown', 'Brown'),
+        ('lime', 'Lime'),
+        ('olive', 'Olive'),
+        ('orange', 'Orange'),
+        ('pink', 'Pink'),
+        ('purple', 'Purple'),
+        ('teal', 'Teal'),
+        ('violet', 'Violet'),
     ]
-
 
     # Text labels
     text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
     font_type = models.CharField(max_length=32, default=DEFAULT, choices=FONT_CHOICES) # Font type
-    font_size = models.IntegerField() # TODO: Set default
-    font_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
+    font_size = models.IntegerField(default=12) # TODO: Set default
+    font_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
     sensor_label_text = models.CharField(max_length=64, default="Sensor", blank=True)
     camera_label_text = models.CharField(max_length=64, default="Camera", blank=True)
     navigation_arrow_label = models.CharField(max_length=64, default="Nav Arrow", blank=True)
 
     # Colors using hex <#FFFFFF>
-    wall_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    door_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    furniture_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    window_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    sensor_label_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    camera_label_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    navigation_arrow_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
+    wall_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    door_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    furniture_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    window_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    sensor_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    camera_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    navigation_arrow_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
 
     # TODO: Add Calibration Locations - ask tyler & grant for the best datastructure for this?
 
@@ -177,53 +169,45 @@ class DefaultStyleSettings(models.Model):
     ]
 
     
-    # Predefined LaTeX colors
-    RED = 'red'
-    GREEN = 'green'
-    BLUE = 'blue'
-    CYAN = 'cyan'
-    MAGENTA = 'magenta'
-    YELLOW = 'yellow'
-    BLACK = 'black'
-    GRAY = 'gray'
-    WHITE = 'white'
-    DARKGRAY = 'darkgray'
-    LIGHTGRAY = 'lightgray'
-    BROWN = 'brown'
-    LIME = 'lime'
-    OLIVE = 'olive'
-    ORANGE = 'orange'
-    PINK = 'pink'
-    PURPLE = 'purple'
-    TEAL = 'teal'
-    VIOLET = 'violet'
-
     COLOR_CHOICES = [
-        (RED, 'Red'), (GREEN, 'Green'), (BLUE, 'Blue'), (CYAN, 'Cyan'),
-        (MAGENTA, 'Magenta'), (YELLOW, 'Yellow'), (BLACK, 'Black'), (GRAY, 'Gray'),
-        (WHITE, 'White'), (DARKGRAY, 'Dark Gray'), (LIGHTGRAY, 'Light Gray'), (BROWN, 'Brown'),
-        (LIME, 'Lime'), (OLIVE, 'Olive'), (ORANGE, 'Orange'), (PINK, 'Pink'), (PURPLE, 'Purple'),
-        (TEAL, 'Teal'), (VIOLET, 'Violet'),
+        ('red', 'Red'),
+        ('green', 'Green'),
+        ('blue', 'Blue'),
+        ('cyan', 'Cyan'),
+        ('magenta', 'Magenta'),
+        ('yellow', 'Yellow'),
+        ('black', 'Black'),
+        ('gray', 'Gray'),
+        ('white', 'White'),
+        ('darkgray', 'Dark Gray'),
+        ('lightgray', 'Light Gray'),
+        ('brown', 'Brown'),
+        ('lime', 'Lime'),
+        ('olive', 'Olive'),
+        ('orange', 'Orange'),
+        ('pink', 'Pink'),
+        ('purple', 'Purple'),
+        ('teal', 'Teal'),
+        ('violet', 'Violet'),
     ]
-
 
     # Text labels
     text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
     font_type = models.CharField(max_length=32, default=DEFAULT, choices=FONT_CHOICES) # Font type
-    font_size = models.IntegerField() # TODO: Set default
-    font_color = models.CharField(max_length=32, default=BLACK)
+    font_size = models.IntegerField(default=12) # TODO: Set default
+    font_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
     sensor_label_text = models.CharField(max_length=64, default="Sensor", blank=True)
     camera_label_text = models.CharField(max_length=64, default="Camera", blank=True)
     navigation_arrow_label = models.CharField(max_length=64, default="Nav Arrow", blank=True)
 
-    # Colors using hex <#FFFFFF>
-    wall_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    door_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    furniture_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    window_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    sensor_label_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    camera_label_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
-    navigation_arrow_color = models.CharField(max_length=32, default=BLACK, choices=COLOR_CHOICES)
+    # Colors using predefied latex values
+    wall_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    door_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    furniture_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    window_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    sensor_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    camera_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    navigation_arrow_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
 
     # Boundary widths
     wall_width = models.IntegerField(default=2)
@@ -265,7 +249,7 @@ class ConvertedFile(models.Model):
     # Metadata styling
     meta_title = models.CharField(max_length=64, default=file_name, blank=False)
     meta_date = models.DateField(default=timezone.now)
-    meta_location = models.TextField(max_length=256, default="")
+    meta_location = models.TextField(max_length=256, default="Address", blank=True)
     # TODO: Ask if notes need to be included - this could potentially be a 'desirable' feature for the final release
 
 
