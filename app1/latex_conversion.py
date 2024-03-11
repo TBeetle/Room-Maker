@@ -34,6 +34,8 @@ def conversion(file, layout_style):
     latex_calibration_label_template = "\\node[location-label] at ({l1}) {l2};\n".format(l1='{}',l2='{{{}}}')
     # Define LaTeX template for doors
     latex_door_template = "\\draw[door, rotate around={a}, line width={width}pt, color={color}] ({x1},{y1}) -- ++({x2},{y2});\n".format(a='{{{d1:.2f}:({d2:.2f},{d3:.2f})}}', width=layout_style.door_width,color=layout_style.door_color, x1='{d2:.2f}',y1='{d3:.2f}', x2='{d4:.2f}',y2='{d5:.2f}')
+    # Define LaTeX template for room navigation
+    latex_room_nav_template = "\\draw[nav-arrow] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
     
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
@@ -98,6 +100,26 @@ def conversion(file, layout_style):
             y = row['Y']
             latex_code += latex_calibration_template.format(row['Descriptor'], x, y)
             latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
+        elif row['Type'] == 'Room Navigation':
+            x = row['X']
+            y = row['Y']
+            if row['room_nav_direction'] == 'left':
+                arrow_x = 12
+                arrow_y = 0
+                node_location = 'right'
+            elif row['room_nav_direction'] == 'right':
+                arrow_x = -12
+                arrow_y = 0
+                node_location = 'left'
+            elif row['room_nav_direction'] == 'down':
+                arrow_x = 0
+                arrow_y = 12
+                node_location = 'above'
+            elif row['room_nav_direction'] == 'up':
+                arrow_x = 0
+                arrow_y = -12
+                node_location = 'below'
+            latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, row['Descriptor'])
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
