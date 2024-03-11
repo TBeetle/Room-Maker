@@ -6,9 +6,6 @@ from pdf2image import convert_from_path
 from django.conf import settings
 
 def conversion(file, layout_style):
-
-    # TODO - Grant to add nav arrow (Tyler will add styling after), Anna to add calibration points to front end (Tyler will add styling after)
-    # after, boundary label color and size, font type, text decoration type
     
     # Read Excel data 
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
@@ -21,22 +18,30 @@ def conversion(file, layout_style):
     # Define LaTeX template for furniture
     latex_furniture_template = "\\node[furniture, rectangle, line width={width}pt, minimum width={w1}cm, minimum height={h1}cm, color={color}]({a1}) at ({a2},{a3}) {{{a4}}};\n".format(width=layout_style.furniture_width,w1='{:.2f}',h1='{:.2f}',color=layout_style.furniture_color,a1='{}',a2='{}',a3='{}',a4='{}')
     latex_furniture_label_template = "\\node[furniture-label, text={color} ] at ({a1}) {a2};\n".format(color=layout_style.furniture_color, a1='{}', a2='{{{}}}')
+
     # Define LaTeX template for windows
     latex_windows_template = "\\draw[window,line width={width}pt, line cap=round, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=layout_style.window_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
+
     # Define LaTeX template for sensors
-    latex_sensor_template = "\\node[sensor, text={color}](sensor) at ({s1},{s2}) {{{s3}}};\n".format(color=layout_style.sensor_label_color,s1='{}',s2='{}',s3='{}')
+    latex_sensor_template = "\\node[sensor, color={color}](sensor) at ({s1},{s2}) {{{s3}}};\n".format(color=layout_style.sensor_label_color,s1='{}',s2='{}',s3='{}')
     latex_sensor_label_template = "\\node[sensor-label,text={color}] at ({x1},{y1}) {a1};\n".format(color=layout_style.sensor_label_color,x1='{s1:.2f}',y1='{s2:.2f}',a1='{{{s3} \\\\ ({s1:.2f}, {s2:.2f})}}')
+
     # Define LaTeX template for cameras
     latex_camera_template = "\\camera[color={color},rotate={c1}]({c2},{c3});\n".format(color=layout_style.camera_label_color, c1='{}',c2='{}',c3='{}')
     latex_camera_label_template = "\\node[camera-label, text={color}] at ({c1},{c2}) {c3};\n".format(color=layout_style.camera_label_color,c1='{}',c2='{}',c3='{{{}}}')
+
     # Define LaTeX template for calibration locations
     latex_calibration_template = "\\node[location]({l1}) at ({l2},{l3}) {{{l4}}};\n".format(l1='{}',l2='{}',l3='{}',l4='{}')
     latex_calibration_label_template = "\\node[location-label] at ({l1}) {l2};\n".format(l1='{}',l2='{{{}}}')
+    
     # Define LaTeX template for doors
     latex_door_template = "\\draw[door, rotate around={a}, line width={width}pt, color={color}] ({x1},{y1}) -- ++({x2},{y2});\n".format(a='{{{d1:.2f}:({d2:.2f},{d3:.2f})}}', width=layout_style.door_width,color=layout_style.door_color, x1='{d2:.2f}',y1='{d3:.2f}', x2='{d4:.2f}',y2='{d5:.2f}')
     # Define LaTeX template for room navigation
-    latex_room_nav_template = "\\draw[nav-arrow] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
+    latex_room_nav_template = "\\draw[nav-arrow,text={color}] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(color=layout_style.navigation_arrow_color,r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
     
+     #Define LaTeX template for font
+    latex_font_template = "\\fontspec{x1}{font}{x2}\n".format(x1='{',font=layout_style.font_type,x2='}')
+
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
@@ -128,7 +133,9 @@ def conversion(file, layout_style):
 
     \\usepackage[hmargin=0.5in, tmargin=0.75in, bmargin=0.9in]{{geometry}}
     \\geometry{{legalpaper, portrait}}
+    \\usepackage{{fontspec}}
 
+    {latex_font_template}    
     \\usepackage{{graphicx}}  % graphic controls
     \\usepackage{{float}}  % positioning controls
     \\usepackage{{lastpage}}  % last page number finder
@@ -212,7 +219,7 @@ def conversion(file, layout_style):
             \\node[gray, left] at (-12,\\i) {{\\SI{{\\value}}{{\\inch}}}};
         }}
 
-{latex_code}
+    {latex_code}
 
         \\end{{tikzpicture}}
     \\end{{figure}}
@@ -234,12 +241,8 @@ def conversion(file, layout_style):
     # Check if the compilation was successful
     if process.returncode == 0:
         print("PDF generated successfully.") # Specify the destination folder
+        print(layout_style.camera_label_color)
 
-
-        print("Sensor color", layout_style.sensor_label_color)
-        print("Nav color", layout_style.navigation_arrow_color)
-        print("Camera color", layout_style.camera_label_color)
-        print("Wall color", layout_style.wall_color)
         pdf_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
         tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
         aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
