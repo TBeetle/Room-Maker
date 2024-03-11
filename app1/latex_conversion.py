@@ -92,6 +92,8 @@ def conversion(file, layout_style):
 
     # Define LaTeX template for doors
     latex_door_template = "\\draw[door, rotate around={{{d1:.2f}:({d2:.2f},{d3:.2f})}}] ({d2:.2f},{d3:.2f}) -- ++({d4:.2f},{d5:.2f});\n"
+
+    latex_room_nav_template = "\\draw[nav-arrow] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
     
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
@@ -156,6 +158,26 @@ def conversion(file, layout_style):
             y = row['Y']
             latex_code += latex_calibration_template.format(row['Descriptor'], x, y)
             latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
+        elif row['Type'] == 'Room Navigation':
+            x = row['X']
+            y = row['Y']
+            if row['room_nav_direction'] == 'left':
+                arrow_x = 12
+                arrow_y = 0
+                node_location = 'right'
+            elif row['room_nav_direction'] == 'right':
+                arrow_x = -12
+                arrow_y = 0
+                node_location = 'left'
+            elif row['room_nav_direction'] == 'down':
+                arrow_x = 0
+                arrow_y = 12
+                node_location = 'above'
+            elif row['room_nav_direction'] == 'up':
+                arrow_x = 0
+                arrow_y = -12
+                node_location = 'below'
+            latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, row['Descriptor'])
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
@@ -198,9 +220,7 @@ def conversion(file, layout_style):
     \\tikzstyle{{sensor-label}} = [above, yshift=2pt, fill=white, align=center, text=teal]
     \\tikzstyle{{location}} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
     \\tikzstyle{{location-label}} = [above, yshift=3pt, fill=white, text=violet]
-    \\tikzstyle{{walking-path}} = [densely dashed, line width=0.25mm, -{{Stealth[length=4mm, width=2mm]}}]
     \\tikzstyle{{nav-arrow}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, green!60!black]
-    \\tikzstyle{{nav-arrow2}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, violet]
     
     \\def\camera[#1](#2,#3){{
 	    \\node[circle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, anchor=center, #1] at (#2,#3) {{}};
