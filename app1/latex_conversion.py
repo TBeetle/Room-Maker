@@ -237,6 +237,8 @@ def conversion(file, layout_style):
         png = convert_from_path(pdf_destination_folder)
         for i, image in enumerate(png):
             image.save(f'{output_path}', 'PNG')
+        return True;
 
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
+        return False;
