@@ -164,7 +164,16 @@ def ImportPage(request):
                     
 
                     # Call conversion code on file from /uploads/imported_files/<filename>
-                    lc.conversion(uploaded_file_path, layout_style)
+                    success = lc.conversion(uploaded_file_path, layout_style)
+                    if not success:
+                        try:
+                            # Delete uploaded file and associated instance
+                            os.remove(uploaded_file_instance.file_path)
+                            uploaded_file_instance.delete()
+                        except Exception as e:
+                            logger.error("Error occurred while deleting file: %s", e)
+                            messages.error(request, "An error occurred while deleting the file.")
+                        
     
                     
                     # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
@@ -593,12 +602,21 @@ def ResetPassword(request, uidb64, token):
 
     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
 
+from django.core.files.storage import default_storage
+
 # %******************** Delete button ****************************%
 @login_required(login_url="login")
 def delete_layout_test(request, layout_id):
     try:
         layout = ConvertedFile.objects.get(id=layout_id, user=request.user)  # Ensure the user can only delete their own layouts
+        # delete associated files
+        default_storage.delete(layout.file_path)
+        default_storage.delete(layout.latex_file)
+        default_storage.delete(layout.pdf_file)
+        default_storage.delete(layout.image)
+        # delete layout instance
         layout.delete()
+        print("Layout deleted.")
     except ConvertedFile.DoesNotExist:
         messages.error(request, "Layout not found.")
     except Exception as e:
