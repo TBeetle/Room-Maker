@@ -4,6 +4,22 @@
 
 {% block styling %}
 
+<style>
+
+    /* Styling for groups within the form */
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .pdf-preview {
+        justify-content: center;
+    }
+
+</style>
+
 <script>
     function viewImageInBrowser(imagePath) {
         // Construct the URL for the view-in-browser endpoint
@@ -18,7 +34,7 @@
 
 
 {% block content %}
-    <div class="container" style="width: 65%; margin-top:5%">
+    <div class="container" style="width: 75%; margin-top:5%; justify-content: space-between; margin-bottom: 10%;">
 
         <div class="row mt-5 mb-3 clearfix">
             <button type="button" class="btn btn-md btn-secondary float-start" style="width: 12%"><a href="{% url 'export-layout' layout.id %}" style="color:inherit">< Export</a></button>
@@ -29,38 +45,105 @@
         <form method="post">
             {% csrf_token %}
     
-        <div class="row">
-            <div class="col justify-content-center p-3">
-                <center><h3 class="fw-bold pt-3" style="color:midnightblue">Text Settings</h3></center>
+        <div class="row align-items-start">
+            <div class="col justify-content-center mt-3">
 
+                <!-- Leftmost column containing the color/font controls -->
                 <div class="mt-3">
-                        <div class="mt-3">
-                            <label for="font_type" class="form-label">Font:</label>
-                            {{ form.font_type }}
-                        </div>
-                        
-                        <div class="mt-3">
-                            <label for="text_decoration" class="form-label">Text Decoration:</label>
-                            {{ form.text_decoration }}
-                        </div>
+                    <center>
+                        <h3 class="fw-bold" style="color:#4395e7">Text Labels</h3>
+                    </center>
 
-                        <div class="mt-3">
-                            <label for="font_color" class="form-label">Text Color: </label>
-                            {{ form.font_color }}
-                        </div>
+                    <p>
+                        <label for="font_type" class="form-label">Font: </label>
+                        {{ form.font_type }}
+                    </p>
+                    <p>
+                        <label for="font_color" class="form-label">Color: </label>
+                        {{ form.font_color }}
+                    </p>
 
-                        <div class="mt-3">
-                            <label for="font_size" class="form-label">Text Size:</label>
-                            {{ form.font_size }}
+                    <center>
+                        <h3 class="fw-bold pt-3" style="color: #4395e7">Object Colors</h3>
+                    </center>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label for="sensor_label_color">Sensors:</label>
+                            {{ form.sensor_label_color }}                                           
                         </div>
+                        <div class="form-group col-md-5">
+                            <label for="camera_label_color">Cameras:</label>
+                            {{ form.camera_label_color }}
+                        </div>
+                    </div>
+
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md-5">
+                            <label for="navigation_arrow_color">Navigation Arrows:</label>
+                            {{ form.navigation_arrow_color }}
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="calibration_color">Calibrations:</label>
+                            {{ form.calibration_color }}
+                        </div>
+                    </div>
+
+                    <center>
+                        <h3 class="fw-bold pt-5" style="color: #4395e7">Boundaries</h3>
+                    </center>
+
+                    <div class="form-row mt-3">
+                        <div class="form-group col-md-5">
+                            <label for="wall_color">Wall Color:</label>
+                            {{ form.wall_color }}                                           
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="wall_width">Wall Width:</label>
+                            {{ form.wall_width }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="form-group col-md-5">
+                            <label for="door_color">Door Color:</label>
+                            {{ form.door_color }}                                           
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="door_width">Door Width:</label>
+                            {{ form.door_width }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="form-group col-md-5">
+                            <label for="window_color">Window Color:</label>
+                            {{ form.window_color }}                                           
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="window_width">Window Width:</label>
+                            {{ form.window_width }}
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="form-group col-md-5">
+                            <label for="furniture_color">Furniture Color:</label>
+                            {{ form.furniture_color }}                                           
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="furniture_width">Furniture Width:</label>
+                            {{ form.furniture_width }}
+                        </div>
+                    </div>
 
                 </div>
             </div>
+            <!-- Middle column containing PDF preview -->
             <div class="col m-4 justify-content-center" id="layout-preview">
-                <div class="object-fit-contain" style="border: 2px solid black"; style="width:auto">
-                    <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-height:350px;">
+                <div class="object-fit-contain pdf-preview" style="border: 2px solid black"; style="width:auto">
+                    <center>
+                        <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-height:450px;">
+                    </center>
                 </div>
-                <div class="mt-3 d-flex justify-content-center">
+                <div class="mt-5 d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary">Save and Apply Changes</button>
                 </div>
                 <div class="mt-3 d-flex justify-content-center">
@@ -68,50 +151,39 @@
                 </div>
 
             </div>
+
+            <!-- Rightmost column containing controls for Metadata and Label locations-->
             <div class="col justify-content-center p-3">
-                <center><h3 class="fw-bold pt-3" style="color: midnightblue">Boundaries</h3></center>
+                <center>
+                    <h3 class="fw-bold pt-3" style="color: #4395e7">Metadata</h3>
+                </center>
 
                 <div class="mt-1">
                     <div class="mt-3">
-                        <label for="wall_width">Wall Thickness:</label>
-                        {{ form.wall_width }}
+                        <label for="meta_title">Title:</label>
+                        {{ form.meta_title }}
                     </div>
 
                     <div class="mt-3">
-                        <label for="wall_color">Wall Color:</label>
-                        {{ form.wall_color }}
+                        <label for="meta_date">Date:</label>
+                        {{ form.meta_date }}
                     </div>
 
                     <div class="mt-3">
-                        <label for="furniture_width">Furniture Thickness:</label>
-                        {{ form.furniture_width }}
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="furniture_color">Furniture Color:</label>
-                        {{ form.furniture_color }}
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="window_width">Window Thickness:</label>
-                        {{ form.window_width }}
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="window_color">Window Color:</label>
-                        {{ form.window_color }}
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="door_width">Door Thickness:</label>
-                        {{ form.door_width }}
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="door_color">Door Color:</label>
-                        {{ form.door_color }}
+                        <label for="meta_location">Location:</label>
+                        {{ form.meta_location }}
                     </div>
                 </div>
+
+                <center>
+                    <h3 class="fw-bold pt-3 mt-3" style="color: #4395e7">Labels</h3>
+                </center>
+
+                <div class="mt-3">
+                    <p>Label editing will go here w/ fields to adjust X-Y coordinates for each label.</p>
+                </div>
+
+                <!-- TODO: Add forms for adjusting sensor location-->
             </div>
         </div>
         </form>

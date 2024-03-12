@@ -357,7 +357,7 @@ def EditLayoutStylePage(request, layout_id):
         if form.is_valid():
             form.save()
             print(f"FORM STYLE SETTINGS CHECK: Wall Thickness = {style_settings_instance.wall_width}")
-            print(f"Wall Color = {style_settings_instance.wall_color}")
+            print(f"Nav color = {style_settings_instance.navigation_arrow_color}")
             print("Form successfully saved.")
             # TODO: Display success message
             # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF *****
@@ -387,6 +387,7 @@ def EditLayoutStylePage(request, layout_id):
             form.save()
             print(f"FORM STYLE SETTINGS CHECK: Wall Thickness = {style_settings_instance.wall_width}")
             print(f"Wall Color = {style_settings_instance.wall_color}")
+            print(f"Nav arrow color = {style_settings_instance.navigation_arrow_color}")
             print("Form successfully saved.")
             # TODO: Display success message
             # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF

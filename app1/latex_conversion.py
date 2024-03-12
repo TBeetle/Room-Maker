@@ -40,7 +40,7 @@ def conversion(file, layout_style):
     latex_room_nav_template = "\\draw[nav-arrow,text={color}] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(color=layout_style.navigation_arrow_color,r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
     
      #Define LaTeX template for font
-    latex_font_template = "\\fontspec{x1}{font}{x2}\n".format(x1='{',font=layout_style.font_type,x2='}')
+    latex_font_template = "\\setmainfont{{{font}}}\n".format(font=layout_style.font_type)
 
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
