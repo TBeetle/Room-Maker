@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from layoutGenerator import settings
 import os
+from django.utils import timezone
 from django.urls import (
     reverse,
 )  # Generate URLs of individual objects through reversing URL patterns
@@ -58,114 +59,13 @@ class UploadedFile(models.Model):
 
 # Represents the settings for styling associated with an individual layout
 class StyleSettings(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-
-    # Allowed text decoration
-    NO_DECORATION = 'none'
-    BOLD = 'bold'
-    UNDERLINE = 'underline'
-    ITALICS = 'italics'
-
-    TEXT_DECORATION_CHOICES = [
-        (NO_DECORATION, 'None'),
-        (BOLD, 'Bold'),
-        (UNDERLINE, 'Underline'),
-        (ITALICS, 'Italicize'),
-    ]
-
-    # Allowed fonts
-    DEFAULT = 'Default'
-    TIMES_NEW_ROMAN = 'Times New Roman'
-    ARIAL = 'Arial'
-
-    FONT_CHOICES = [
-        (DEFAULT, 'Default'),
-        (TIMES_NEW_ROMAN, 'Times New Roman'),
-        (ARIAL, 'Arial'),
-    ]
-
-    COLOR_CHOICES = [
-        ('red', 'Red'),
-        ('green', 'Green'),
-        ('blue', 'Blue'),
-        ('cyan', 'Cyan'),
-        ('magenta', 'Magenta'),
-        ('yellow', 'Yellow'),
-        ('black', 'Black'),
-        ('gray', 'Gray'),
-        ('white', 'White'),
-        ('darkgray', 'Dark Gray'),
-        ('lightgray', 'Light Gray'),
-        ('brown', 'Brown'),
-        ('lime', 'Lime'),
-        ('olive', 'Olive'),
-        ('orange', 'Orange'),
-        ('pink', 'Pink'),
-        ('purple', 'Purple'),
-        ('teal', 'Teal'),
-        ('violet', 'Violet'),
-    ]
-
-    # Text labels
-    text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
-    font_type = models.CharField(max_length=32, default=DEFAULT, choices=FONT_CHOICES) # Font type
-    font_size = models.IntegerField(default=12) # TODO: Set default
-    font_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    sensor_label_text = models.CharField(max_length=64, default="Sensor", blank=True)
-    camera_label_text = models.CharField(max_length=64, default="Camera", blank=True)
-    navigation_arrow_label = models.CharField(max_length=64, default="Nav Arrow", blank=True)
-
-    # Colors using hex <#FFFFFF>
-    wall_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    door_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    furniture_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    window_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    sensor_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    camera_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    navigation_arrow_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-
-    # TODO: Add Calibration Locations - ask tyler & grant for the best datastructure for this?
-
-    # Boundary widths
-    wall_width = models.IntegerField()
-    door_width = models.IntegerField()
-    furniture_width = models.IntegerField()
-    window_width = models.IntegerField()
-
-    # Orientation of PDF - horizontal or vertical
-    orientation_type = models.CharField(max_length=32, default = "vertical")
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-
-# Stores default style settings for users, providing defaults for each layout they generate
-class DefaultStyleSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
-    # Allowed text decoration
-    NO_DECORATION = 'none'
-    BOLD = 'bold'
-    UNDERLINE = 'underline'
-    ITALICS = 'italics'
-
-    TEXT_DECORATION_CHOICES = [
-        (NO_DECORATION, 'None'),
-        (BOLD, 'Bold'),
-        (UNDERLINE, 'Underline'),
-        (ITALICS, 'Italicize'),
-    ]
-
-    # Allowed fonts
-    DEFAULT = 'Default'
-    TIMES_NEW_ROMAN = 'Times New Roman'
-    ARIAL = 'Arial'
+    name = models.CharField(max_length=64, default="name")
 
     FONT_CHOICES = [
-        (DEFAULT, 'Default'),
-        (TIMES_NEW_ROMAN, 'Times New Roman'),
-        (ARIAL, 'Arial'),
+        ('Computer Modern', 'Default (Computer Modern)'),
+        ('Times New Roman', 'Times New Roman'),
+        ('Arial', 'Arial'),
     ]
 
     
@@ -192,13 +92,8 @@ class DefaultStyleSettings(models.Model):
     ]
 
     # Text labels
-    text_decoration = models.CharField(max_length=28, default=NO_DECORATION, choices=TEXT_DECORATION_CHOICES)  # Allowed values: bold, italicized, underlined
-    font_type = models.CharField(max_length=32, default=DEFAULT, choices=FONT_CHOICES) # Font type
-    font_size = models.IntegerField(default=12) # TODO: Set default
+    font_type = models.CharField(max_length=32, default='Computer Modern', choices=FONT_CHOICES) # Font type
     font_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
-    sensor_label_text = models.CharField(max_length=64, default="Sensor", blank=True)
-    camera_label_text = models.CharField(max_length=64, default="Camera", blank=True)
-    navigation_arrow_label = models.CharField(max_length=64, default="Nav Arrow", blank=True)
 
     # Colors using predefied latex values
     wall_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
@@ -208,6 +103,72 @@ class DefaultStyleSettings(models.Model):
     sensor_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
     camera_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
     navigation_arrow_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    calibration_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+
+    # Boundary widths
+    wall_width = models.IntegerField(default=2)
+    door_width = models.IntegerField(default=2)
+    furniture_width = models.IntegerField(default=2)
+    window_width = models.IntegerField(default=2)
+
+    # Metadata styling
+    meta_title = models.CharField(max_length=64, default="Layout", blank=False)
+    meta_date = models.DateField(default=timezone.now)
+    meta_location = models.TextField(max_length=256, default="Address", blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Orientation of PDF - horizontal or vertical
+    orientation_type = models.CharField(max_length=32, default = "vertical")
+
+
+
+# Stores default style settings for users, providing defaults for each layout they generate
+class DefaultStyleSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    FONT_CHOICES = [
+        ('Computer Modern', 'Default (Computer Modern)'),
+        ('Times New Roman', 'Times New Roman'),
+        ('Arial', 'Arial'),
+    ]
+
+    
+    COLOR_CHOICES = [
+        ('red', 'Red'),
+        ('green', 'Green'),
+        ('blue', 'Blue'),
+        ('cyan', 'Cyan'),
+        ('magenta', 'Magenta'),
+        ('yellow', 'Yellow'),
+        ('black', 'Black'),
+        ('gray', 'Gray'),
+        ('white', 'White'),
+        ('darkgray', 'Dark Gray'),
+        ('lightgray', 'Light Gray'),
+        ('brown', 'Brown'),
+        ('lime', 'Lime'),
+        ('olive', 'Olive'),
+        ('orange', 'Orange'),
+        ('pink', 'Pink'),
+        ('purple', 'Purple'),
+        ('teal', 'Teal'),
+        ('violet', 'Violet'),
+    ]
+
+    # Text labels
+    font_type = models.CharField(max_length=32, default='Computer Modern', choices=FONT_CHOICES) # Font type
+    font_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+
+    # Colors using predefied latex values
+    wall_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    door_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    furniture_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    window_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    sensor_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    camera_label_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    navigation_arrow_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
+    calibration_color = models.CharField(max_length=32, default='black', choices=COLOR_CHOICES)
 
     # Boundary widths
     wall_width = models.IntegerField(default=2)
@@ -216,8 +177,6 @@ class DefaultStyleSettings(models.Model):
     window_width = models.IntegerField(default=2)
 
     created_at = models.DateTimeField(auto_now_add=True)
-
-from django.utils import timezone
 
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
@@ -245,13 +204,7 @@ class ConvertedFile(models.Model):
     # Reference to PNG in form 'uploads/imported_files/<username>/file_name.png
     image = models.CharField(max_length=255,
                              default = os.path.join(settings.MEDIA_ROOT,'conversion_output', 'output.png'))
-
-    # Metadata styling
-    meta_title = models.CharField(max_length=64, default=file_name, blank=False)
-    meta_date = models.DateField(default=timezone.now)
-    meta_location = models.TextField(max_length=256, default="Address", blank=True)
-    # TODO: Ask if notes need to be included - this could potentially be a 'desirable' feature for the final release
-
+   
 
     def save(self, *args, **kwargs):
         # Set default value for file_name from uploaded_file

@@ -138,21 +138,21 @@ def ImportPage(request):
                     # Query for DefaultStyleSettings based on user preferences
                     default_styling = DefaultStyleSettings.objects.filter(user=request.user).first()
 
+                    print("font: " + default_styling.font_type)
                     # Create individual StyleSettings for layout
                     layout_style = StyleSettings(
                         user = request.user,
                         name = converted_filename,
-                        text_decoration = default_styling.text_decoration,
                         font_type = default_styling.font_type,
                         font_color = default_styling.font_color,
-                        font_size = default_styling.font_size,
                         wall_color = default_styling.wall_color,
                         door_color = default_styling.door_color,
                         furniture_color = default_styling.furniture_color,
+                        window_color = default_styling.window_color,
                         navigation_arrow_color = default_styling.navigation_arrow_color,
                         sensor_label_color = default_styling.sensor_label_color,
                         camera_label_color = default_styling.camera_label_color,
-                        window_color = default_styling.window_color,
+                        calibration_color = default_styling.calibration_color,
                         wall_width = default_styling.wall_width,
                         door_width = default_styling.door_width,
                         furniture_width = default_styling.furniture_width,

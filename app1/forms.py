@@ -64,14 +64,11 @@ class UpdateFileNameForm(ModelForm):
 class UpdateStyleSettingsForm(ModelForm):
     class Meta:
         model = StyleSettings
-        fields = ('text_decoration', 'font_type', 'font_size', 'font_color',
+        fields = ('font_type','font_color',
                   'wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width')
         widgets = {
-            'text_decoration': forms.Select(attrs={'class': 'form-control'}),
             'font_type': forms.Select(attrs={'class': 'form-control'}),
-            'font_size': forms.NumberInput(attrs={'class':'form-control', 'type':'range',
-                                             'min':2, 'max':12, 'step':1}),
             'font_color': forms.TextInput(attrs={'type': 'color'}),
             
             'wall_color': forms.TextInput(attrs={'type': 'color'}),
@@ -92,14 +89,12 @@ class UpdateStyleSettingsForm(ModelForm):
 class UpdateDefaultStyleSettingsForm(ModelForm):
     class Meta:
         model = DefaultStyleSettings
-        fields = ('text_decoration', 'font_type', 'font_size', 'font_color',
+        fields = ('font_type', 'font_color',
                   'wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width',
-                  'sensor_label_color', 'camera_label_color', 'navigation_arrow_color')
+                  'sensor_label_color', 'camera_label_color', 'navigation_arrow_color', 'calibration_color')
         widgets = {
-            'text_decoration': forms.Select(attrs={'class': 'form-control'}),
             'font_type': forms.Select(attrs={'class': 'form-control'}),
-            'font_size': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
             'font_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'wall_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'door_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
@@ -108,6 +103,7 @@ class UpdateDefaultStyleSettingsForm(ModelForm):
             'sensor_label_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'camera_label_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'navigation_arrow_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
+            'calibration_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             # border widths
             'wall_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
             'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
