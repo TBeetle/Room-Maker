@@ -235,3 +235,15 @@ class ConvertedFile(models.Model):
         except DefaultStyleSettings.DoesNotExist:
             # Handle case where default style settings are not found
             print("Default style settings not found for the user.")
+
+    # retrieve all labels associated with file
+    def get_labels(self):
+        return self.label_set.all()
+
+# Stores the x and y coordinates of a label
+class Label(models.Model):
+        file = models.ForeignKey(ConvertedFile, on_delete=models.CASCADE)
+        name = models.CharField(max_length=100)
+        x_coordinate = models.FloatField()
+        y_coordinate = models.FloatField()
+    
