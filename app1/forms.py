@@ -115,3 +115,7 @@ class UpdateDefaultStyleSettingsForm(ModelForm):
             'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
             'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
         }
+
+class LabelForm(forms.Form):
+    x_coordinate = forms.CharField(label="X Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))
+    y_coordinate = forms.CharField(label="Y Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))

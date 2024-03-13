@@ -14,7 +14,7 @@ import pandas as pd
 import os
 from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSettings
+from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSettings, Label
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseNotFound
 import zipfile
@@ -204,9 +204,16 @@ def ImportPage(request):
                     converted_file.full_clean()
                     converted_file.save(force_insert=True)
 
-                    # Error checking - ensures that convertedfile exists
-                    print(f"Converted file prefix: {converted_file.file_name}")
-                    print(f"Converted file file_path: {converted_file.file_path}")
+                    print("reached here")
+
+                    # Create Label objects by parsing through Excel file
+                    labels = parse_excel_file(converted_file)
+                    for label in labels:
+                        print("label: " + label['name'])
+                        Label.objects.create(file=converted_file, name=label['name'], 
+                                             x_coordinate=label['x_coordinate'], y_coordinate=label['y_coordinate'])
+
+                    print("created labels")
 
                     return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
@@ -215,6 +222,26 @@ def ImportPage(request):
             return redirect("import")
 
     return render(request, 'import.html')
+
+# parse through Excel file to identify labels 
+def parse_excel_file(converted_file):
+    # read excel file into df
+    df = pd.read_excel(converted_file.file_path)
+    labels = []
+
+    # iterate over rows in dataframe to extract labels
+    for index, row in df.iterrows():
+        if row['Type'] in ['Camera', 'Sensor', 'Calibration', 'Room Navigation']:
+            # extract data for the label
+            label_data = {
+                'name': row['Descriptor'],
+                'x_coordinate': row['X'],
+                'y_coordinate': row['Y']
+            }
+
+            labels.append(label_data)
+
+    return labels
 
 #  Download sample Excel file for formmating
 from django.http import FileResponse
@@ -370,7 +397,7 @@ def EditLayoutStylePage(request, layout_id):
         'form': form
     }
     return render(request, "edit-style.html", context)
-from .forms import UpdateStyleSettingsForm
+from .forms import UpdateStyleSettingsForm, LabelForm
 from django.shortcuts import render, get_object_or_404, redirect
 
 
@@ -379,26 +406,47 @@ from django.shortcuts import render, get_object_or_404, redirect
 def EditLayoutStylePage(request, layout_id):
     
     layout = get_object_or_404(ConvertedFile, id=layout_id)
-    style_settings_instance = layout.style_settings 
+    style_settings_instance = layout.style_settings
+    labels = layout.get_labels()
 
     if request.method == "POST":
+        # Style settings form
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
-        if form.is_valid():
+   
+        # Initialize list to hold label forms
+        label_forms = [LabelForm(request.POST, prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
+
+        # Check if both forms are valid
+        if form.is_valid() and all(label_form.is_valid() for label_form in label_forms):
+            # Save style settings form
             form.save()
-            print(f"FORM STYLE SETTINGS CHECK: Wall Thickness = {style_settings_instance.wall_width}")
-            print(f"Wall Color = {style_settings_instance.wall_color}")
-            print(f"Nav arrow color = {style_settings_instance.navigation_arrow_color}")
-            print("Form successfully saved.")
-            # TODO: Display success message
-            # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF
+            print(f"Style settings form successfully saved.")
+            
+            # Process label forms
+            for label, label_form in zip(labels, label_forms):
+                # Update coordinates for the label
+                label.x_coordinate = label_form.cleaned_data['x_coordinate']
+                label.y_coordinate = label_form.cleaned_data['y_coordinate']
+                label.save()
+                print(f"Label {label.name} saved with new coordinates X: {label.x_coordinate}, Y: {label.y_coordinate}")
             return redirect('edit-layout', layout_id=layout_id)
+        
+        else:
+            print("one or more forms are invalid.")
+            # TODO: Handle form validation errors
     else:
+        # Initialize style settings form
         form = UpdateStyleSettingsForm(instance=style_settings_instance)
+        # Initialize label forms
+        label_forms = [LabelForm(prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
 
     context = {
         'layout': layout,
-        'form': form
+        'form': form,
+        'labels': labels,
+        'label_data': zip(labels, label_forms),
     }
+
     return render(request, "edit-style.html", context)
 
 # %******************** Layout Library Page ****************************%
