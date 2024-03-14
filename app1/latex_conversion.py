@@ -16,8 +16,9 @@ def conversion(file, layout_style):
     latex_walls_template = "\\draw[wall, line width={width}pt, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=layout_style.wall_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
 
     # Define LaTeX template for furniture
-    latex_furniture_template = "\\node[furniture, rectangle, line width={width}pt, minimum width={w1}cm, minimum height={h1}cm, color={color}]({a1}) at ({a2},{a3}) {{{a4}}};\n".format(width=layout_style.furniture_width,w1='{:.2f}',h1='{:.2f}',color=layout_style.furniture_color,a1='{}',a2='{}',a3='{}',a4='{}')
-    latex_furniture_label_template = "\\node[furniture-label, text={color} ] at ({a1}) {a2};\n".format(color=layout_style.furniture_color, a1='{}', a2='{{{}}}')
+    latex_rectangle_furniture_template = "\\furnitureR[height={h1}, width={w1}, rotate={r1}]({a1}, {a2});\n".format(h1='{}',w1='{}', r1='{}',a1='{}',a2='{}')
+    latex_circle_furniture_template = "\\furnitureC[radius={a1}]({a2}, {a3});\n".format(a1='{}', a2='{}', a3='{}')
+    latex_furniture_label_template = "\\node[furniture-label, text={color} ] at ({a1},{a2}) {a3};\n".format(color=layout_style.furniture_color, a1='{}', a2='{}', a3='{{{}}}')
 
     # Define LaTeX template for windows
     latex_windows_template = "\\draw[window,line width={width}pt, line cap=round, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=layout_style.window_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
@@ -42,6 +43,20 @@ def conversion(file, layout_style):
      #Define LaTeX template for font
     latex_font_template = "\\setmainfont{{{font}}}\n".format(font=layout_style.font_type)
 
+    latex_furniture_styling = """
+    \\def\\furnitureR[height=#1, width=#2, rotate=#3](#4, #5){{%
+	% Draws a rectangular furniture piece centered on provided coordinates in a Tikz picture
+	% \\furnitureR[height=<value>, width=<value>, rotate=<degrees>](<x>, <y>)
+	\\draw[line width={width}pt, color={color}, rotate around={{#3:(#4,#5)}}] (#4-#2/2, #5-#1/2) rectangle (#4+#2/2, #5+#1/2)  
+    }}
+
+    \\def\\furnitureC[radius=#1](#2, #3){{%
+	    % Draws a circular furniture piece centered on provided coordinates in a Tikz picture
+	    % \\furnitureC[radius=<value>](<x>, <y>)
+	    \\draw[line width={width}pt, color={color}] (#2, #3) circle (#1)
+    }}
+
+    """.format(width=layout_style.furniture_width, color=layout_style.furniture_color)
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
@@ -80,15 +95,22 @@ def conversion(file, layout_style):
                 door_y = row['door_length']
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
-
-        elif row['Type'] == 'Furniture':
+        elif row['Type'] == 'Furniture' and row['furniture_type'] == 'rectangle':
             width = row['width']
             height = row['height']
+            rotation = row['rotation']
             table_name = row['Descriptor'].lower()
             x = row['X']
             y = row['Y']
-            latex_code += latex_furniture_template.format(width, height, table_name, x, y)
-            latex_code += latex_furniture_label_template.format(f"{table_name}.center", row['Descriptor'])
+            latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
+            latex_code += latex_furniture_label_template.format(x, y, row['Descriptor'])
+        elif row['Type'] == 'Furniture' and row['furniture_type'] == 'circle':
+            radius = row['radius']
+            table_name = row['Descriptor'].lower()
+            x = row['X']
+            y = row['Y']
+            latex_code += latex_circle_furniture_template.format(radius, x, y)
+            latex_code += latex_furniture_label_template.format(x, y, row['Descriptor'])
         elif row['Type'] == 'Sensor':
             x = row['X']
             y = row['Y']
@@ -134,8 +156,7 @@ def conversion(file, layout_style):
     \\usepackage[hmargin=0.5in, tmargin=0.75in, bmargin=0.9in]{{geometry}}
     \\geometry{{legalpaper, portrait}}
     \\usepackage{{fontspec}}
-
-    {latex_font_template}    
+   
     \\usepackage{{graphicx}}  % graphic controls
     \\usepackage{{float}}  % positioning controls
     \\usepackage{{lastpage}}  % last page number finder
@@ -164,7 +185,7 @@ def conversion(file, layout_style):
     \\tikzstyle{{window}} = [line width=1pt]
     \\tikzstyle{{door}} = [line width=1pt]
     \\tikzstyle{{furniture}} = [draw, line width=0.5pt, transform shape]
-    \\tikzstyle{{furniture-label}} = [fill=white]
+    \\tikzstyle{{furniture-label}} = [fill=white, align=center]
     \\tikzstyle{{sensor}} = [circle, draw, color=teal, fill=teal, inner sep=0.5mm]
     \\tikzstyle{{sensor-label}} = [above, yshift=2pt, fill=white, align=center, text=teal]
     \\tikzstyle{{location}} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
@@ -173,6 +194,8 @@ def conversion(file, layout_style):
     \\tikzstyle{{nav-arrow}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, green!60!black]
     \\tikzstyle{{nav-arrow2}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, violet]
     
+    {latex_furniture_styling}
+
     \\def\camera[#1](#2,#3){{
 	    \\node[circle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, anchor=center, #1] at (#2,#3) {{}};
 	    \\node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {{}}
