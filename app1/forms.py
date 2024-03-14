@@ -64,14 +64,11 @@ class UpdateFileNameForm(ModelForm):
 class UpdateStyleSettingsForm(ModelForm):
     class Meta:
         model = StyleSettings
-        fields = ('font_type','font_color',
-                  'wall_color', 'door_color', 'furniture_color', 'window_color',
+        fields = ('wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width',
                   'sensor_label_color', 'camera_label_color', 'navigation_arrow_color', 'calibration_color',
                   'meta_title', 'meta_date', 'meta_location')
         widgets = {
-            'font_type': forms.Select(attrs={'class': 'form-control'}),
-            'font_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'wall_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'door_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'furniture_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
@@ -94,13 +91,10 @@ class UpdateStyleSettingsForm(ModelForm):
 class UpdateDefaultStyleSettingsForm(ModelForm):
     class Meta:
         model = DefaultStyleSettings
-        fields = ('font_type', 'font_color',
-                  'wall_color', 'door_color', 'furniture_color', 'window_color',
+        fields = ('wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width',
                   'sensor_label_color', 'camera_label_color', 'navigation_arrow_color', 'calibration_color')
         widgets = {
-            'font_type': forms.Select(attrs={'class': 'form-control'}),
-            'font_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'wall_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'door_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
             'furniture_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control'}),
