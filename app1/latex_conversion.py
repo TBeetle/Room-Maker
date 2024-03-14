@@ -43,6 +43,7 @@ def conversion(file, layout_style):
      #Define LaTeX template for font
     latex_font_template = "\\setmainfont{{{font}}}\n".format(font=layout_style.font_type)
 
+    # Define LaTeX template for furniture styling
     latex_furniture_styling = """
     \\def\\furnitureR[height=#1, width=#2, rotate=#3](#4, #5){{%
 	% Draws a rectangular furniture piece centered on provided coordinates in a Tikz picture
@@ -57,6 +58,32 @@ def conversion(file, layout_style):
     }}
 
     """.format(width=layout_style.furniture_width, color=layout_style.furniture_color)
+
+    # Define LaTeX template for gridlines
+    x_axis_data = excel_data[excel_data['Type'] == 'X Axis'].iloc[0]
+    y_axis_data = excel_data[excel_data['Type'] == 'Y Axis'].iloc[0]
+    x_min = x_axis_data['min']
+    x_max = x_axis_data['max']
+    y_min = y_axis_data['min']
+    y_max = y_axis_data['max']
+    x_step = x_axis_data['step']
+    y_step = y_axis_data['step']
+    latex_gridline_template = """
+        %% GRID - X
+        \\foreach \\i in {{{a1},{a2},...,{a3}}}{{
+            \\draw[grid-line] (\\i,{a4}) -- (\\i,{a5});
+            \\tikzmath{{int \\value; \\value = \\i;}}; 
+            \\node[gray, below] at (\i,{a4}) {{\\SI{{\\value}}{{\\inch}}}};
+        }}
+
+        %% GRID - Y
+        \\foreach \\i in {{{a6},{a7},...,{a8}}}{{
+            \\draw[grid-line] ({a9},\\i) -- ({a10},\\i);
+            \\tikzmath{{int \\value; \\value = \\i;}};
+            \\node[gray, left] at ({a9},\\i) {{\\SI{{\\value}}{{\\inch}}}};
+        }}
+    """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
+
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
     for index, row in excel_data.iterrows():
@@ -228,19 +255,7 @@ def conversion(file, layout_style):
         \\begin{{tikzpicture}}[scale=1/12,  % use this to reduce or enlargen the image on paper
                             rotate=0]  % use this to rotate orientation by degrees on paper
 
-        %% GRID - X
-        \\foreach \\i in {{0,24,...,192}}{{
-            \\draw[grid-line] (\\i,-12) -- (\\i,204);
-            \\tikzmath{{int \\value; \\value = \\i;}}; 
-            \\node[gray, below] at (\i,-12) {{\\SI{{\\value}}{{\\inch}}}};
-        }}
-
-        %% GRID - Y
-        \\foreach \\i in {{0,24,...,192}}{{
-            \\draw[grid-line] (-12,\\i) -- (204,\\i);
-            \\tikzmath{{int \\value; \\value = \\i;}};
-            \\node[gray, left] at (-12,\\i) {{\\SI{{\\value}}{{\\inch}}}};
-        }}
+    {latex_gridline_template}
 
     {latex_code}
 
