@@ -11,10 +11,10 @@ def conversion(file, layout_style):
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
     print("CALLING CONVERSION CODE:")
     print(file)
-
+    
     # Define LaTeX template
     latex_walls_template = "\\draw[wall, line width={width}pt, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=layout_style.wall_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
-
+   
     # Define LaTeX template for furniture
     latex_rectangle_furniture_template = "\\furnitureR[height={h1}, width={w1}, rotate={r1}]({a1}, {a2});\n".format(h1='{}',w1='{}', r1='{}',a1='{}',a2='{}')
     latex_circle_furniture_template = "\\furnitureC[radius={a1}]({a2}, {a3});\n".format(a1='{}', a2='{}', a3='{}')
@@ -32,16 +32,13 @@ def conversion(file, layout_style):
     latex_camera_label_template = "\\node[camera-label, text={color}] at ({c1},{c2}) {c3};\n".format(color=layout_style.camera_label_color,c1='{}',c2='{}',c3='{{{}}}')
 
     # Define LaTeX template for calibration locations
-    latex_calibration_template = "\\node[location]({l1}) at ({l2},{l3}) {{{l4}}};\n".format(l1='{}',l2='{}',l3='{}',l4='{}')
-    latex_calibration_label_template = "\\node[location-label] at ({l1}) {l2};\n".format(l1='{}',l2='{{{}}}')
+    latex_calibration_template = "\\node[location, color={color}]({l1}) at ({l2},{l3}) {{{l4}}};\n".format(color=layout_style.calibration_color,l1='{}',l2='{}',l3='{}',l4='{}')
+    latex_calibration_label_template = "\\node[location-label, text={color}] at ({l1}) {l2};\n".format(color=layout_style.calibration_color,l1='{}',l2='{{{}}}')
     
     # Define LaTeX template for doors
     latex_door_template = "\\draw[door, rotate around={a}, line width={width}pt, color={color}] ({x1},{y1}) -- ++({x2},{y2});\n".format(a='{{{d1:.2f}:({d2:.2f},{d3:.2f})}}', width=layout_style.door_width,color=layout_style.door_color, x1='{d2:.2f}',y1='{d3:.2f}', x2='{d4:.2f}',y2='{d5:.2f}')
     # Define LaTeX template for room navigation
-    latex_room_nav_template = "\\draw[nav-arrow,text={color}] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(color=layout_style.navigation_arrow_color,r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
-    
-     #Define LaTeX template for font
-    latex_font_template = "\\setmainfont{{{font}}}\n".format(font=layout_style.font_type)
+    latex_room_nav_template = "\\draw[nav-arrow,color={color}] ({r1},{r2}) -- ++({r3},{r4}) node[{r5}, fill=white] {r6};\n".format(color=layout_style.navigation_arrow_color,r1='{}',r2='{}',r3='{}',r4='{}',r5='{}',r6='{{{}}}')
 
     # Define LaTeX template for furniture styling
     latex_furniture_styling = """
@@ -182,7 +179,6 @@ def conversion(file, layout_style):
 
     \\usepackage[hmargin=0.5in, tmargin=0.75in, bmargin=0.9in]{{geometry}}
     \\geometry{{legalpaper, portrait}}
-    \\usepackage{{fontspec}}
    
     \\usepackage{{graphicx}}  % graphic controls
     \\usepackage{{float}}  % positioning controls

@@ -143,8 +143,6 @@ def ImportPage(request):
                     layout_style = StyleSettings(
                         user = request.user,
                         name = converted_filename,
-                        font_type = default_styling.font_type,
-                        font_color = default_styling.font_color,
                         wall_color = default_styling.wall_color,
                         door_color = default_styling.door_color,
                         furniture_color = default_styling.furniture_color,
