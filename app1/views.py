@@ -216,7 +216,7 @@ def ImportPage(request):
                     return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
             logger.error("Error occurred during import: %s", e)
-            messages.error(request, "An error occurred during import.")
+            messages.error(request, "The uploaded file could not be parsed.")
             return redirect("import")
 
     return render(request, 'import.html')
