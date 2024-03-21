@@ -171,6 +171,15 @@ def conversion(file, layout_style):
                 arrow_y = -12
                 node_location = 'below'
             latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, row['Descriptor'])
+        elif row['Type'] == 'Date':
+            latex_date = row['Descriptor']
+        elif row['Type'] == 'Room Name':
+            latex_room_name = row['Descriptor']
+        elif row['Type'] == 'Neighborhood':
+            latex_neighborhood = row['Descriptor']
+        elif row['Type'] == 'Building':
+            latex_building = row['Descriptor']
+
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
@@ -189,12 +198,12 @@ def conversion(file, layout_style):
     \\usepackage{{fancyhdr}}
     \\pagestyle{{fancy}}
 
-    \\lhead{{2023 June 5}}
+    \\lhead{{{latex_date}}}
     \\chead{{}}
     \\rhead{{\\footnotesize \\thepage \\ {{\\color{{gray}} of \\pageref{{LastPage}}}}}}
 
     \\cfoot{{}}
-    \\rfoot{{\\textbf{{\\LARGE Congaree Activity Room Layout}}\\\\\\vspace{{3pt}}{{\\large\\color{{gray}}NIH STTR Phase II}}}}
+    \\rfoot{{\\textbf{{\\LARGE {latex_room_name}}}\\\\\\vspace{{3pt}}{{\\large\\color{{gray}}NIH STTR Phase II}}}}
 
     \\renewcommand{{\\headrulewidth}}{{0.25pt}}
     \\renewcommand{{\\footrulewidth}}{{0.25pt}}
@@ -248,15 +257,44 @@ def conversion(file, layout_style):
     \\begin{{figure}}[H]
         \\centering
 
-        \\begin{{tikzpicture}}[scale=1/12,  % use this to reduce or enlargen the image on paper
+        \\begin{{tikzpicture}}[scale=1/14,  % use this to reduce or enlargen the image on paper
                             rotate=0]  % use this to rotate orientation by degrees on paper
 
     {latex_gridline_template}
 
     {latex_code}
 
-        \\end{{tikzpicture}}
+    
+    \\end{{tikzpicture}}
     \\end{{figure}}
+    
+    \\vspace*{{\\fill}}  % fills the area between the table and layout with whitespace, forcing the table to the bottom of the page.
+    \\begin{{table}}[H]
+	\\begin{{tabular}}{{l l}}
+		\\makecell[lt]{{
+			\\textbf{{Location:}}\\\\
+     		{latex_neighborhood} Neighborhood \\\\
+ 		    {latex_building} Bldg, Still Hopes\\\\
+           	1 Still Hopes Drive\\\\
+           	West Columbia, SC 29033\\\\\\\\
+        }}   	
+        &	
+		\\makecell[tp{{5in}}]{{
+		\\textbf{{Notes:}}\\\\
+		\\vspace{{-8mm}}  % reduce whitespace created by itemize above list
+		\\begin{{itemize}}
+			\\setlength\\itemsep{{-3mm}}  % reduce whitespace created by itemize between lines
+			\\item Measurements are to the nearest \SI{{0.25}}{{\inch}}
+			\\item The furniture locations are approximate.
+			\\item Laptop and data acquisition system is located beside the table.
+			\\item Cameras are located on the ceiling.
+		\\end{{itemize}}
+		}}	
+			
+	\\end{{tabular}}
+	\\vspace{{-8mm}} % reduce whitespace after table
+\\end{{table}}
+
     \\end{{document}}
     """
     # Print or save LaTeX code
