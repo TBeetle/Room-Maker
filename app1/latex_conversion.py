@@ -179,6 +179,8 @@ def conversion(file, layout_style):
             latex_neighborhood = row['Descriptor']
         elif row['Type'] == 'Building':
             latex_building = row['Descriptor']
+        elif row['Type'] == 'Orientation':
+            latex_orientation = row['Descriptor']
 
 
     # Complete LaTeX code with autopopulated walls
@@ -187,7 +189,7 @@ def conversion(file, layout_style):
     \\documentclass[12pt]{{article}}
 
     \\usepackage[hmargin=0.5in, tmargin=0.75in, bmargin=0.9in]{{geometry}}
-    \\geometry{{legalpaper, portrait}}
+    \\geometry{{legalpaper, {latex_orientation}}}
    
     \\usepackage{{graphicx}}  % graphic controls
     \\usepackage{{float}}  % positioning controls
