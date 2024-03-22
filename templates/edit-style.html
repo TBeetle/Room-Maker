@@ -18,7 +18,61 @@
         justify-content: center;
     }
 
+    /*Drop-shadow effect for buttons--> */
+    .shadow-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(134, 139, 145, 0.25); /* Add focus shadow */
+    }
+
+    .shadow-toggle.active {
+        box-shadow: 0 0 0 0.25rem rgba(134, 139, 145, 0.25); /* Add active shadow */
+        background-color: #f8f9fa;
+    }
+
+    .btn-orientation {
+        padding: 5px;
+        width: 45%;
+        height: 10%;
+    }
+
 </style>
+<script>
+    // JavaScript for selecting document orientation buttons
+    document.addEventListener("DOMContentLoaded", function() {
+        const landscapeButton = document.getElementById("landscapeButton");
+        const portraitButton = document.getElementById("portraitButton");
+        const orientationField = document.getElementById("id_orientation");
+        console.log("Dom content loaded.")
+
+        function setActiveButton() {
+            console.log("setActiveButton function called.");
+
+            const orientationValue = orientationField.value;
+            console.log("Orientation value:", orientationValue);
+
+            if (orientationValue === "vertical") {
+                portraitButton.classList.add("active");
+            } else if (orientationValue === "horizontal") {
+                landscapeButton.classList.add("active");
+                }
+        }
+
+        // event listeners to switch active button
+        landscapeButton.addEventListener("click", function() {
+            landscapeButton.classList.add("active");
+            portraitButton.classList.remove("active");
+            orientationField.value = "horizontal";
+        })
+
+        portraitButton.addEventListener("click", function() {
+            portraitButton.classList.add("active");
+            landscapeButton.classList.remove("active");
+            orientationField.value = "vertical";
+            });
+        
+        setActiveButton();
+    });
+
+</script>
 
 {% endblock %}
 
@@ -41,6 +95,24 @@
                 <!-- Leftmost column containing the color/font controls -->
                 <div class="mt-3">
                     <center>
+                        <h3 class="fw-bold" style="color: #4395e7">File Orientation</h3>
+                    </center>
+                    <!-- NOTE: This is how I want the buttons to be styled 
+                    <div class="mt-3 mb-3 p-3">
+                        <button type="button" class="btn btn-lg btn-light btn-orientation shadow-toggle active" id="portraitButton">Portrait</button>
+                        <button type="button" class="btn btn-lg btn-light btn-orientation shadow-toggle" id="landscapeButton" style="margin-left:10px;">Landscape</button>
+                    </div>
+                    -->
+                    
+                    <!-- Displaying the orientation field-->
+                    <input type="hidden" id="id_orientation" name="orientation" value="{{ style_settings_instance.orientation }}">
+                    <div class="mt-3 mb-3 p-3">
+                        <button type="button" class="btn btn-lg btn-light btn-orientation shadow-toggle {% if style_settings_instance.orientation == 'vertical' %}active{% endif %}" id="portraitButton">Portrait</button>
+                        <button type="button" class="btn btn-lg btn-light btn-orientation shadow-toggle {% if style_settings_instance.orientation == 'horizontal' %}active{% endif %}" id="landscapeButton" style="margin-left:10px;">Landscape</button>
+                    </div>
+
+
+                    <center>
                         <h3 class="fw-bold pt-3" style="color: #4395e7">Object Colors</h3>
                     </center>
 
@@ -57,7 +129,7 @@
 
                     <div class="form-row mt-4">
                         <div class="form-group col-md-5">
-                            <label for="navigation_arrow_color">Navigation Arrows:</label>
+                            <label for="navigation_arrow_color">Nav Arrows:</label>
                             {{ form.navigation_arrow_color }}
                         </div>
                         <div class="form-group col-md-5">
