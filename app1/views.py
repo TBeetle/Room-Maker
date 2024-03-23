@@ -155,7 +155,7 @@ def ImportPage(request):
                         door_width = default_styling.door_width,
                         furniture_width = default_styling.furniture_width,
                         window_width = default_styling.window_width,
-                        orientation_type = "vertical"
+                        orientation = "vertical"
                     )
                     layout_style.save()
 
