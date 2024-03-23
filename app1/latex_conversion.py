@@ -83,6 +83,13 @@ def conversion(file, layout_style):
 
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
+
+    # Declaring variables to hold metadata
+    latex_date = ""
+    latex_room_name = ""
+    latex_neighborhood = ""
+    latex_building = ""
+
     for index, row in excel_data.iterrows():
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
             x1 = row['X']

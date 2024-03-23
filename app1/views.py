@@ -397,6 +397,7 @@ def EditLayoutStylePage(request, layout_id):
     return render(request, "edit-style.html", context)
 from .forms import UpdateStyleSettingsForm, LabelForm
 from django.shortcuts import render, get_object_or_404, redirect
+from django import forms
 
 
 # Allows user to update the styling of a specific layout
@@ -410,7 +411,12 @@ def EditLayoutStylePage(request, layout_id):
     if request.method == "POST":
         # Style settings form
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
-   
+
+        # Process orientation field
+        orientation = request.POST.get('orientation')
+        style_settings_instance.orientation = orientation  # Update orientation value
+        style_settings_instance.save()
+
         # Initialize list to hold label forms
         label_forms = [LabelForm(request.POST, prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
 
@@ -435,6 +441,9 @@ def EditLayoutStylePage(request, layout_id):
     else:
         # Initialize style settings form
         form = UpdateStyleSettingsForm(instance=style_settings_instance)
+        # Initialize orientation form
+        orientation_initial = style_settings_instance.orientation  # Get initial orientation value
+        orientation_form = forms.CharField(initial=orientation_initial, widget=forms.HiddenInput())  # Hidden input for storing orientation
         # Initialize label forms
         label_forms = [LabelForm(prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
 
@@ -443,6 +452,7 @@ def EditLayoutStylePage(request, layout_id):
         'form': form,
         'labels': labels,
         'label_data': zip(labels, label_forms),
+        'orientation_form': orientation_form,  # Pass orientation form to the template
     }
 
     return render(request, "edit-style.html", context)
