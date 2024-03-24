@@ -411,6 +411,10 @@ def EditLayoutStylePage(request, layout_id):
     if request.method == "POST":
         # Style settings form
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
+        # Orientation form
+        # Initialize orientation form
+        orientation_initial = style_settings_instance.orientation  # Get initial orientation value
+        orientation_form = forms.CharField(initial=orientation_initial, widget=forms.HiddenInput())  # Hidden input for storing orientation
 
         # Process orientation field
         orientation = request.POST.get('orientation')
