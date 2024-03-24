@@ -604,28 +604,28 @@ def LogoutPage(request):
 def HomePage(request):
     return render(request, "home.html")
 
-def ForgotPassword(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        try:
-            user = User.objects.get(email=email)
-            # Generate a unique token for password reset (you can use Django's built-in token generator)
-            # Reset token generation code goes here...
-            # token = ...
-            token = token_generator.make_token(user)
+# def ForgotPassword(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         try:
+#             user = User.objects.get(email=email)
+#             # Generate a unique token for password reset (you can use Django's built-in token generator)
+#             # Reset token generation code goes here...
+#             # token = ...
+#             token = token_generator.make_token(user)
 
-            # Send password reset email
-            subject = 'Password Reset Instructions'
-            html_message = render_to_string('password-reset-email.html', {'token': token})
-            plain_message = strip_tags(html_message)
-            from_email = 'backyardigansreset@gmail.com'  # Set your email address
-            to_email = user.email
-            send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-            messages.success(request, 'Password reset instructions sent to your email.')
-            return redirect('login')  # Redirect to login page
-        except User.DoesNotExist:
-            messages.error(request, 'User with this email does not exist.')
-    return render(request, 'forgot-password.html')
+#             # Send password reset email
+#             subject = 'Password Reset Instructions'
+#             html_message = render_to_string('password-reset-email.html', {'token': token})
+#             plain_message = strip_tags(html_message)
+#             from_email = 'backyardigansreset@gmail.com'  # Set your email address
+#             to_email = user.email
+#             send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+#             messages.success(request, 'Password reset instructions sent to your email.')
+#             return redirect('login')  # Redirect to login page
+#         except User.DoesNotExist:
+#             messages.error(request, 'User with this email does not exist.')
+#     return render(request, 'forgot-password.html')
 
 from django.utils.http import urlsafe_base64_decode
 from django.core.exceptions import ValidationError
@@ -634,30 +634,30 @@ from django.core.exceptions import ValidationError
 # from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
-def ResetPassword(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()  # Decode the uidb64 to a string
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
-        user = None
+# def ResetPassword(request, uidb64, token):
+#     try:
+#         uid = urlsafe_base64_decode(uidb64).decode()  # Decode the uidb64 to a string
+#         user = User.objects.get(pk=uid)
+#     except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
+#         user = None
 
-    if user is not None and PasswordResetTokenGenerator().check_token(user, token):
-        # Process password reset form submission
-        if request.method == 'POST':
-            password = request.POST.get('password')
-            confirm_password = request.POST.get('confirm_password')
-            if password == confirm_password:
-                user.set_password(password)
-                user.save()
-                messages.success(request, 'Password reset successfully.')
-                return redirect('login')  # Redirect to login page
-            else:
-                messages.error(request, 'Passwords do not match.')
-    else:
-        messages.error(request, 'Invalid link for password reset.')
-        return redirect('login')  # Redirect to login page
+#     if user is not None and PasswordResetTokenGenerator().check_token(user, token):
+#         # Process password reset form submission
+#         if request.method == 'POST':
+#             password = request.POST.get('password')
+#             confirm_password = request.POST.get('confirm_password')
+#             if password == confirm_password:
+#                 user.set_password(password)
+#                 user.save()
+#                 messages.success(request, 'Password reset successfully.')
+#                 return redirect('login')  # Redirect to login page
+#             else:
+#                 messages.error(request, 'Passwords do not match.')
+#     else:
+#         messages.error(request, 'Invalid link for password reset.')
+#         return redirect('login')  # Redirect to login page
 
-    return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
+#     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
 
 from django.core.files.storage import default_storage
 

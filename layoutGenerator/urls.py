@@ -20,6 +20,7 @@ from app1 import views
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 # Main views
 urlpatterns = [
@@ -32,8 +33,11 @@ urlpatterns = [
     path('layout-library/', views.LayoutLibraryPage, name="layout-library"),
     path('default-style-settings/', views.SettingsPage, name='settings'),
     path('account-settings/', views.AccountSettingsPage, name='account-settings'),
-    path('forgot-password/', views.ForgotPassword, name='forgot-password'),
-    path('reset-password/<uidb64>/<token>/', views.ResetPassword, name='reset-password'),
+
+    path('accounts/password-reset/', auth_views.PasswordResetView.as_view(template_name='reset_password.html'), name='reset_password'),
+    path('accounts/password-reset-sent/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
+    path('accounts/password-reset-confirmation/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password-reset.html'), name='password_reset_confirm'),
+    path('accounts/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_confirm.html'), name='password_reset_complete'),
 ]
 
 # Support serving PNG images in django app
