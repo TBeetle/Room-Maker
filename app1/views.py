@@ -63,7 +63,7 @@ def ImportPage(request):
                 file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
                 valid_extensions = ['xlsx', 'json', 'csv']
                 uploaded_files_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username)
-                file_path = os.path.join(uploaded_files_path, uploaded_file.name)
+                file_path = os.path.join(uploaded_files_path, get_valid_filename(uploaded_file.name))
                 if file_extension not in valid_extensions:
                     messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
                 elif os.path.exists(file_path):
