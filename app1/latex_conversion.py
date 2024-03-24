@@ -89,6 +89,7 @@ def conversion(file, layout_style):
     latex_room_name = ""
     latex_neighborhood = ""
     latex_building = ""
+    latex_orientation = "portrait"
 
     for index, row in excel_data.iterrows():
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
