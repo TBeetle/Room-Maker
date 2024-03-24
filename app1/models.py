@@ -119,12 +119,12 @@ class StyleSettings(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     ORIENTATION_CHOICES = [
-        ('vertical', "Portrait"),
-        ('horizontal', "Landscape"),
+        ('portrait', "Portrait"),
+        ('landscape', "Landscape"),
     ]
 
-    # Orientation of PDF - horizontal or vertical
-    orientation = models.CharField(max_length=32, default = 'vertical', choices=ORIENTATION_CHOICES)
+    # Orientation of PDF - portrait or landscape
+    orientation = models.CharField(max_length=32, default = 'portrait', choices=ORIENTATION_CHOICES)
 
 
 
