@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from .models import StyleSettings, DefaultStyleSettings, ConvertedFile
+from .models import StyleSettings, DefaultStyleSettings, ConvertedFile, Label
 
 from django import forms
 from django.forms import ModelForm
@@ -111,5 +111,6 @@ class UpdateDefaultStyleSettingsForm(ModelForm):
         }
 
 class LabelForm(forms.Form):
-    x_coordinate = forms.CharField(label="X Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))
-    y_coordinate = forms.CharField(label="Y Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))
+    location = forms.ChoiceField(choices=Label.LABEL_LOCATIONS, widget=forms.Select(attrs={'class': 'form-control form-select'}))
+    # x_coordinate = forms.CharField(label="X Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))
+    # y_coordinate = forms.CharField(label="Y Coordinate", widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 0, 'max': 250}))

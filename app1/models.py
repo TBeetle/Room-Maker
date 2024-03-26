@@ -127,7 +127,6 @@ class StyleSettings(models.Model):
     orientation = models.CharField(max_length=32, default = 'portrait', choices=ORIENTATION_CHOICES)
 
 
-
 # Stores default style settings for users, providing defaults for each layout they generate
 class DefaultStyleSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -247,8 +246,14 @@ class ConvertedFile(models.Model):
 
 # Stores the x and y coordinates of a label
 class Label(models.Model):
+        LABEL_LOCATIONS = [
+            ('above', 'Above'),
+            ('below', 'Below'),
+            ('left', 'Left'),
+            ('right', 'Right')
+        ]
+
         file = models.ForeignKey(ConvertedFile, on_delete=models.CASCADE)
         name = models.CharField(max_length=100)
-        x_coordinate = models.FloatField()
-        y_coordinate = models.FloatField()
+        location = models.CharField(max_length=5, default="above", choices=LABEL_LOCATIONS)
     
