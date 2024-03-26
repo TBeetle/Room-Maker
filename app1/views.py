@@ -76,6 +76,7 @@ def ImportPage(request):
                     print("File name: " + uploaded_file.name)
 
                     # Create an UploadedFile instance with base file
+                    global uploaded_file_instance
                     uploaded_file_instance = UploadedFile(
                         file=uploaded_file,
                         user=request.user,
@@ -84,6 +85,7 @@ def ImportPage(request):
                     # Define path to uploaded JSON/CSV file - /uploads/imported_files/<filename>
                     uploaded_filename = uploaded_file_instance.file.name
                     print("uploaded_filename: " + uploaded_filename)
+                    global uploaded_file_path
                     uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, uploaded_filename)
                     print("Uploaded CSV/JSON File Path: " + uploaded_file_path)
                     print("Uploaded file name: " + uploaded_filename)
@@ -96,6 +98,7 @@ def ImportPage(request):
 
                     # Rename file
                     prefix_filename, _ = os.path.splitext(uploaded_filename)
+                    global converted_filename
                     converted_filename = f"{prefix_filename}.xlsx"
 
                     # Convert file from CSV/JSON to Excel
@@ -141,7 +144,7 @@ def ImportPage(request):
 
                     print("font: " + default_styling.font_type)
                     # Create individual StyleSettings for layout
-                    layout_style = StyleSettings(
+                    layout_style = DefaultStyleSettings(
                         user = request.user,
                         name = converted_filename,
                         wall_color = default_styling.wall_color,
@@ -211,7 +214,7 @@ def ImportPage(request):
                         print("label: " + label['name'])
                         Label.objects.create(file=converted_file, name=label['name'])
                         # NOTE - all label objects are created with default value 'above'
-
+    
                     print("created labels")
 
                     return redirect("export-layout", layout_id=converted_file.id)
@@ -375,6 +378,7 @@ def EditLayoutStylePage(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     style_settings_instance = layout.style_settings 
 
+
     # TODO - Ensure that saving the form will update the associated style_settings model
     if request.method == "POST":
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
@@ -385,6 +389,39 @@ def EditLayoutStylePage(request, layout_id):
             print("Form successfully saved.")
             # TODO: Display success message
             # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF *****
+            # Create individual StyleSettings for layout
+            style_settings = StyleSettings.objects.filter(user=request.user).first()      
+
+            layout_style = StyleSettings(
+                user = request.user,
+                name = converted_filename,
+                wall_color = style_settings.wall_color,
+                door_color = style_settings.door_color,
+                furniture_color = style_settings.furniture_color,
+                window_color = style_settings.window_color,
+                navigation_arrow_color = style_settings.navigation_arrow_color,
+                sensor_label_color = style_settings.sensor_label_color,
+                camera_label_color = style_settings.camera_label_color,
+                calibration_color = style_settings.calibration_color,
+                wall_width = style_settings.wall_width,
+                door_width = style_settings.door_width,
+                furniture_width = style_settings.furniture_width,
+                window_width = style_settings.window_width,
+                orientation = "portrait"
+                )
+            layout_style.save()
+
+            # Call conversion code on file from /uploads/imported_files/<filename>
+            success = lc.conversion(uploaded_file_path, layout_style)
+            if not success:
+                try:
+                    # Delete uploaded file and associated instance
+                    os.remove(uploaded_file_instance.file_path)
+                    uploaded_file_instance.delete()
+                except Exception as e:
+                    logger.error("Error occurred while deleting file: %s", e)
+                    messages.error(request, "An error occurred while deleting the file.")
+            
             return redirect('edit-layout', layout_id=layout_id)
     else:
         form = UpdateStyleSettingsForm(instance=style_settings_instance)
@@ -406,6 +443,9 @@ def EditLayoutStylePage(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     style_settings_instance = layout.style_settings
     labels = layout.get_labels()
+    
+    excel_file_path = layout.uploaded_file.file_path
+    excel_file_instance = UploadedFile.objects.filter(file_path=excel_file_path).first()
 
     if request.method == "POST":
         # Style settings form
@@ -430,6 +470,38 @@ def EditLayoutStylePage(request, layout_id):
             # Save style settings form
             form.save()
             print(f"Style settings form successfully saved.")
+
+            style_settings = StyleSettings.objects.filter(user=request.user).first()      
+
+            edited_style = StyleSettings(
+                user = request.user,
+                #name = converted_filename,
+                wall_color = style_settings.wall_color,
+                door_color = style_settings.door_color,
+                furniture_color = style_settings.furniture_color,
+                window_color = style_settings.window_color,
+                navigation_arrow_color = style_settings.navigation_arrow_color,
+                sensor_label_color = style_settings.sensor_label_color,
+                camera_label_color = style_settings.camera_label_color,
+                calibration_color = style_settings.calibration_color,
+                wall_width = style_settings.wall_width,
+                door_width = style_settings.door_width,
+                furniture_width = style_settings.furniture_width,
+                window_width = style_settings.window_width,
+                orientation = "portrait"
+                )
+            edited_style.save()
+
+            # Call conversion code on file from /uploads/imported_files/<filename>
+            success = lc.conversion(excel_file_path, edited_style)
+            if not success:
+                try:
+                    # Delete uploaded file and associated instance
+                    os.remove(excel_file_instance.file_path)
+                    excel_file_instance.delete()
+                except Exception as e:
+                    logger.error("Error occurred while deleting file: %s", e)
+                    messages.error(request, "An error occurred while deleting the file.")
             
             # Process label forms
             for label, label_form in zip(labels, label_forms):
@@ -437,6 +509,8 @@ def EditLayoutStylePage(request, layout_id):
                 label.location = label_form.cleaned_data['location']
                 label.save()
                 print(f"Label {label.name} saved with new location: {label.location}")
+                print("uploaded file:" + excel_file_path)
+                
             return redirect('edit-layout', layout_id=layout_id)
         
         
