@@ -63,7 +63,8 @@ def ImportPage(request):
                 file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
                 valid_extensions = ['xlsx', 'json', 'csv']
                 uploaded_files_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username)
-                file_path = os.path.join(uploaded_files_path, uploaded_file.name)
+                file_path = os.path.join(uploaded_files_path, get_valid_filename(get_valid_filename(uploaded_file.name)))
+     
                 if file_extension not in valid_extensions:
                     messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
                 elif os.path.exists(file_path):
@@ -155,7 +156,7 @@ def ImportPage(request):
                         door_width = default_styling.door_width,
                         furniture_width = default_styling.furniture_width,
                         window_width = default_styling.window_width,
-                        orientation_type = "vertical"
+                        orientation = "portrait"
                     )
                     layout_style.save()
 
@@ -208,15 +209,15 @@ def ImportPage(request):
                     labels = parse_excel_file(converted_file)
                     for label in labels:
                         print("label: " + label['name'])
-                        Label.objects.create(file=converted_file, name=label['name'], 
-                                             x_coordinate=label['x_coordinate'], y_coordinate=label['y_coordinate'])
+                        Label.objects.create(file=converted_file, name=label['name'])
+                        # NOTE - all label objects are created with default value 'above'
 
                     print("created labels")
 
                     return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
             logger.error("Error occurred during import: %s", e)
-            messages.error(request, "The uploaded file could not be parsed.")
+            messages.error(request, "The uploaded file could not be parsed. See provided sample format.")
             return redirect("import")
 
     return render(request, 'import.html')
@@ -232,9 +233,7 @@ def parse_excel_file(converted_file):
         if row['Type'] in ['Camera', 'Sensor', 'Calibration', 'Room Navigation']:
             # extract data for the label
             label_data = {
-                'name': row['Descriptor'],
-                'x_coordinate': row['X'],
-                'y_coordinate': row['Y']
+                'name': row['Descriptor']
             }
 
             labels.append(label_data)
@@ -411,14 +410,20 @@ def EditLayoutStylePage(request, layout_id):
     if request.method == "POST":
         # Style settings form
         form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
+        # Orientation form
+        # Initialize orientation form
+        orientation_initial = style_settings_instance.orientation  # Get initial orientation value
+        orientation_form = forms.CharField(initial=orientation_initial, widget=forms.HiddenInput())  # Hidden input for storing orientation
 
         # Process orientation field
         orientation = request.POST.get('orientation')
+        print("o " + orientation)
         style_settings_instance.orientation = orientation  # Update orientation value
+        print("ORIENTATION: " + style_settings_instance.orientation)
         style_settings_instance.save()
 
         # Initialize list to hold label forms
-        label_forms = [LabelForm(request.POST, prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
+        label_forms = [LabelForm(request.POST, prefix=str(label.id), initial={'location': label.location}) for label in labels]
 
         # Check if both forms are valid
         if form.is_valid() and all(label_form.is_valid() for label_form in label_forms):
@@ -428,14 +433,20 @@ def EditLayoutStylePage(request, layout_id):
             
             # Process label forms
             for label, label_form in zip(labels, label_forms):
-                # Update coordinates for the label
-                label.x_coordinate = label_form.cleaned_data['x_coordinate']
-                label.y_coordinate = label_form.cleaned_data['y_coordinate']
+                # Update location for the label
+                label.location = label_form.cleaned_data['location']
                 label.save()
-                print(f"Label {label.name} saved with new coordinates X: {label.x_coordinate}, Y: {label.y_coordinate}")
+                print(f"Label {label.name} saved with new location: {label.location}")
             return redirect('edit-layout', layout_id=layout_id)
         
+        
         else:
+            # Collect form errors
+            form_errors = form.errors.as_data()
+            label_form_errors = [label_form.errors.as_data() for label_form in label_forms]
+
+            print("Form errors:", form_errors)
+            print("Label form errors:", label_form_errors)
             print("one or more forms are invalid.")
             # TODO: Handle form validation errors
     else:
@@ -445,7 +456,7 @@ def EditLayoutStylePage(request, layout_id):
         orientation_initial = style_settings_instance.orientation  # Get initial orientation value
         orientation_form = forms.CharField(initial=orientation_initial, widget=forms.HiddenInput())  # Hidden input for storing orientation
         # Initialize label forms
-        label_forms = [LabelForm(prefix=str(label.id), initial={'x_coordinate': label.x_coordinate, 'y_coordinate': label.y_coordinate}) for label in labels]
+        label_forms = [LabelForm(prefix=str(label.id), initial={'location': label.location}) for label in labels]
 
     context = {
         'layout': layout,
@@ -453,6 +464,7 @@ def EditLayoutStylePage(request, layout_id):
         'labels': labels,
         'label_data': zip(labels, label_forms),
         'orientation_form': orientation_form,  # Pass orientation form to the template
+        'orientation_value': style_settings_instance.orientation,
     }
 
     return render(request, "edit-style.html", context)

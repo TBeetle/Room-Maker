@@ -119,13 +119,12 @@ class StyleSettings(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     ORIENTATION_CHOICES = [
-        ('vertical', "Portrait"),
-        ('horizontal', "Landscape"),
+        ('portrait', "Portrait"),
+        ('landscape', "Landscape"),
     ]
 
-    # Orientation of PDF - horizontal or vertical
-    orientation = models.CharField(max_length=32, default = 'vertical', choices=ORIENTATION_CHOICES)
-
+    # Orientation of PDF - portrait or landscape
+    orientation = models.CharField(max_length=32, default = 'portrait', choices=ORIENTATION_CHOICES)
 
 
 # Stores default style settings for users, providing defaults for each layout they generate
@@ -247,8 +246,14 @@ class ConvertedFile(models.Model):
 
 # Stores the x and y coordinates of a label
 class Label(models.Model):
+        LABEL_LOCATIONS = [
+            ('above', 'Above'),
+            ('below', 'Below'),
+            ('left', 'Left'),
+            ('right', 'Right')
+        ]
+
         file = models.ForeignKey(ConvertedFile, on_delete=models.CASCADE)
         name = models.CharField(max_length=100)
-        x_coordinate = models.FloatField()
-        y_coordinate = models.FloatField()
+        location = models.CharField(max_length=5, default="above", choices=LABEL_LOCATIONS)
     
