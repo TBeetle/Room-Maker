@@ -56,8 +56,7 @@ class UpdateFileNameForm(ModelForm):
         # Check unique filename
         user_files = ConvertedFile.objects.filter(user=self.instance.user)
         if user_files.filter(file_name=new_file_name).exists():
-            raise forms.ValidationError("File name must be unique")
-
+            raise forms.ValidationError("File name must not match an existing file in your library.")
         return new_file_name
 
 

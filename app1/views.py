@@ -9,6 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.text import get_valid_filename
 from shutil import copyfile
 from django.conf import settings
+from django.core.files.storage import default_storage
 
 import pandas as pd
 import os
@@ -83,16 +84,15 @@ def ImportPage(request):
 
                     # Define path to uploaded JSON/CSV file - /uploads/imported_files/<filename>
                     uploaded_filename = uploaded_file_instance.file.name
-                    print("uploaded_filename: " + uploaded_filename)
                     uploaded_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, uploaded_filename)
-                    print("Uploaded CSV/JSON File Path: " + uploaded_file_path)
+                    print("Pre-converted Uploaded File Path: " + uploaded_file_path)
                     print("Uploaded file name: " + uploaded_filename)
 
                     # Save UploadedFile instance to server
                     uploaded_file_instance.file_name = uploaded_filename
                     uploaded_file_instance.save()
 
-                    print("CHECK 1 COMPLETE: File Uploaded to /imported_files")
+                    print("CHECK 1 COMPLETE: File Uploaded to /imported_files/<user>/")
 
                     # Rename file
                     prefix_filename, _ = os.path.splitext(uploaded_filename)
@@ -126,8 +126,14 @@ def ImportPage(request):
 
                         # Updated path to Excel file
                         uploaded_file_path = excel_filepath
-                        print("Uploaded File Path: " + uploaded_file_path)
+                        print("Updated File Path after CSV/JSON conversion: " + uploaded_file_path)
                         uploaded_file_instance.save()
+
+                        # Delete CSV/JSON file
+                        print(f"deleting {uploaded_filename}:")
+                        uploaded_csvjson_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, uploaded_filename)
+                        default_storage.delete(uploaded_csvjson_filepath)
+
                     else:
                         uploaded_file_instance.file_path = uploaded_file_path
                         uploaded_file_instance.save()
@@ -139,7 +145,6 @@ def ImportPage(request):
                     # Query for DefaultStyleSettings based on user preferences
                     default_styling = DefaultStyleSettings.objects.filter(user=request.user).first()
 
-                    print("font: " + default_styling.font_type)
                     # Create individual StyleSettings for layout
                     layout_style = StyleSettings(
                         user = request.user,
@@ -160,8 +165,6 @@ def ImportPage(request):
                     )
                     layout_style.save()
 
-                    
-
                     # Call conversion code on file from /uploads/imported_files/<filename>
                     success = lc.conversion(uploaded_file_path, layout_style)
                     if not success:
@@ -172,7 +175,6 @@ def ImportPage(request):
                         except Exception as e:
                             logger.error("Error occurred while deleting file: %s", e)
                             messages.error(request, "An error occurred while deleting the file.")
-                        
     
                     
                     # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
@@ -191,7 +193,7 @@ def ImportPage(request):
                     
                     # Make ConvertedFile to link UploadedFile with output
                     converted_file = ConvertedFile(
-                        file_name=prefix_filename, # *NOTE* stores prefix without extension
+                        file_name=prefix_filename, # *NOTE* stores prefix WITHOUT extension
                         user = request.user,
                         file_path = uploaded_file_instance.file_path,
                         uploaded_file = uploaded_file_instance,
@@ -203,7 +205,7 @@ def ImportPage(request):
                     converted_file.full_clean()
                     converted_file.save(force_insert=True)
 
-                    print("reached here")
+                    print("Converted File created with name: " + converted_file.file_name)
 
                     # Create Label objects by parsing through Excel file
                     labels = parse_excel_file(converted_file)
@@ -318,8 +320,6 @@ from shutil import move
 def ExportPage(request, layout_id):
     # Retreive layout based on layout id
     layout = ConvertedFile.objects.get(id=layout_id)
-    print("layout name: " + layout.file_name)
-    print("pdf file: " + layout.pdf_file)
 
     if request.method == 'POST':
         update_file_name_form = UpdateFileNameForm(request.POST, instance=layout)
@@ -327,6 +327,9 @@ def ExportPage(request, layout_id):
             new_file_name = update_file_name_form.cleaned_data['new_file_name']
             old_file_name = layout.file_name
             layout.file_name = new_file_name
+            # NEED TO UPDATE LAYOUT.FILE_PATH
+            new_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', request.user.username, new_file_name)
+            layout.file_path = f"{new_file_path}.xlsx"
             layout.save()
 
             # rename associated files in user's uploaded file directory
@@ -336,10 +339,8 @@ def ExportPage(request, layout_id):
                 new_file_path = os.path.join(user_directory, f"{new_file_name}{file_extension}")
                 if os.path.exists(old_file_path):
                     move(old_file_path, new_file_path)
-            
-            # update database for associated files
-
-            print("File name updated successfully")
+                
+            print("File RENAMED successfully to: " + layout.file_name)
             return redirect('export-layout', layout.id)
     else:
         update_file_name_form = UpdateFileNameForm(instance=layout, initial={'new_file_name': layout.file_name})
@@ -671,14 +672,13 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 #     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
 
-from django.core.files.storage import default_storage
-
 # %******************** Delete button ****************************%
 @login_required(login_url="login")
 def delete_layout_test(request, layout_id):
     try:
         layout = ConvertedFile.objects.get(id=layout_id, user=request.user)  # Ensure the user can only delete their own layouts
         # delete associated files
+        print(f"file path to Excel file: {layout.file_path}")
         default_storage.delete(layout.file_path)
         default_storage.delete(layout.latex_file)
         default_storage.delete(layout.pdf_file)
