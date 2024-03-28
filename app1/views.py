@@ -54,6 +54,7 @@ def ImportPage(request):
 
     # Ensure request is a POST and that a file was uploaded:
     if request.method == "POST" and request.FILES:
+        uploaded_file_path = None # Define uploaded filepath
         # Ensure atomicity
         try:
             with transaction.atomic():
@@ -170,6 +171,7 @@ def ImportPage(request):
                     if not success:
                         try:
                             # Delete uploaded file and associated instance
+                            print("UPLOADED FILE ERROR")
                             os.remove(uploaded_file_instance.file_path)
                             uploaded_file_instance.delete()
                         except Exception as e:
@@ -219,6 +221,11 @@ def ImportPage(request):
                     return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
             logger.error("Error occurred during import: %s", e)
+            if uploaded_file_path:
+                try:
+                    os.remove(uploaded_file_path)
+                except Exception as delete_error:
+                    logger.error("Error occurred while deleting file: %s", delete_error)
             messages.error(request, "The uploaded file could not be parsed. See provided sample format.")
             return redirect("import")
 
