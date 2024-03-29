@@ -1,15 +1,28 @@
-Type,Descriptor,X,Y,width,height
-Furniture,TABLE,26,34.5,24,24
-Furniture,TABLE,30,80,24,24
-Exterior,WALL,0,0		
-Exterior,WALL,0,100
-Exterior,WALL,50,100
-Exterior,WALL,50,125
-Exterior,WALL,100,125
-Exterior,WALL,100,75
-Exterior,WINDOW,100,75
-Exterior,WINDOW,100,25
-Exterior,WALL,100,25
-Exterior,WALL,100,0
-Exterior,WALL,0,0
-	
+Type,Descriptor,X,Y,width,height,rotation,door_angle,door_length,door_xory,room_nav_direction,,furniture_type,radius,min,max,step
+Orientation,portrait,,,,,,,,,,,,,,,
+Neighborhood,Broad,,,,,,,,,,,,,,,
+Building,Greenway,,,,,,,,,,,,,,,
+Room Name,Test Room,,,,,,,,,,,,,,,
+Date,2024 March 21,,,,,,,,,,,,,,,
+Y Axis,,,,,,,,,,,,,,-36,288,36
+X Axis,,,,,,,,,,,,,,0,180,36
+Calibration,A1,72,100,,,,,,,,,,,,,
+Camera,Camera A,72,72,,,90,,,,,,,,,,
+Sensor,Sensor LW67756,72,25,,,,,,,,,,,,,
+Furniture,TABLE,26,34.5,24,24,0,,,,,,rectangle,,,,
+Furniture,TABLE,30,80,,,,,,,,,circle,10,,,
+Exterior,WALL,0,0,,,,,,,,,,,,,
+Exterior,WALL,0,100,,,,,,,,,,,,,
+Exterior,WALL,50,100,,,,,,,,,,,,,
+Exterior,WALL,50,125,,,,,,,,,,,,,
+Exterior,WALL,100,125,,,,,,,,,,,,,
+Exterior,WALL,100,75,,,,,,,,,,,,,
+Exterior,WINDOW,100,75,,,,,,,,,,,,,
+Exterior,WINDOW,100,25,,,,,,,,,,,,,
+Exterior,WALL,100,25,,,,,,,,,,,,,
+Exterior,WALL,100,0,,,,,,,,,,,,,
+Exterior,WALL,75,0,,,,,,,,,,,,,
+Exterior,DOOR,75,0,,,,10,-50,x,,,,,,,
+Exterior,WALL,25,0,,,,,,,,,,,,,
+Exterior,WALL,0,0,,,,,,,,,,,,,
+Room Navigation,Room,125,25,,,,,,,left,,,,,,
