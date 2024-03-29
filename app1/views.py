@@ -241,7 +241,7 @@ def parse_excel_file(converted_file):
 
     # iterate over rows in dataframe to extract labels
     for index, row in df.iterrows():
-        if row['Type'] in ['Camera', 'Sensor', 'Calibration', 'Room Navigation']:
+        if row['Type'] in ['Camera', 'Sensor', 'Calibration']:
             # extract data for the label
             label_data = {
                 'name': row['Descriptor'],
