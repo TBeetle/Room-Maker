@@ -589,6 +589,7 @@ def RegisterPage(request):
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
         # Check if any field is empty
         if not uname or not email or not pass1 or not pass2:
             messages.error(request, 'All fields are required.')
@@ -597,14 +598,23 @@ def RegisterPage(request):
         elif User.objects.filter(username=uname).exists():
             messages.error(request, 'Username is already in use.')
 
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already in use.')
+
         elif not re.fullmatch(regex, email):
             messages.error(request, 'Invalid email format.')
 
         elif User.objects.filter(email=email.lower()).exists():
             messages.error(request, 'Email is already in use.')
+
+        elif len(pass1) < 8:
+            messages.error(request, "Password must contain at least 8 characters.")
+
+        elif pass1.isdigit():
+            messages.error(request, "Password cannot be entirely numeric.")
         
         elif pass1 != pass2:
-            messages.info(request, "Passwords do not match!")
+            messages.error(request, "Passwords do not match!")
 
         else:
             # Create a new user
@@ -616,6 +626,9 @@ def RegisterPage(request):
 
             return redirect('login')
         # print(uname, email, pass1, pass2)
+    elif request.method=='GET':
+        messages.info(request, "Your password must contain at least 8 characters.")
+        messages.info(request, "Your password can't be entirely numeric.")
 
     return render(request, "register.html")
 
