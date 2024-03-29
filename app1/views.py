@@ -691,3 +691,20 @@ def delete_layout_test(request, layout_id):
     except Exception as e:
         messages.error(request, "Error deleting layout: %s" % e)
     return HttpResponseRedirect(reverse('layout-library'))
+
+@login_required(login_url="login")
+def delete_all_layout_test(request):
+    try:
+        layouts = ConvertedFile.objects.filter(user=request.user)  # Get all layouts for the current user
+        for layout in layouts:
+            # Delete associated files
+            default_storage.delete(layout.file_path)
+            default_storage.delete(layout.latex_file)
+            default_storage.delete(layout.pdf_file)
+            default_storage.delete(layout.image)
+            # Delete layout instance
+            layout.delete()
+        messages.success(request, "All layouts deleted successfully.")
+    except Exception as e:
+        messages.error(request, "Error deleting layouts: %s" % e)
+    return HttpResponseRedirect(reverse('account-settings'))
