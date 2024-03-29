@@ -62,6 +62,7 @@ urlpatterns += [
 # Delete Button
 urlpatterns += [
     path('delete-layout-test/<int:layout_id>/', views.delete_layout_test, name='delete_layout_test'),
+    path('delete-all-layout-test/', views.delete_all_layout_test, name='delete_all_layout_test'),
 ]
 
 # Serving media files during development
