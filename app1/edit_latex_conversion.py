@@ -25,16 +25,20 @@ def conversion(file, layout_style, labels):
 
     # Define LaTeX template for sensors
     latex_sensor_template = "\\node[sensor, color={color}](sensor) at ({s1},{s2}) {{{s3}}};\n".format(color=layout_style.sensor_label_color,s1='{}',s2='{}',s3='{}')
-    latex_sensor_label_template = "\\node[sensor-label,text={color}] at ({x1},{y1}) {a1};\n".format(color=layout_style.sensor_label_color,x1='{s1:.2f}',y1='{s2:.2f}',a1='{{{s3} \\\\ ({s1:.2f}, {s2:.2f})}}')
+    latex_sensor_label_template = "\\node[sensor-label,yshift=3pt,above,text={color}] at ({x1},{y1}) {a1};\n".format(color=layout_style.sensor_label_color,x1='{s1:.2f}',y1='{s2:.2f}',a1='{{{s3} \\\\ ({s1:.2f}, {s2:.2f})}}')
+
+    latex_sensor_label_edit_template = "\\node[sensor-label,{shift},{location},text={color}] at ({x1},{y1}) {a1};\n".format(shift='{}',location='{}',color=layout_style.sensor_label_color,x1='{s1:.2f}',y1='{s2:.2f}',a1='{{{s3} \\\\ ({s1:.2f}, {s2:.2f})}}')
 
     # Define LaTeX template for cameras
     latex_camera_template = "\\camera[color={color},rotate={c1}]({c2},{c3});\n".format(color=layout_style.camera_label_color, c1='{}',c2='{}',c3='{}')
-    latex_camera_label_template = "\\node[camera-label, text={color}] at ({c1},{c2}) {c3};\n".format(color=layout_style.camera_label_color,c1='{}',c2='{}',c3='{{{}}}')
+    latex_camera_label_template = "\\node[camera-label,yshift=3pt,above, text={color}] at ({c1},{c2}) {c3};\n".format(color=layout_style.camera_label_color,c1='{}',c2='{}',c3='{{{}}}')
+    latex_camera_label_edit_template = "\\node[camera-label,{shift},{location}, text={color}] at ({c1},{c2}) {c3};\n".format(shift='{}',location='{}',color=layout_style.camera_label_color,c1='{}',c2='{}',c3='{{{}}}') 
 
     # Define LaTeX template for calibration locations
     latex_calibration_template = "\\node[location, color={color}]({l1}) at ({l2},{l3}) {{{l4}}};\n".format(color=layout_style.calibration_color,l1='{}',l2='{}',l3='{}',l4='{}')
-    latex_calibration_label_template = "\\node[location-label, text={color}] at ({l1}) {l2};\n".format(color=layout_style.calibration_color,l1='{}',l2='{{{}}}')
-    
+    latex_calibration_label_template = "\\node[location-label,above,yshift=3pt, text={color}] at ({l1}) {l2};\n".format(color=layout_style.calibration_color,l1='{}',l2='{{{}}}')
+    latex_calibration_label_edit_template = "\\node[location-label,{shift},{location}, text={color}] at ({l1}) {l2};\n".format(shift='{}',location='{}',color=layout_style.calibration_color,l1='{}',l2='{{{}}}')
+
     # Define LaTeX template for doors
     latex_door_template = "\\draw[door, rotate around={a}, line width={width}pt, color={color}] ({x1},{y1}) -- ++({x2},{y2});\n".format(a='{{{d1:.2f}:({d2:.2f},{d3:.2f})}}', width=layout_style.door_width,color=layout_style.door_color, x1='{d2:.2f}',y1='{d3:.2f}', x2='{d4:.2f}',y2='{d5:.2f}')
     # Define LaTeX template for room navigation
@@ -89,6 +93,7 @@ def conversion(file, layout_style, labels):
             label_name = label.name
             label_type = label.type
             label_location=label.location # THIS VALUE WILL BE EITHER: 'Above', 'Below', 'Left', 'Right'
+            print("Tyler:",label_name)
 
 
     # Iterate through rows and generate LaTeX code for walls and furniture
@@ -157,18 +162,55 @@ def conversion(file, layout_style, labels):
             x = row['X']
             y = row['Y']
             latex_code += latex_sensor_template.format(x, y)
-            latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=row['Descriptor'])
+            for label in labels:
+                if label.name == row['Descriptor'] and label.location == 'below':
+                    latex_code += latex_sensor_label_edit_template.format('yshift=-5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
+                    print("below sensor")
+                elif label.name == row['Descriptor'] and label.location == 'left':
+                    latex_code += latex_sensor_label_edit_template.format('xshift=-5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
+                    print("left sensor")
+                elif label.name == row['Descriptor'] and label.location == 'right':
+                    latex_code += latex_sensor_label_edit_template.format('xshift=5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
+                    print("right sensor")
+                elif label.name == row['Descriptor']:
+                    latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=row['Descriptor'])
+                    print("above sensor")
         elif row['Type'] == 'Camera':
             x = row['X']
             y = row['Y']
             rotation = row['rotation']
             latex_code += latex_camera_template.format(rotation, x, y)
-            latex_code += latex_camera_label_template.format(x, y, row['Descriptor'])
+            for label in labels:
+                if label.name == row['Descriptor'] and label.location == 'below':
+                    latex_code += latex_camera_label_edit_template.format('yshift=-8pt',label.location,x,y,row['Descriptor'])
+                    print("below camera")
+                elif label.name == row['Descriptor'] and label.location == 'left':
+                    latex_code += latex_camera_label_edit_template.format('xshift=-4pt',label.location,x,y,row['Descriptor'])
+                    print("left camera")
+                elif label.name == row['Descriptor'] and label.location == 'right':
+                    latex_code += latex_camera_label_edit_template.format('xshift=4pt',label.location,x,y,row['Descriptor'])
+                    print("right camera")
+                elif label.name == row['Descriptor']:
+                    latex_code += latex_camera_label_template.format(x,y,row['Descriptor'])
+                    print("above camera")
         elif row['Type'] == 'Calibration':
             x = row['X']
             y = row['Y']
             latex_code += latex_calibration_template.format(row['Descriptor'], x, y)
-            latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
+            for label in labels:
+                if label.name == row['Descriptor'] and label.location == 'below':
+                    latex_code += latex_calibration_label_edit_template.format('yshift=-6pt',label.location,row['Descriptor'],row['Descriptor'])
+                    print("below")
+                elif label.name == row['Descriptor'] and label.location == 'left':
+                    latex_code += latex_calibration_label_edit_template.format('xshift=-6pt',label.location,row['Descriptor'],row['Descriptor'])
+                    print("left")
+                elif label.name == row['Descriptor'] and label.location == 'right':
+                    latex_code += latex_calibration_label_edit_template.format('xshift=6pt',label.location,row['Descriptor'],row['Descriptor'])
+                    print("right")
+                elif label.name == row['Descriptor']:
+                    latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
+                    print("above")
+            
         elif row['Type'] == 'Room Navigation':
             x = row['X']
             y = row['Y']
@@ -239,7 +281,7 @@ def conversion(file, layout_style, labels):
     \\tikzstyle{{furniture}} = [draw, line width=0.5pt, transform shape]
     \\tikzstyle{{furniture-label}} = [fill=white, align=center]
     \\tikzstyle{{sensor}} = [circle, draw, color=teal, fill=teal, inner sep=0.5mm]
-    \\tikzstyle{{sensor-label}} = [above, yshift=2pt, fill=white, align=center, text=teal]
+    \\tikzstyle{{sensor-label}} = [fill=white, align=center, text=teal]
     \\tikzstyle{{location}} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
     \\tikzstyle{{location-label}} = [above, yshift=3pt, fill=white, text=violet]
     \\tikzstyle{{walking-path}} = [densely dashed, line width=0.25mm, -{{Stealth[length=4mm, width=2mm]}}]
@@ -252,7 +294,7 @@ def conversion(file, layout_style, labels):
 	    \\node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {{}}
      }}
 
-    \\tikzstyle{{camera-label}} = [fill=white, align=center, text=blue!75!black, above, yshift=5pt]
+    \\tikzstyle{{camera-label}} = [fill=white, align=center, text=blue!75!black]
 
     % units
     \\usepackage{{siunitx}}
@@ -333,7 +375,7 @@ def conversion(file, layout_style, labels):
     if process.returncode == 0:
         print("PDF generated successfully.") # Specify the destination folder
         print(layout_style.camera_label_color)
-
+        print("labels:", label_type)
         pdf_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
         tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
         aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
