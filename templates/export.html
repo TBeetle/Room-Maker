@@ -84,8 +84,15 @@
                             <div class="col text-center">
                                 <button type="submit" class="btn btn-primary btn-sm" style="width:40%">Save Name Changes</button>
                             </div>
+                            {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
                         </div>
-                    
+                        
                     </form>
                 </div>
 

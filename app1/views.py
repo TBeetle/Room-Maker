@@ -19,7 +19,7 @@ from .models import UploadedFile, ConvertedFile, StyleSettings, DefaultStyleSett
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseNotFound
 import zipfile
-import app1.edit_latex_conversion as lc
+import app1.latex_conversion as lc
 import app1.edit_latex_conversion as elc
 import six
 from django.http import HttpResponseRedirect
@@ -352,6 +352,9 @@ def ExportPage(request, layout_id):
                 
             print("File RENAMED successfully to: " + layout.file_name)
             return redirect('export-layout', layout.id)
+        elif not update_file_name_form.is_valid():
+            messages.error(request, "That name already exists. Please try a different name.")
+
     else:
         update_file_name_form = UpdateFileNameForm(instance=layout, initial={'new_file_name': layout.file_name})
 

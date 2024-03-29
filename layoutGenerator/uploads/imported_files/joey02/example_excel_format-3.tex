@@ -35,7 +35,7 @@
     \tikzstyle{furniture} = [draw, line width=0.5pt, transform shape]
     \tikzstyle{furniture-label} = [fill=white, align=center]
     \tikzstyle{sensor} = [circle, draw, color=teal, fill=teal, inner sep=0.5mm]
-    \tikzstyle{sensor-label} = [above, yshift=2pt, fill=white, align=center, text=teal]
+    \tikzstyle{sensor-label} = [fill=white, align=center, text=teal]
     \tikzstyle{location} = [diamond, draw, color=violet, fill=violet, inner sep=0.5mm]
     \tikzstyle{location-label} = [above, yshift=3pt, fill=white, text=violet]
     \tikzstyle{walking-path} = [densely dashed, line width=0.25mm, -{Stealth[length=4mm, width=2mm]}]
@@ -61,7 +61,7 @@
 	    \node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {}
      }
 
-    \tikzstyle{camera-label} = [fill=white, align=center, text=blue!75!black, above, yshift=5pt]
+    \tikzstyle{camera-label} = [fill=white, align=center, text=blue!75!black]
 
     % units
     \usepackage{siunitx}
@@ -105,29 +105,29 @@
     
 
     \node[location, color=black](A1) at (72.0,100.0) {};
-\node[location-label, text=black] at (A1) {A1};
+\node[location-label,above,yshift=3pt, text=black] at (A1) {A1};
 \camera[color=black,rotate=90.0](72.0,72.0);
-\node[camera-label, text=black] at (72.0,72.0) {Camera A};
+\node[camera-label,yshift=3pt,above, text=black] at (72.0,72.0) {Camera A};
 \node[sensor, color=black](sensor) at (72.0,25.0) {};
-\node[sensor-label,text=black] at (72.00,25.00) {Sensor LW67756 \\ (72.00, 25.00)};
+\node[sensor-label,yshift=3pt,above,text=black] at (72.00,25.00) {Sensor LW67756 \\ (72.00, 25.00)};
 \furnitureR[height=24.0, width=24.0, rotate=0.0](26.0, 34.5);
 \node[furniture-label, text=black ] at (26.0,34.5) {TABLE};
 \furnitureC[radius=10.0](30.0, 80.0);
 \node[furniture-label, text=black ] at (30.0,80.0) {TABLE};
-\draw[wall, line width=2pt,color =white] (0.00,0.00) -- (0.00,100.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (0.00,100.00) -- (50.00,100.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (50.00,100.00) -- (50.00,125.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (50.00,125.00) -- (100.00,125.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (100.00,125.00) -- (100.00,75.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (100.00,75.00) -- (100.00,75.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (0.00,0.00) -- (0.00,100.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (0.00,100.00) -- (50.00,100.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (50.00,100.00) -- (50.00,125.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (50.00,125.00) -- (100.00,125.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (100.00,125.00) -- (100.00,75.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (100.00,75.00) -- (100.00,75.00) coordinate (c);
 \draw[window,line width=2pt, color=black] (100.00,75.00) -- (100.00,25.00) coordinate (c);
 \draw[window,line width=2pt, color=black] (100.00,25.00) -- (100.00,25.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (100.00,25.00) -- (100.00,0.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (100.00,0.00) -- (75.00,0.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (75.00,0.00) -- (75.00,0.00) coordinate (c);
-\draw[door, rotate around={10.00:(75.00,0.00)}, line width=2pt, color=black] (75.00,0.00) -- ++(-50.00,0.00);
-\draw[wall, line width=2pt,color =white] (25.00,0.00) -- (0.00,0.00) coordinate (c);
-\draw[wall, line width=2pt,color =white] (0.00,0.00) -- (0.00,0.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (100.00,25.00) -- (100.00,0.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (100.00,0.00) -- (75.00,0.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (75.00,0.00) -- (75.00,0.00) coordinate (c);
+\draw[door, rotate around={10.00:(75.00,0.00)}, line width=12pt, color=black] (75.00,0.00) -- ++(-50.00,0.00);
+\draw[wall, line width=12pt,color =violet] (25.00,0.00) -- (0.00,0.00) coordinate (c);
+\draw[wall, line width=12pt,color =violet] (0.00,0.00) -- (0.00,0.00) coordinate (c);
 \draw[nav-arrow,color=black] (125.0,25.0) -- ++(12,0) node[right, fill=white] {Room};
 
 
