@@ -5,7 +5,7 @@ import shutil
 from pdf2image import convert_from_path
 from django.conf import settings
 
-def conversion(file, layout_style):
+def conversion(file, layout_style, labels):
     
     # Read Excel data 
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
@@ -80,6 +80,16 @@ def conversion(file, layout_style):
             \\node[gray, left] at ({a9},\\i) {{\\SI{{\\value}}{{\\inch}}}};
         }}
     """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
+
+    # TODO: Do whatever you want with the labels here; this will only be called when a user changes the labels from Edit Style page
+    # also move this section of code wherever
+    if labels:
+        # Iterature through the labels as follows
+        for label in labels:
+            label_name = label.name
+            label_type = label.type
+            label_location=label.location # THIS VALUE WILL BE EITHER: 'Above', 'Below', 'Left', 'Right'
+
 
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""

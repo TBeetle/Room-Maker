@@ -256,4 +256,4 @@ class Label(models.Model):
         file = models.ForeignKey(ConvertedFile, on_delete=models.CASCADE)
         name = models.CharField(max_length=100)
         location = models.CharField(max_length=5, default="above", choices=LABEL_LOCATIONS)
-    
+        type = models.CharField(max_length=20, default="Sensor")
