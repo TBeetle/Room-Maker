@@ -212,8 +212,8 @@ def ImportPage(request):
                     # Create Label objects by parsing through Excel file
                     labels = parse_excel_file(converted_file)
                     for label in labels:
-                        print("label: " + label['name'])
-                        Label.objects.create(file=converted_file, name=label['name'])
+                        print("label: " + label['name'] + " of type " + label['type'])
+                        Label.objects.create(file=converted_file, name=label['name'], type=label['type'])
                         # NOTE - all label objects are created with default value 'above'
 
                     print("created labels")
@@ -242,7 +242,8 @@ def parse_excel_file(converted_file):
         if row['Type'] in ['Camera', 'Sensor', 'Calibration', 'Room Navigation']:
             # extract data for the label
             label_data = {
-                'name': row['Descriptor']
+                'name': row['Descriptor'],
+                'type': row['Type']
             }
 
             labels.append(label_data)
@@ -389,6 +390,10 @@ def EditLayoutStylePage(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     style_settings_instance = layout.style_settings
     labels = layout.get_labels()
+
+    print("labels: ")
+    for label in labels:
+        print(label.name + " located " + label.location)
 
     # get path to Excel file
     excel_file_path = layout.file_path
