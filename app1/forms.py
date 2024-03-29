@@ -27,15 +27,23 @@ class AccountSettingsForm(forms.ModelForm):
         new_password2 = cleaned_data.get('new_password2')
         
         if new_password1 or new_password2:
+            if len(new_password1) < 8:
+                self.add_error('new_password1', 'Password must contain at least 8 characters.')
+            elif new_password1.isdigit():
+                self.add_error('new_password1', 'Password cannot be entirely numeric.')
+
+            if new_password1 != new_password2:
+                self.add_error('new_password2', 'The two password fields didn’t match.')
+
             if not old_password:
                 self.add_error('old_password', 'Please enter your old password.')
+                
             else:
                 user = self.instance
                 if not user.check_password(old_password):
                     self.add_error('old_password', 'The old password is incorrect.')
-        
-        if new_password1 != new_password2:
-            self.add_error('new_password2', 'The two password fields didn’t match.')
+                elif new_password1 == old_password:
+                    self.add_error('new_password1', 'The new password is the same as the old password.')
         
         return cleaned_data
 
