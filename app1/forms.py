@@ -74,7 +74,7 @@ class UpdateStyleSettingsForm(ModelForm):
         fields = ('wall_color', 'door_color', 'furniture_color', 'window_color',
                   'wall_width', 'door_width', 'furniture_width', 'window_width',
                   'sensor_label_color', 'camera_label_color', 'navigation_arrow_color', 'calibration_color',
-                  'meta_title', 'meta_date', 'meta_location', 'orientation')
+                  'orientation')
         widgets = {
             'wall_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
             'door_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
@@ -89,10 +89,6 @@ class UpdateStyleSettingsForm(ModelForm):
             'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
             'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
             'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            # meta data styling
-            'meta_title': forms.TextInput(attrs={'class': 'form-control'}),
-            'meta_date': forms.DateInput(attrs={'class': 'form-control'}),
-            'meta_location': forms.TextInput(attrs={'class': 'form-control'}),
             }
 
 class UpdateDefaultStyleSettingsForm(ModelForm):
