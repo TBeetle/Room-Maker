@@ -13,7 +13,7 @@ def conversion(file, layout_style):
     print(file)
     
     # Define LaTeX template
-    latex_walls_template = "\\draw[wall, line width={width}pt, line cap=round, color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=layout_style.wall_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
+    latex_walls_template = "\\draw[wall, line width={width}pt,color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=layout_style.wall_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
    
     # Define LaTeX template for furniture
     latex_rectangle_furniture_template = "\\furnitureR[height={h1}, width={w1}, rotate={r1}]({a1}, {a2});\n".format(h1='{}',w1='{}', r1='{}',a1='{}',a2='{}')
@@ -21,7 +21,7 @@ def conversion(file, layout_style):
     latex_furniture_label_template = "\\node[furniture-label, text={color} ] at ({a1},{a2}) {a3};\n".format(color=layout_style.furniture_color, a1='{}', a2='{}', a3='{{{}}}')
 
     # Define LaTeX template for windows
-    latex_windows_template = "\\draw[window,line width={width}pt, line cap=round, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=layout_style.window_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
+    latex_windows_template = "\\draw[window,line width={width}pt, color={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.window_width, color=layout_style.window_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
 
     # Define LaTeX template for sensors
     latex_sensor_template = "\\node[sensor, color={color}](sensor) at ({s1},{s2}) {{{s3}}};\n".format(color=layout_style.sensor_label_color,s1='{}',s2='{}',s3='{}')
@@ -223,8 +223,8 @@ def conversion(file, layout_style):
     \\usetikzlibrary{{math, calc, shapes, arrows.meta}}
 
     \\tikzstyle{{grid-line}} = [gray, very thin]
-    \\tikzstyle{{wall}} = [line width=2pt]
-    \\tikzstyle{{window}} = [line width=1pt]
+    \\tikzstyle{{wall}} = [line width=2pt, line cap=round]
+    \\tikzstyle{{window}} = [line width=1pt, line cap=round]
     \\tikzstyle{{door}} = [line width=1pt]
     \\tikzstyle{{furniture}} = [draw, line width=0.5pt, transform shape]
     \\tikzstyle{{furniture-label}} = [fill=white, align=center]
@@ -234,7 +234,6 @@ def conversion(file, layout_style):
     \\tikzstyle{{location-label}} = [above, yshift=3pt, fill=white, text=violet]
     \\tikzstyle{{walking-path}} = [densely dashed, line width=0.25mm, -{{Stealth[length=4mm, width=2mm]}}]
     \\tikzstyle{{nav-arrow}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, green!60!black]
-    \\tikzstyle{{nav-arrow2}} = [line width=0.25mm, {{Stealth[length=4mm, width=2mm]}}-, violet]
     
     {latex_furniture_styling}
 
