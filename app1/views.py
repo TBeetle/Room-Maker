@@ -377,31 +377,6 @@ def serve_image(request, image_path):
 from .forms import UpdateStyleSettingsForm
 from django.shortcuts import render, get_object_or_404, redirect
 
-@login_required(login_url="login")
-def EditLayoutStylePage(request, layout_id):
-    
-    layout = get_object_or_404(ConvertedFile, id=layout_id)
-    style_settings_instance = layout.style_settings 
-
-    # TODO - Ensure that saving the form will update the associated style_settings model
-    if request.method == "POST":
-        form = UpdateStyleSettingsForm(request.POST, instance=style_settings_instance)
-        if form.is_valid():
-            form.save()
-            print(f"FORM STYLE SETTINGS CHECK: Wall Thickness = {style_settings_instance.wall_width}")
-            print(f"Nav color = {style_settings_instance.navigation_arrow_color}")
-            print("Form successfully saved.")
-            # TODO: Display success message
-            # TODO @ Tyler: Call the LaTeX code with the new model values & update the PDF *****
-            return redirect('edit-layout', layout_id=layout_id)
-    else:
-        form = UpdateStyleSettingsForm(instance=style_settings_instance)
-
-    context = {
-        'layout': layout,
-        'form': form
-    }
-    return render(request, "edit-style.html", context)
 from .forms import UpdateStyleSettingsForm, LabelForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django import forms
@@ -414,6 +389,9 @@ def EditLayoutStylePage(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     style_settings_instance = layout.style_settings
     labels = layout.get_labels()
+
+    # get path to Excel file
+    excel_file_path = layout.file_path
 
     if request.method == "POST":
         # Style settings form
@@ -445,6 +423,40 @@ def EditLayoutStylePage(request, layout_id):
                 label.location = label_form.cleaned_data['location']
                 label.save()
                 print(f"Label {label.name} saved with new location: {label.location}")
+
+            # Call conversion code
+            success = lc.conversion(excel_file_path, style_settings_instance)
+            if not success:
+                logger.error("Failure converting file.")
+                messages.error(request, "An error occurred while deleting the file.")
+
+            # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
+            prefix_filename, _ = os.path.splitext(layout.file_name)
+                
+            username = request.user.username
+            # Delete old files to be replaced by files with new styling
+            default_storage.delete(layout.latex_file)
+            default_storage.delete(layout.pdf_file)
+            default_storage.delete(layout.image)
+
+            # Update files in user's folder
+            source_tex_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
+            source_pdf_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
+            source_png_path = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.png')
+            destination_tex_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.tex")
+            destination_pdf_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.pdf")
+            destination_png_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, f"{prefix_filename}.png")
+
+            copyfile(source_tex_path, destination_tex_path)
+            copyfile(source_pdf_path, destination_pdf_path)
+            copyfile(source_png_path, destination_png_path)           
+
+            # Update ConvertedFile with new output 
+            layout.latex_file = destination_tex_path
+            layout.image = destination_png_path
+            layout.pdf_file = destination_pdf_path
+            layout.save()
+
             return redirect('edit-layout', layout_id=layout_id)
         
         
