@@ -240,7 +240,7 @@ def conversion(file, layout_style, labels):
         elif row['Type'] == 'Building':
             latex_building = row['Descriptor']
         elif row['Type'] == 'Orientation':
-            latex_orientation = row['Descriptor']
+            latex_orientation = layout_style.orientation
 
 
     # Complete LaTeX code with autopopulated walls
