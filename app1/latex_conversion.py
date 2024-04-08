@@ -246,7 +246,7 @@ def conversion(file, layout_style):
 	    \\node[isosceles triangle, draw, color=blue!75!black, fill=blue!75!black, inner sep=0in, minimum size=0.1in, isosceles triangle apex angle=75, anchor=east, #1] at (#2,#3) {{}}
      }}
 
-    \\tikzstyle{{camera-label}} = [fill=white, align=center, text=blue!75!black, above, yshift=5pt]
+    \\tikzstyle{{camera-label}} = [fill=white, align=center, text=blue!75!black, above, yshift=8pt]
 
     % units
     \\usepackage{{siunitx}}
