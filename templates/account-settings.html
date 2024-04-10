@@ -59,7 +59,7 @@
     .list-group-item.active {
         color:#fff;
         border: none;
-        background-color: #4395e7;
+        background-color: #1B9CDB;
         font-weight: bold;
     }
 
@@ -71,10 +71,10 @@
 
 {% block content %}
 
-<div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
+<div class="container p-0 bg-body text-body align-items-center justify-content-center mt-4" style="width: 70; height: 100; border-radius: 10px;">
     <div class="row">
         <!--Sidebar for settings-->
-        <div class="col-3 bg-dark p-0">
+        <div class="col-3 bg-dark p-0" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
             <div class="sidebar">
                 <ul class="list-group mt-5" style="border-radius:0">
                     <li class="list-group-item" id="defaultStyleSettingsTab">
@@ -90,7 +90,7 @@
         <!--Account Settings main content-->
         <div class="col">
             <div class="p-5" id="accountSettings">
-                <h1 class="display-5 fw-bold">Account Settings</h1>
+                <h1 class="display-6 fw-bold">Account Settings</h1>
                 <hr>
                 {% if messages %}
                     <div class="alert alert-success" role="alert">
@@ -141,9 +141,9 @@
                 <div class="container mt-3">
                     <div class="row justify-content-end">
                         <div class="col-auto">
-                            <form action="{% url 'delete_all_layout_test' %}" method="post">
+                            <form id="deleteForm" action="{% url 'delete_all_layout_test' %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-lg btn-danger">Delete all layouts</button>
+                                <button type="button" class="btn btn-lg btn-danger" onclick="confirmDelete()">Delete all layouts</button>
                             </form>
                         </div>
                     </div>
@@ -153,4 +153,17 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripting %}
+    <script>
+        function confirmDelete() {
+        if (confirm("Are you sure you want to delete ALL layouts from your library? This action cannot be undone!")) {
+            // If user confirms, submit the form
+            document.getElementById("deleteForm").submit();
+        } else {
+            // If user cancels, do nothing
+        }
+    }
+    </script>
 {% endblock %}
