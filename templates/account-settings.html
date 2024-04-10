@@ -143,7 +143,7 @@
                         <div class="col-auto">
                             <form id="deleteForm" action="{% url 'delete_all_layout_test' %}" method="post">
                                 {% csrf_token %}
-                                <button type="button" class="btn btn-lg btn-danger" onclick="confirmDelete()">Delete all layouts</button>
+                                <button type="button" class="btn btn-md btn-danger" onclick="confirmDelete()">Clear layout library</button>
                             </form>
                         </div>
                     </div>
