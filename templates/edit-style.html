@@ -79,20 +79,21 @@
 
 
 {% block content %}
-    <div class="container" style="width: 75%; margin-top:5%; justify-content: space-between; margin-bottom: 10%;">
+    <div class="container" {% if layout.style_settings.orientation == "landscape" %}style="width: 85%"{% else %}style="width: 95%;"{% endif %} style="justify-content: space-between; margin-bottom: 10%;">
 
-        <div class="mt-3 d-flex flex-row align-items-center">
-            <!-- This div should float on the right; it's a button to go back one page-->
-            <div class="p-2" style="width:33%">
-                <button type="button" class="btn btn-md btn-secondary" onclick="window.location.href='{% url 'export-layout' layout.id %}'"><b><</b>    Export</button>
+        <!-- Header -->
+        <div class="col-12 mt-3 mb-4 d-flex flex-row align-items-center" style="border-bottom: 1px solid rgb(166, 161, 161)">
+            <div class="p-2 col-lg-3 col-sm-4" >
+                <button type="button" class="btn btn-md btn-secondary" onclick="window.location.href='{% url 'export-layout' layout.id %}'"><i class="bi bi-arrow-left"></i>  Export</button>
             </div>
 
-            <!-- This div should be perfectly centered on the page -->
-            <div class="p-2 text-center" style="width:33%">
-                <h1 class="display-5 fw-bold justify-content-center text-center">Edit Layout</h1>
+            <div class="p-2 col-lg-6 col-sm-7">
+                <center>
+                    <h1 class="fw-bold align-middle" style="color: #1B9CDB">Edit Layout</h1>
+                </center>
             </div>
 
-            <div class="p-2"></div>
+            <div class="p-2 col-lg-3 col-sm-1"></div>
             
         </div>
 
@@ -107,72 +108,72 @@
                 <!-- Leftmost column containing the color/font controls -->
                
                     <center>
-                        <h3 class="fw-bold" style="color: #4395e7">Object Colors</h3>
+                        <h3 class="fw-bold" style="color: #000">Object Colors</h3>
                     </center>
                     
 
-                    <div class="form-row">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between">
+                        <div class="form-group col-5">
                             <label for="sensor_label_color">Sensors:</label>
                             {{ form.sensor_label_color }}                                           
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="camera_label_color">Cameras:</label>
                             {{ form.camera_label_color }}
                         </div>
                     </div>
 
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between mt-3">
+                        <div class="form-group col-5">
                             <label for="navigation_arrow_color">Nav Arrows:</label>
                             {{ form.navigation_arrow_color }}
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="calibration_color">Calibrations:</label>
                             {{ form.calibration_color }}
                         </div>
                     </div>
 
                     <center>
-                        <h3 class="fw-bold pt-5" style="color: #4395e7">Boundaries</h3>
+                        <h3 class="fw-bold pt-5" style="color: #000">Boundaries</h3>
                     </center>
 
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between mt-3">
+                        <div class="form-group col-5">
                             <label for="wall_color">Wall Color:</label>
                             {{ form.wall_color }}                                           
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="wall_width">Wall Width:</label>
                             {{ form.wall_width }}
                         </div>
                     </div>
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between mt-3">
+                        <div class="form-group col-5">
                             <label for="door_color">Door Color:</label>
                             {{ form.door_color }}                                           
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="door_width">Door Width:</label>
                             {{ form.door_width }}
                         </div>
                     </div>
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between mt-3">
+                        <div class="form-group col-5">
                             <label for="window_color">Window Color:</label>
                             {{ form.window_color }}                                           
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="window_width">Window Width:</label>
                             {{ form.window_width }}
                         </div>
                     </div>
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-5">
+                    <div class="form-row d-flex justify-content-between mt-3">
+                        <div class="form-group col-5">
                             <label for="furniture_color">Furniture Color:</label>
                             {{ form.furniture_color }}                                           
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-5">
                             <label for="furniture_width">Furniture Width:</label>
                             {{ form.furniture_width }}
                         </div>
@@ -180,17 +181,33 @@
             </div>
             <!-- Middle column containing PDF preview -->
             <div class="col m-4 justify-content-center" id="layout-preview">
-                <div class="object-fit-contain pdf-preview" style="border: 2px solid black"; style="width:auto">
+                {% if layout.style_settings.orientation == "portrait" %}
+                <div class="object-fit-contain pdf-preview" style="border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"; style="width:auto">
                     <center>
                         <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-height:450px;">
                     </center>
                 </div>
-                <div class="mt-5 d-flex justify-content-center">
+                <div class="mt-3 d-flex justify-content-center">
+                    <p class="view-in-browser" onclick="viewImageInBrowser('{{ layout.image }}')">View in browser</p>
+                </div>
+                <div class="mt-2 d-flex justify-content-center">
                     <button id="submit-all" type="button" class="btn btn-primary">Save and Apply Changes</button>
                 </div>
-                <div class="mt-3 d-flex justify-content-center">
-                    <p class="mt-3 btn-group-subtext"></p><img src="{{ layout.image }}" alt="View in browser" onclick="viewImageInBrowser('{{ layout.image }}')" style="color: #0000EE"></p>
+                {% elif layout.style_settings.orientation == "landscape" %}
+                <div class="col-5 object-fit-contain pdf-preview" style="border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); width:100%">
+                    <center>
+                        <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-width:100%; height:auto">
+                    </center>
                 </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    <p class="view-in-browser" onclick="viewImageInBrowser('{{ layout.image }}')">View in browser</p>
+                </div>
+                <div class="mt-2 d-flex justify-content-center">
+                    <button id="submit-all" type="button" class="btn btn-primary">Save and Apply Changes</button>
+                </div>
+
+                {% endif %}
+                
 
             </div>
 
@@ -198,7 +215,7 @@
             <div class="col justify-content-center p-3">
 
                 <center>
-                    <h3 class="fw-bold" style="color: #4395e7">File Orientation</h3>
+                    <h3 class="fw-bold" style="color: #000">File Orientation</h3>
                 </center>
                 
                 <!-- Displaying the orientation field-->
@@ -209,18 +226,18 @@
                 </div>
 
                 <center>
-                    <h3 class="fw-bold pt-3 mt-5" style="color: #4395e7">Label Locations</h3>
+                    <h3 class="fw-bold pt-3 mt-5" style="color: #000">Label Locations</h3>
                 </center>
 
                 <div class="mt-3">
                     {% for label, label_form in label_data %}
                     <div class="mb-1">
                         <div class="d-flex form-row align-content-center align-items-center">
-                            <div class="d-flex align-items-center align-content-center pt-3">
+                            <div class="col-lg-6 col-md-3 pt-3">
                                 <p>{{ label.name }}</p>
                             </div>
                             {{ label_form.management_form }}
-                            <div class="form-group">
+                            <div class="form-group col-lg-5 col-md-8">
                                 {{ label_form.location }}
                             </div>
                         </div>

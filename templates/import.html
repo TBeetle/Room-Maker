@@ -4,9 +4,11 @@
 
 {% block content %}
 
-<header class="py-5">
-    <h1 class="display-5 fw-bold" style="text-align: center; padding-top: 10px;">LaTeX File Generator</h1>
-    <div class="container px-lg-5" style="padding: 60px;">
+<header>
+    <h1 class="display-5 fw-bold" style="text-align: center;">LaTeX File Generator</h1>
+</header>
+
+    <div class="container px-lg-5 mt-3">
         <div class="p-4 p-lg-5 bg-light rounded-3 text-center" id="drop-zone" style="border: 2px dashed #ccc; max-width: 800px; margin: 0 auto;">
             <div class="m-4 m-lg-5">
                 <form method="post" enctype="multipart/form-data">
@@ -14,10 +16,10 @@
                     <div class="mb-3 mt-4 text-center">
                         <input type="file" class="form-control" id="formFile" name="uploaded_file" style="display: none;">
                         <label for="formFile" id="file-label"></label>
-                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('formFile').click();">Upload</button>
+                        <button type="button" class="btn upload-button" onclick="document.getElementById('formFile').click();">Upload</button>
                         <br>
      
-                        <div style="padding-top: 5px;">
+                        <div style="padding-top: 0.5rem;">
                             <span style="color: gray;">Or drop file here</span>
                         </div>
                     </div>                    
@@ -31,22 +33,26 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="text-center" style="padding-top: 45px;">
-                <input type="submit" class="btn btn-primary btn-lg upload-file-btn" value="Convert" style="background-color: #468ce9;">
+            <div class="text-center" style="padding-top: 2rem;">
+                <button type="submit" class="btn convert-button btn-lg">
+                    Convert   <i class="bi bi-arrow-right"></i>
+                  </button>
+                  
             </div>
+
+            
                 </form>
     </div>
-</header>
 
 
-<section class="py-4" style="margin-top: -100px;">
-    <div class="container px-lg-5">
-        <div class="download-sample-files text-center">
-            <p class="mb-2">Download sample file formats:</p>
+<section class="mb-4">
+    <div class="container">
+        <div class="download-sample-files text-center mt-4">
+            <p class="mb-2" style="color: #616161">Download sample input files:</p>
             <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-excel' %}" style="color:inherit">Excel</a></button>
-                <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-csv' %}" style="color:inherit">CSV</a></button>
-                <button type="button" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-json' %}" style="color: inherit">JSON</a></button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-excel' %}'">Excel</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-csv' %}'">CSV</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-json' %}'">JSON</button>
             </div>
         </div>
     </div>
