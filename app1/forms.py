@@ -12,13 +12,16 @@ from django.contrib.auth.models import User
 
 
 class AccountSettingsForm(forms.ModelForm):
-    old_password = forms.CharField(label="Old Password", widget=forms.PasswordInput, required=False)
-    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput, required=False)
-    new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput, required=False)
+    old_password = forms.CharField(label="Old Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False)
+    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False)
+    new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = User
         fields = ['email']
+        widgets = {
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+        }
         
     def clean(self):
         cleaned_data = super().clean()
@@ -48,7 +51,7 @@ class AccountSettingsForm(forms.ModelForm):
         return cleaned_data
 
 class UpdateFileNameForm(ModelForm):
-    new_file_name = forms.CharField(label='New file name', max_length=48, required=False)
+    new_file_name = forms.CharField(label='New file name', widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=48, required=False)
 
     class Meta:
         model = ConvertedFile
