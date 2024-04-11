@@ -16,7 +16,7 @@
                     <div class="mb-3 mt-4 text-center">
                         <input type="file" class="form-control" id="formFile" name="uploaded_file" style="display: none;">
                         <label for="formFile" id="file-label"></label>
-                        <button type="button" class="btn upload-button" onclick="document.getElementById('formFile').click();">Upload</button>
+                        <button type="button" id ="uploadButton" class="btn btn-secondary" onclick="document.getElementById('formFile').click();">Upload</button>
                         <br>
      
                         <div style="padding-top: 0.5rem;">
@@ -34,10 +34,9 @@
                 </div>
             </div>
             <div class="text-center" style="padding-top: 2rem;">
-                <button type="submit" class="btn convert-button btn-lg">
+                <button type="submit" id="convertButton" class="btn convert-button btn-lg">
                     Convert   <i class="bi bi-arrow-right"></i>
                   </button>
-                  
             </div>
 
             
@@ -50,9 +49,9 @@
         <div class="download-sample-files text-center mt-4">
             <p class="mb-2" style="color: #616161">Download sample input files:</p>
             <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-excel' %}'">Excel</button>
-                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-csv' %}'">CSV</button>
-                <button type="button" class="btn btn-sm btn-secondary" onclick="window.location.href='{% url 'download-sample-json' %}'">JSON</button>
+                <button type="button" id="excelButton" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-excel' %}" style="color:inherit">Excel</a></button>
+                <button type="button" id="csvButton" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-csv' %}" style="color:inherit">CSV</a></button>
+                <button type="button" id="jsonButton" class="btn btn-sm btn-secondary"><a href="{% url 'download-sample-json' %}" style="color: inherit">JSON</a></button>
             </div>
         </div>
     </div>
