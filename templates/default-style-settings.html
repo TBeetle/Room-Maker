@@ -59,7 +59,7 @@
     .list-group-item.active {
         color:#fff;
         border: none;
-        background-color: #4395e7;
+        background-color: #1B9CDB;
         font-weight: bold;
     }
 
@@ -84,12 +84,12 @@
 
 {% block content %}
 
-    <div class="container p-0 bg-body text-body align-items-center justify-content-center" style="width: 70; height: 100; margin-top:10%; border-radius: 10px;">
+    <div class="container p-0 bg-body text-body align-items-center justify-content-center mt-4" style="width: 70; height: 100; border-radius: 10px;">
             <div class="row">
                 <!--Sidebar for settings-->
-                <div class="col-3 bg-dark p-0">
+                <div class="col-3 bg-dark p-0" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
                     <div class="sidebar">
-                        <ul class="list-group mt-5" style="border-radius:0">
+                        <ul class="list-group mt-5" style="border-radius:0;">
                             <li class="list-group-item active" id="defaultStyleSettingsTab">
                                 <a class='nav-link' href="{% url 'settings' %}">Default Style Settings</a>
                             </li>
@@ -104,7 +104,7 @@
                 <div class="col">
                     <!--Default Style Settings-->
                     <div class="p-5" id="defaultStyleSettings">
-                            <h1 class="display-5 fw-bold">Default Style Settings</h1>
+                            <h1 class="display-6 fw-bold">Default Style Settings</h1>
                             <hr>
                             
                             {% if messages %}
@@ -122,7 +122,7 @@
                             
                                 <div class="mt-3">
                                    
-                                    <h3 class="fw-bold pt-3 mt-4" style="color:#4395e7">Object Colors</h3>
+                                    <h3 class="fw-bold pt-3 mt-4" style="color:#1B9CDB">Object Colors</h3>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
@@ -148,7 +148,7 @@
 
                                 </div>
 
-                                <h3 class="fw-bold pt-3 mt-4" style="color:#4395e7">Boundary Settings</h3>
+                                <h3 class="fw-bold pt-3 mt-4" style="color:#1B9CDB">Boundary Settings</h3>
                                 <div class="mt-3">
                                     <h5 class="fw-bold" style="color:darkslategray; margin-left:8px">Walls</h5>
                                     <div class="form-row">

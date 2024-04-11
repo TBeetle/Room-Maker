@@ -58,65 +58,96 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container" style="width: 65%; margin-top:5%">
-        <div class="download-sample-files text-center row">
-            <div class="col-sm-5 image-container">
-                <div class="object-fit-contain" style="border: 2px solid black; height:auto">
-                    <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="width:100%; height: auto">
+    <div class="container" {% if layout.style_settings.orientation == "portrait" %}style="width: 75%"{% elif layout.style_settings.orientation == "landscape" %}style="width:90%"{% endif %}>
+        <div class="text-center row order-md-1">
+            <!-- Image preview -->
+            {% if layout.style_settings.orientation == "portrait" %}
+            <div class="col-lg-6 col-sm-12 mt-3 p-2 container d-flex justify-content-center align-items-center" style="max-height: 33rem">
+                <div class="card" style="max-height: 100%; width: auto; border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                    <img class="card-img-top" src="{% url 'serve-image' layout.image %}" style="max-height:31rem; border-radius: 10px" alt="Output Preview">
+                    <center>
+                        <p class="mt-4 view-in-browser" onclick="viewImageInBrowser('{{ layout.image }}')">View in browser</p>
+                    </center>
                 </div>
             </div>
+            {% endif %}
 
-            <div class="col">
+            {% if layout.style_settings.orientation == "landscape" %}
+            <div class="col-lg-6 col-md-12 mt-5 p-4 mr-5 container justify-content-center align-items-center">
+                <div class="card" style="max-width: 100%; height: auto; border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                    <img class="card-img-top" src="{% url 'serve-image' layout.image %}" style="max-width:100%; border-radius: 10px" alt="Output Preview">
+                </div>
+                <center>
+                    <p class="mt-4 view-in-browser" onclick="viewImageInBrowser('{{ layout.image }}')">View in browser</p>
+                </center>
+            </div>
+            
+            {% endif %}
+            
 
-                <div class="mt-5 mb-3 clearfix">
-                    <button type="button" class="btn btn-md btn-secondary float-end"><a href="{% url 'edit-layout' layout.id %}" style="color:inherit">Edit Style ></a></button>
+            <!-- Export options-->
+            <div class="col-lg-6 col-sm-12 mt-3 p-2 order-md-2">
+                <div class="row d-flex justify-content-between py-3" style="border-bottom: 1px solid lightgray">
+                    <div class="col-6">
+                        <h2 class="fw-bold align-middle" style="color: #1B9CDB">Export Layout</h2>
+                    </div>
+                    <div class="col-5">
+                        <button type="button" class="btn btn-secondary btn-md float-end" onclick="window.location.href='{% url 'edit-layout' layout.id %}'">Edit Style <i class="bi bi-arrow-right"></i></button>
+                    </div>
                 </div>
 
                 <!-- Form for user to update file name-->
-                <div class="mb-3 p-3 text-start">
-                    <form method="post" id="updateFileNameForm">
-                        <div class="row">
-                            {% csrf_token %}
-                            <label for="id_new_file_name", class="form-label"><b>File name:</b></label>
-                            {{ update_file_name_form.new_file_name }}
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col text-center">
-                                <button type="submit" class="btn btn-primary btn-sm" style="width:40%">Save Name Changes</button>
-                            </div>
-                            {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+                <div class="mt-3 py-3 text-start">
+                    <p style="font-size: x-large"><b>{{ layout.file_name }}</b></p>
+                    <p style="color: #595858; font-size: medium; margin-top:-0.5rem;"><i class="bi bi-clock" style="padding-right: 4px;"></i>    <i>Last modified: </i>{{ layout.last_modified }}</p>
+                    <p class="mb-3" style="color: #595858; margin-top:-0.5rem"><i class="bi bi-download" style="padding-right: 4px;"></i>   Download:</p>
+                        <div class="d-flex flex-row justify-content-evenly mt-4">
+                            <button type="button" class="btn download-button" onclick="window.location.href='{% url 'download-pdf' layout.id %}'"><i class="bi bi-file-pdf"></i>   PDF</button>
+                            <button type="button" class="btn download-button" onclick="window.location.href='{% url 'download-tex' layout.id %}'"><i class="bi bi-file-earmark-code"></i>  TeX</button>
+                            <button type="button" class="btn download-button" onclick="window.location.href='{% url 'download-zip' layout.id %}'"><i class="bi bi-file-zip"></i>  Both</button>
                         </div>
                         
+                        <div class="mt-5 text-start">
+                            <form method="post" id="updateFileNameForm">
+                                <div class="row">
+                                    {% csrf_token %}
+                                    <label for="id_new_file_name", class="form-label filename-label"><i class="bi bi-pencil-square"></i> Update file name:</label>
+                                    {{ update_file_name_form.new_file_name }}
+                                    <div class="col text-center mt-2">
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="width:20%">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    
+                </div>
+
+                <!-- Delete Button -->
+                <div class="mt-3 text-end">
+                    <form id="deleteForm" action="{% url 'delete_layout_test' layout.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-md btn-danger" onclick="confirmDelete()">Delete</button>
                     </form>
                 </div>
 
-
-                
             
-            <p class="mt-5 mb-2">Download PDF/TeX files:</p>
-            <div class="btn-group">
-                <button type="button" class="btn btn-lg btn-secondary"><a href="{% url 'download-pdf' layout.id %}" style="color:inherit">PDF</a></button>
-                <button type="button" class="btn btn-lg btn-secondary"><a href="{% url 'download-tex' layout.id %}" style="color:inherit">TeX</a></button>
-                <button type="button" class="btn btn-lg btn-secondary"><a href="{% url 'download-zip' layout.id %}" style="color:inherit">Both</a></button>
-            </div>
-            <p class="mt-3 btn-group-subtext"></p><img src="{{ layout.image }}" alt="View in browser" onclick="viewImageInBrowser('{{ layout.image }}')" style="color: #0000EE"></p>
-            <!-- Inserted Delete Button -->
-            <div class="mt-3">
-                <form action="{% url 'delete_layout_test' layout.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-lg btn-danger">Delete</button>
-                </form>
-            </div>
         
         </div>
       </div>
     
     </div>
 
+{% endblock %}
+
+{% block scripting %}
+    <script>
+        function confirmDelete() {
+        if (confirm("Are you sure you want to delete this layout from your library? This cannot be undone.")) {
+            // If user confirms, submit the form
+            document.getElementById("deleteForm").submit();
+        } else {
+            // If user cancels, do nothing
+        }
+    }
+    </script>
 {% endblock %}
