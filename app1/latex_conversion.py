@@ -100,16 +100,23 @@ def conversion(file, layout_style):
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
             x1 = row['X']
             y1 = row['Y']
-            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
-                # Use the current row's coordinates for the last wall before the furniture
-                x2 = row['X']
-                y2 = row['Y']
+            if excel_data.iloc[index + 1]['Descriptor'] != 'WALL':
+                # If the next row is not a wall
+                x2 = x1  # Set x2 to the same as x1
+                y2 = y1  # Set y2 to the same as y1
             else:
+                # If the next row is another wall
                 x2 = excel_data.at[index + 1, 'X']
                 y2 = excel_data.at[index + 1, 'Y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
+        elif row['Descriptor'] == 'WALL' and index == len(excel_data) - 1:
+            # If the current row is the last row and it's a wall
+            x1 = row['X']
+            y1 = row['Y']
+            x2 = x1  # Set x2 to the same as x1
+            y2 = y1  # Set y2 to the same as y1
+            latex_code += latex_walls_template.format(x1, y1, x2, y2)
         elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
-            window_width = layout_style.window_width
             x1 = row['X']
             y1 = row['Y']
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
