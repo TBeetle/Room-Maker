@@ -81,6 +81,7 @@ def conversion(file, layout_style):
         }}
     """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
 
+    
     # TODO: Do whatever you want with the labels here; this will only be called when a user changes the labels from Edit Style page
     # also move this section of code wherever
 
@@ -99,16 +100,23 @@ def conversion(file, layout_style):
         if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
             x1 = row['X']
             y1 = row['Y']
-            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
-                # Use the current row's coordinates for the last wall before the furniture
-                x2 = row['X']
-                y2 = row['Y']
+            if excel_data.iloc[index + 1]['Descriptor'] != 'WALL':
+                # If the next row is not a wall
+                x2 = x1  # Set x2 to the same as x1
+                y2 = y1  # Set y2 to the same as y1
             else:
+                # If the next row is another wall
                 x2 = excel_data.at[index + 1, 'X']
                 y2 = excel_data.at[index + 1, 'Y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
+        elif row['Descriptor'] == 'WALL' and index == len(excel_data) - 1:
+            # If the current row is the last row and it's a wall
+            x1 = row['X']
+            y1 = row['Y']
+            x2 = x1  # Set x2 to the same as x1
+            y2 = y1  # Set y2 to the same as y1
+            latex_code += latex_walls_template.format(x1, y1, x2, y2)
         elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
-            window_width = layout_style.window_width
             x1 = row['X']
             y1 = row['Y']
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
@@ -194,6 +202,136 @@ def conversion(file, layout_style):
         elif row['Type'] == 'Orientation':
             latex_orientation = row['Descriptor']
 
+    # Scaling Layout
+    y_scale_max = y_max+5
+    y_scale_min = y_min-5
+    y_scale_number = y_scale_max-y_scale_min
+    if(y_scale_number >= 0 and y_scale_number<=274 and latex_orientation == "portrait"):
+        latex_scale=1/10
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=275 and y_scale_number<=300 and latex_orientation == "portrait"):
+        latex_scale=1/11
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=301 and y_scale_number<=329 and latex_orientation == "portrait"):
+        latex_scale=1/12
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=330 and y_scale_number<=355 and latex_orientation == "portrait"):
+        latex_scale=1/13
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=356 and y_scale_number<=383 and latex_orientation == "portrait"):
+        latex_scale=1/14
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=384 and y_scale_number<=411 and latex_orientation == "portrait"):
+        latex_scale=1/15
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=412 and y_scale_number<=439 and latex_orientation == "portrait"):
+        latex_scale=1/16
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=440 and y_scale_number<=466 and latex_orientation == "portrait"):
+        latex_scale=1/17
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=467 and y_scale_number<=494 and latex_orientation == "portrait"):
+        latex_scale=1/18
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=495 and y_scale_number<=521 and latex_orientation == "portrait"):
+        latex_scale=1/19
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=522 and y_scale_number<=549 and latex_orientation == "portrait"):
+        latex_scale=1/20
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=550 and y_scale_number<=576 and latex_orientation == "portrait"):
+        latex_scale=1/21
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=577 and y_scale_number<=604 and latex_orientation == "portrait"):
+        latex_scale=1/22
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=605 and y_scale_number<=632 and latex_orientation == "portrait"):
+        latex_scale=1/23
+        latex_paper_size = "legalpaper"
+    # Big Paper
+    elif(y_scale_number >=633 and y_scale_number<=666 and latex_orientation == "portrait"):
+        latex_scale=1/8
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=667 and y_scale_number<=750 and latex_orientation == "portrait"):
+        latex_scale=1/9
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=751 and y_scale_number<=833 and latex_orientation == "portrait"):
+        latex_scale=1/10
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=834 and y_scale_number<=916 and latex_orientation == "portrait"):
+        latex_scale=1/11
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=917 and y_scale_number<=1000 and latex_orientation == "portrait"):
+        latex_scale=1/12
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=1001 and y_scale_number<=1083 and latex_orientation == "portrait"):
+        latex_scale=1/13
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=1084 and y_scale_number<=1150 and latex_orientation == "portrait"):
+        latex_scale=1/14
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=1100 and y_scale_number<=1150 and latex_orientation == "landscape"):
+        latex_scale=1/23.1
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=1050 and y_scale_number<=1099 and latex_orientation == "landscape"):
+        latex_scale=1/22
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=1000 and y_scale_number<=1049 and latex_orientation == "landscape"):
+        latex_scale=1/21
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=950 and y_scale_number<=999 and latex_orientation == "landscape"):
+        latex_scale=1/20
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=900 and y_scale_number<=949 and latex_orientation == "landscape"):
+        latex_scale=1/19
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=850 and y_scale_number<=899 and latex_orientation == "landscape"):
+        latex_scale=1/18
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=800 and y_scale_number<=849 and latex_orientation == "landscape"):
+        latex_scale=1/17
+        latex_paper_size = "legalpaper"
+    elif(y_scale_number >=750 and y_scale_number<=799 and latex_orientation == "landscape"):
+        latex_scale=1/16
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=700 and y_scale_number<=749 and latex_orientation == "landscape"):
+        latex_scale=1/15
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=650 and y_scale_number<=699 and latex_orientation == "landscape"):
+        latex_scale=1/14
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=600 and y_scale_number<=649 and latex_orientation == "landscape"):
+        latex_scale=1/13
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=545 and y_scale_number<=599 and latex_orientation == "landscape"):
+        latex_scale=1/12
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=495 and y_scale_number<=544 and latex_orientation == "landscape"):
+        latex_scale=1/11
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=445 and y_scale_number<=494 and latex_orientation == "landscape"):
+        latex_scale=1/10
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=395 and y_scale_number<=444 and latex_orientation == "landscape"):
+        latex_scale=1/9
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=344 and y_scale_number<=394 and latex_orientation == "landscape"):
+        latex_scale=1/8
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=294 and y_scale_number<=343 and latex_orientation == "landscape"):
+        latex_scale=1/7
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=244 and y_scale_number<=293 and latex_orientation == "landscape"):
+        latex_scale=1/6
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=193 and y_scale_number<=243 and latex_orientation == "landscape"):
+        latex_scale=1/5
+        latex_paper_size = "papersize={{24in, 36in}}"
+    elif(y_scale_number >=0 and y_scale_number<=192 and latex_orientation == "landscape"):
+        latex_scale=1/19
+        latex_paper_size = "legalpaper"
+
+
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
@@ -201,7 +339,7 @@ def conversion(file, layout_style):
     \\documentclass[12pt]{{article}}
 
     \\usepackage[hmargin=0.5in, tmargin=0.75in, bmargin=0.9in]{{geometry}}
-    \\geometry{{legalpaper, {latex_orientation}}}
+    \\geometry{{{latex_paper_size}, {latex_orientation}}}
    
     \\usepackage{{graphicx}}  % graphic controls
     \\usepackage{{float}}  % positioning controls
@@ -266,11 +404,10 @@ def conversion(file, layout_style):
     \\raggedright
 
     \\begin{{document}}
-    \\vspace*{{.8in}}
     \\begin{{figure}}[H]
         \\centering
 
-        \\begin{{tikzpicture}}[scale=1/14,  % use this to reduce or enlargen the image on paper
+        \\begin{{tikzpicture}}[scale={latex_scale},  % use this to reduce or enlargen the image on paper
                             rotate=0]  % use this to rotate orientation by degrees on paper
 
     {latex_gridline_template}
