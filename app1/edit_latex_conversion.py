@@ -9,6 +9,11 @@ def conversion(file, layout_style, labels):
     
     # Read Excel data 
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
+    
+    # Convert first row and first column to lowercase
+    excel_data.columns = excel_data.columns.str.lower()
+    excel_data['type'] = excel_data['type'].str.lower()
+
     print("CALLING CONVERSION CODE:")
     print(file)
     
@@ -61,8 +66,8 @@ def conversion(file, layout_style, labels):
     """.format(width=layout_style.furniture_width, color=layout_style.furniture_color)
 
     # Define LaTeX template for gridlines
-    x_axis_data = excel_data[excel_data['Type'] == 'X Axis'].iloc[0]
-    y_axis_data = excel_data[excel_data['Type'] == 'Y Axis'].iloc[0]
+    x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
+    y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
     x_min = x_axis_data['min']
     x_max = x_axis_data['max']
     y_min = y_axis_data['min']
@@ -85,14 +90,12 @@ def conversion(file, layout_style, labels):
         }}
     """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
 
-    # TODO: Do whatever you want with the labels here; this will only be called when a user changes the labels from Edit Style page
-    # also move this section of code wherever
+    # generating labels
     if labels:
         # Iterature through the labels as follows
         for label in labels:
             label_name = label.name
             label_type = label.type
-            label_location=label.location # THIS VALUE WILL BE EITHER: 'Above', 'Below', 'Left', 'Right'
             print("Tyler:",label_name)
 
 
@@ -104,123 +107,170 @@ def conversion(file, layout_style, labels):
     latex_room_name = ""
     latex_neighborhood = ""
     latex_building = ""
-    latex_orientation = "portrait"
+    latex_orientation = layout_style.orientation
 
+    # Defining allowed values for data validation
+    WALL = 'WALL'
+    TABLE = 'TABLE'
+    WINDOW = 'WINDOW'
+    DOOR = 'DOOR'
+    FURNITURE = 'FURNITURE'
+
+    # Parse through uploaded Excel file
     for index, row in excel_data.iterrows():
-        if row['Descriptor'] == 'WALL' and index < len(excel_data) - 1:
-            x1 = row['X']
-            y1 = row['Y']
-            if excel_data.iloc[index + 1]['Descriptor'] != 'WALL':
+        descriptor = row['descriptor']
+        row_type = row['type']
+
+        if descriptor == WALL and index < len(excel_data) - 1: 
+            x1 = row['x']
+            y1 = row['y']
+             # check that x and y are valid number values
+            if type(x1) not in [int, float]:
+                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if type(y1) not in [int, float]:
+                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if excel_data.iloc[index + 1]['descriptor'] != 'WALL':
                 # If the next row is not a wall
                 x2 = x1  # Set x2 to the same as x1
                 y2 = y1  # Set y2 to the same as y1
             else:
                 # If the next row is another wall
-                x2 = excel_data.at[index + 1, 'X']
-                y2 = excel_data.at[index + 1, 'Y']
+                x2 = excel_data.at[index + 1, 'x']
+                y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
-        elif row['Descriptor'] == 'WALL' and index == len(excel_data) - 1:
+        elif descriptor == WALL and index == len(excel_data) - 1:
+            x1 = row['x']
+            y1 = row['y']
+            # check that x and y are valid number values
+            if type(x1) not in [int, float]:
+                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if type(y1) not in [int, float]:
+                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
             # If the current row is the last row and it's a wall
-            x1 = row['X']
-            y1 = row['Y']
             x2 = x1  # Set x2 to the same as x1
             y2 = y1  # Set y2 to the same as y1
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
-        elif row['Descriptor'] == 'WINDOW' and index < len(excel_data) - 1:
-            x1 = row['X']
-            y1 = row['Y']
-            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['Type'] != 'Exterior':
+        elif descriptor == WINDOW and index < len(excel_data) - 1:
+            x1 = row['x']
+            y1 = row['y']
+            # check that x and y are valid number values
+            if type(x1) not in [int, float]:
+                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if type(y1) not in [int, float]:
+                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['type'] != 'exterior':
                 # Use the current row's coordinates for the last window before the furniture
-                x2 = row['X']
-                y2 = row['Y']
+                x2 = row['x']
+                y2 = row['y']
             else:
-                x2 = excel_data.at[index + 1, 'X']
-                y2 = excel_data.at[index + 1, 'Y']
+                x2 = excel_data.at[index + 1, 'x']
+                y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_windows_template.format(x1, y1, x2, y2)
-        elif row['Descriptor'] == 'DOOR' and index < len(excel_data) - 1:
-            x = row['X']
-            y = row['Y']
+        elif descriptor == DOOR and index < len(excel_data) - 1:
+            x = row['x']
+            y = row['y']
             door_angle = row['door_angle']
-            if(row['door_xory'] == 'x'):
-                door_x = row['door_length']
-                door_y = 0
-            elif(row['door_xory'] == 'y'):
-                door_x = 0
-                door_y = row['door_length']
+            # check that x, y, and angle are valid number values
+            if type(x1) not in [int, float]:
+                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if type(y1) not in [int, float]:
+                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if type(door_angle) not in [int, float] or door_angle < 0 or door_angle > 360:
+                message = f"Invalid input type for door_angle in row {index+2}. Please enter a number between 0 - 360."
+                return {'success': False, 'message': message}
+            door_xy = row['door_xory']
+            # check that door_xy is either x or y
+            if type(door_xy) in [str]:
+                door_xy = door_xy.lower()
+                if(door_xy == 'x'):
+                    door_x = row['door_length']
+                    door_y = 0
+                elif(door_xy == 'y'):
+                    door_x = 0
+                    door_y = row['door_length']
+                else:
+                    message = f"Invalid input type for door_xory in row {index+2}. Please enter either 'X' or 'Y'."
+                    print(message)  
+                    return {'success': False, 'message': message}
+            else:
+                message = f"Invalid input type for door_xory in row {index+2}. Please enter either 'X' or 'Y'."
+                return {'success': False, 'message': message}
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
-        elif row['Type'] == 'Furniture' and row['furniture_type'] == 'rectangle':
+        elif row_type == FURNITURE and row['furniture_type'] == 'rectangle':
             width = row['width']
             height = row['height']
             rotation = row['rotation']
-            table_name = row['Descriptor'].lower()
-            x = row['X']
-            y = row['Y']
+            table_name = descriptor.lower()
+            x = row['x']
+            y = row['y']
+            # check that width, height, rotation, x, and y are all valid numbers.
+            if type(width) not in [int, float] or type(height) not in [int, float] or type(rotation) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for width, height, rotation, x, and y."
+                return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
-            latex_code += latex_furniture_label_template.format(x, y, row['Descriptor'])
-        elif row['Type'] == 'Furniture' and row['furniture_type'] == 'circle':
+            latex_code += latex_furniture_label_template.format(x, y, descriptor)
+        elif row_type == FURNITURE and row['furniture_type'] == 'circle':
             radius = row['radius']
-            table_name = row['Descriptor'].lower()
-            x = row['X']
-            y = row['Y']
+            table_name = descriptor.lower()
+            x = row['x']
+            y = row['y']
+            if type(radius) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for radius, x, and y."
+                return {'success': False, 'message': message}
             latex_code += latex_circle_furniture_template.format(radius, x, y)
-            latex_code += latex_furniture_label_template.format(x, y, row['Descriptor'])
-        elif row['Type'] == 'Sensor':
-            x = row['X']
-            y = row['Y']
+            latex_code += latex_furniture_label_template.format(x, y, descriptor)
+        elif row_type == FURNITURE:
+            message = f"Invalid value for furniture_type in row {index+2}. Please enter either 'rectangle' or 'circle'."
+            return {'success': False, 'message': message}
+        elif row_type == 'sensor':
+            x = row['x']
+            y = row['y']
+            if type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for x or y coordinates in line {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
             latex_code += latex_sensor_template.format(x, y)
-            for label in labels:
-                if label.name == row['Descriptor'] and label.location == 'below':
-                    latex_code += latex_sensor_label_edit_template.format('yshift=-5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
-                    print("below sensor")
-                elif label.name == row['Descriptor'] and label.location == 'left':
-                    latex_code += latex_sensor_label_edit_template.format('xshift=-5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
-                    print("left sensor")
-                elif label.name == row['Descriptor'] and label.location == 'right':
-                    latex_code += latex_sensor_label_edit_template.format('xshift=5pt',label.location,s1=x, s2=y, s3=row['Descriptor'])
-                    print("right sensor")
-                elif label.name == row['Descriptor']:
-                    latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=row['Descriptor'])
-                    print("above sensor")
-        elif row['Type'] == 'Camera':
-            x = row['X']
-            y = row['Y']
+            latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=descriptor)
+        elif row_type == 'camera':
+            x = row['x']
+            y = row['y']
             rotation = row['rotation']
+            print(f"X: {type(x)}, Y: {y}, Rotation: {rotation}")
+            if type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if (type(rotation) in [int, float] and (rotation < 0 or rotation > 360)) or type(rotation) not in [int, float]:
+                message = f"Invalid input type for camera rotation in line {index+2}. Please enter a real number between 0-360."
+
             latex_code += latex_camera_template.format(rotation, x, y)
-            for label in labels:
-                if label.name == row['Descriptor'] and label.location == 'below':
-                    latex_code += latex_camera_label_edit_template.format('yshift=-8pt',label.location,x,y,row['Descriptor'])
-                    print("below camera")
-                elif label.name == row['Descriptor'] and label.location == 'left':
-                    latex_code += latex_camera_label_edit_template.format('xshift=-4pt',label.location,x,y,row['Descriptor'])
-                    print("left camera")
-                elif label.name == row['Descriptor'] and label.location == 'right':
-                    latex_code += latex_camera_label_edit_template.format('xshift=4pt',label.location,x,y,row['Descriptor'])
-                    print("right camera")
-                elif label.name == row['Descriptor']:
-                    latex_code += latex_camera_label_template.format(x,y,row['Descriptor'])
-                    print("above camera")
-        elif row['Type'] == 'Calibration':
-            x = row['X']
-            y = row['Y']
-            latex_code += latex_calibration_template.format(row['Descriptor'], x, y)
-            for label in labels:
-                if label.name == row['Descriptor'] and label.location == 'below':
-                    latex_code += latex_calibration_label_edit_template.format('yshift=-6pt',label.location,row['Descriptor'],row['Descriptor'])
-                    print("below")
-                elif label.name == row['Descriptor'] and label.location == 'left':
-                    latex_code += latex_calibration_label_edit_template.format('xshift=-6pt',label.location,row['Descriptor'],row['Descriptor'])
-                    print("left")
-                elif label.name == row['Descriptor'] and label.location == 'right':
-                    latex_code += latex_calibration_label_edit_template.format('xshift=6pt',label.location,row['Descriptor'],row['Descriptor'])
-                    print("right")
-                elif label.name == row['Descriptor']:
-                    latex_code += latex_calibration_label_template.format(row['Descriptor'],row['Descriptor'])
-                    print("above")
+            latex_code += latex_camera_label_template.format(x, y, descriptor)
+        elif row_type == 'calibration':
+            x = row['x']
+            y = row['y']
+            if type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            latex_code += latex_calibration_template.format(descriptor, x, y)
+            latex_code += latex_calibration_label_template.format(descriptor,descriptor)
+        elif row_type == 'room navigation':
+            x = row['x']
+            y = row['y']
+            if type(x) not in [int, float] or type(y) not in [int, float]:
+                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            room_nav_direction = row['room_nav_direction'].lower()
+            if room_nav_direction not in ['left', 'right', 'up', 'down']:
+                message = f"Invalid input type for room_nav_direction in line {index+2}. Please enter either left, right, down, or up."
+                return {'success': False, 'message': message}
             
-        elif row['Type'] == 'Room Navigation':
-            x = row['X']
-            y = row['Y']
             if row['room_nav_direction'] == 'left':
                 arrow_x = 12
                 arrow_y = 0
@@ -237,17 +287,17 @@ def conversion(file, layout_style, labels):
                 arrow_x = 0
                 arrow_y = -12
                 node_location = 'below'
-            latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, row['Descriptor'])
-        elif row['Type'] == 'Date':
-            latex_date = row['Descriptor']
-        elif row['Type'] == 'Room Name':
-            latex_room_name = row['Descriptor']
-        elif row['Type'] == 'Neighborhood':
-            latex_neighborhood = row['Descriptor']
-        elif row['Type'] == 'Building':
-            latex_building = row['Descriptor']
-        elif row['Type'] == 'Orientation':
-            latex_orientation = layout_style.orientation
+            
+            latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, descriptor)
+        elif row_type == 'date':
+            latex_date = descriptor
+        elif row_type == 'room name':
+            latex_room_name = descriptor
+        elif row_type == 'neighborhood':
+            latex_neighborhood = descriptor
+            print(f"neighborhood: {latex_neighborhood}")
+        elif row_type == 'building':
+            latex_building = descriptor
 
         # Scaling Layout
     y_scale_max = y_max+5

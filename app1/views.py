@@ -169,13 +169,21 @@ def ImportPage(request):
 
                     labels_placeholder = None
                     # Call conversion code on file from /uploads/imported_files/<filename>
-                    success = lc.conversion(uploaded_file_path, layout_style)
+                    result = lc.conversion(uploaded_file_path, layout_style)
+                    success = result['success']
+                    error_message = result['message']
+                    print(success)
+                    print(error_message)
                     if not success:
                         try:
+                            # Display error message
+                            messages.error(request, error_message)
+                            print(messages.error)
                             # Delete uploaded file and associated instance
-                            print("UPLOADED FILE ERROR")
                             os.remove(uploaded_file_instance.file_path)
                             uploaded_file_instance.delete()
+                            print("redirecting to import:")
+                            return redirect("import")
                         except Exception as e:
                             logger.error("Error occurred while deleting file: %s", e)
                             messages.error(request, "An error occurred while deleting the file.")
@@ -228,7 +236,7 @@ def ImportPage(request):
                     os.remove(uploaded_file_path)
                 except Exception as delete_error:
                     logger.error("Error occurred while deleting file: %s", delete_error)
-            messages.error(request, "The uploaded file could not be parsed. See provided sample format.")
+            # messages.error(request, "The uploaded file could not be parsed. See provided sample format.")
             return redirect("import")
 
     return render(request, 'import.html')
@@ -237,15 +245,19 @@ def ImportPage(request):
 def parse_excel_file(converted_file):
     # read excel file into df
     df = pd.read_excel(converted_file.file_path)
+    # convert df to lowercase first col/row
+    df.columns = df.columns.str.lower()
+    df['type'] = df['type'].str.lower()
+
     labels = []
 
     # iterate over rows in dataframe to extract labels
     for index, row in df.iterrows():
-        if row['Type'] in ['Camera', 'Sensor', 'Calibration']:
+        if row['type'] in ['camera', 'sensor', 'calibration']:
             # extract data for the label
             label_data = {
-                'name': row['Descriptor'],
-                'type': row['Type']
+                'name': row['descriptor'],
+                'type': row['type']
             }
 
             labels.append(label_data)
@@ -435,10 +447,11 @@ def EditLayoutStylePage(request, layout_id):
                 print(f"Label {label.name} saved with new location: {label.location}")
 
             # Call conversion code
-            success = elc.conversion(excel_file_path, style_settings_instance, labels)
-            if not success:
-                logger.error("Failure converting file.")
-                messages.error(request, "An error occurred while deleting the file.")
+            result = elc.conversion(excel_file_path, style_settings_instance, labels)
+
+            # if not success:
+            #    logger.error("Failure converting file.")
+            #    messages.error(request, "An error occurred while converting the file.")
 
             # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
             prefix_filename, _ = os.path.splitext(layout.file_name)
