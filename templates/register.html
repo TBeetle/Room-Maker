@@ -6,7 +6,10 @@
   <title>Register Page</title>
        <!-- Favicon -->
        <link rel="icon" href="{% static '../uploads/images/asset_primary_logo_tm.png' %}" type="image/x-icon">
-  <style>
+      <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="../static/layoutgenerator/css/styles.css" rel="stylesheet">
+ <style>
     body {
       margin: 0;
       padding: 0;
@@ -23,7 +26,7 @@
     }
 
     .company-logo img {
-    max-width: 100%;
+    max-width: 80%;
     height: auto;
     /* Add any additional styling needed for your logo */
     }
@@ -46,11 +49,10 @@
 
     .register-container {
       background-color: #fff;
-      padding: 30px;
+      padding: 10%;
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       text-align: center;
-      width: 300px;
     }
 
     .register-form {
@@ -94,42 +96,53 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .form-control {
+      width:90;
+    }
   </style>
 </head>
 <body>
-  <div class="register-container">
-    <form action="" method="post" class="register-form">
-      {% csrf_token %}
-        <h2>Create an Account</h2>
-        <div class="company-logo">
-            <img src="https://www.asset-us.com/static/images/asset_primary_logo_tm.png" alt="Company Logo">
-        </div>
-        <label for="username">Username</label>
-        <input type="text" placeholder="Username" name="username" id="username">
+  <div class="container align-items-center justify-content-center">
+    <center>
+      <div class="login-container col-10 col-lg-5 align-self-center" style="background-color: white;">
+        <form method="post" class="register-form">
+          {% csrf_token %}
+          <div style="padding: 5%">
+            <h2>Create an Account</h2>
+            <div class="company-logo">
+                <img src="https://www.asset-us.com/static/images/asset_primary_logo_tm.png" alt="Company Logo">
+            </div>
+            <label for="username">Username</label>
+            <input type="text" placeholder="Username" name="username" id="username" class="form-control">
 
-        <label for="email">Email</label>
-        <input type="email" placeholder="Email" name="email" id="email">
+            <label for="email">Email</label>
+            <input type="email" placeholder="Email" name="email" id="email" class="form-control">
 
-        <label for="password1">Password</label>
-        <input type="password" placeholder="Password" id="password1" name="password1">
+            <label for="password1">Password</label>
+            <input type="password" placeholder="Password" id="password1" name="password1" class="form-control">
 
 
-        <label for="password2">Confirm Password</label>
-        <input type="password" placeholder="Confirm Password" id="password2" name="password2">
-        
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+            <label for="password2">Confirm Password</label>
+            <input type="password" placeholder="Confirm Password" id="password2" name="password2" class="form-control">
+            
+            {% if messages %}
+            <div class="alert alert-primary" style="line-height: 50%; padding: 1%" >
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
 
-        <button type="submit">Register</button>
-        
-        <a href="{% url 'login' %}" >I already have an account</a>
+            <button type="submit" class="btn btn-primary">Register</button>
+            
+            <a href="{% url 'login' %}" >I already have an account</a>
+          </div>
+            
 
-    </form>
+        </form>
+      </div>
+    </center>
   </div>
 </body>
 </html>

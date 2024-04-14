@@ -122,7 +122,7 @@ def conversion(file, layout_style, labels):
 
         if row_type in ['x axis', 'y axis']:
             continue
-        
+
         if descriptor.lower() == WALL and index < len(excel_data) - 1: 
             x1 = row['x']
             y1 = row['y']
@@ -296,7 +296,6 @@ def conversion(file, layout_style, labels):
                 elif label.name == row['descriptor']:
                     latex_code += latex_calibration_label_template.format(row['descriptor'],row['descriptor'])
                     print("above")
-            latex_code += latex_calibration_label_template.format(descriptor,descriptor)
         elif row_type == 'room navigation':
             x = row['x']
             y = row['y']
@@ -336,12 +335,7 @@ def conversion(file, layout_style, labels):
         elif row_type == 'building':
             latex_building = descriptor
         elif row_type == 'orientation':
-            orientation = descriptor.lower()
-            if orientation not in ['portrait', 'landscape']:
-                message = f"Invalid input type for orientation in line {index+2}. Please enter either 'portrait' or 'orientation'."
-                return {'success': False, 'message': message}
-            latex_orientation = descriptor
-
+            latex_orientation = layout_style.orientation
         # Scaling Layout
     y_scale_max = y_max+5
     y_scale_min = y_min-5
