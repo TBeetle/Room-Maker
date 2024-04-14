@@ -112,7 +112,9 @@ def conversion(file, layout_style):
         descriptor = row['descriptor']
         row_type = row['type']
 
-        if descriptor == WALL and index < len(excel_data) - 1: 
+        if row_type in ['x axis', 'y axis']:
+            continue
+        if descriptor.lower() == WALL and index < len(excel_data) - 1: 
             x1 = row['x']
             y1 = row['y']
              # check that x and y are valid number values
@@ -122,7 +124,7 @@ def conversion(file, layout_style):
             if type(y1) not in [int, float]:
                 message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if excel_data.iloc[index + 1]['descriptor'] != 'WALL':
+            if excel_data.iloc[index + 1]['descriptor'].lower() != WALL:
                 # If the next row is not a wall
                 x2 = x1  # Set x2 to the same as x1
                 y2 = y1  # Set y2 to the same as y1
@@ -131,7 +133,7 @@ def conversion(file, layout_style):
                 x2 = excel_data.at[index + 1, 'x']
                 y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
-        elif descriptor == WALL and index == len(excel_data) - 1:
+        elif descriptor.lower() == WALL and index == len(excel_data) - 1:
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
@@ -145,7 +147,7 @@ def conversion(file, layout_style):
             x2 = x1  # Set x2 to the same as x1
             y2 = y1  # Set y2 to the same as y1
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
-        elif descriptor == WINDOW and index < len(excel_data) - 1:
+        elif descriptor.lower() == WINDOW and index < len(excel_data) - 1:
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
@@ -163,7 +165,7 @@ def conversion(file, layout_style):
                 x2 = excel_data.at[index + 1, 'x']
                 y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_windows_template.format(x1, y1, x2, y2)
-        elif descriptor == DOOR and index < len(excel_data) - 1:
+        elif descriptor.lower() == DOOR and index < len(excel_data) - 1:
             x = row['x']
             y = row['y']
             door_angle = row['door_angle']
@@ -196,7 +198,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
-        elif row_type == FURNITURE and row['furniture_type'].lower() == 'rectangle':
+        elif row_type.lower() == FURNITURE and row['furniture_type'].lower() == 'rectangle':
             width = row['width']
             height = row['height']
             rotation = row['rotation']
@@ -209,7 +211,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
-        elif row_type == FURNITURE and row['furniture_type'].lower() == 'circle':
+        elif row_type.lower() == FURNITURE and row['furniture_type'].lower() == 'circle':
             radius = row['radius']
             table_name = descriptor.lower()
             x = row['x']
