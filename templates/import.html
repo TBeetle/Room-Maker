@@ -23,16 +23,18 @@
                             <span style="color: gray;">Or drop file here</span>
                         </div>
                     </div>                    
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                  
-                    {% endif %}
                 </div>
             </div>
+            {% if messages %}
+                  <center>
+                    <div class="alert alert-danger mt-4" style="width: 50%" role="alert">
+                        {% for message in messages %}
+                        <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                    </center>
+                {% endif %}
+                
             <div class="text-center" style="padding-top: 2rem;">
                 <button type="submit" id="convertButton" class="btn convert-button btn-lg">
                     Convert   <i class="bi bi-arrow-right"></i>

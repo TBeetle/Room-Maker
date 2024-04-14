@@ -102,11 +102,10 @@ def conversion(file, layout_style):
     latex_orientation = "portrait"
 
     # Defining allowed values for data validation
-    WALL = 'WALL'
-    TABLE = 'TABLE'
-    WINDOW = 'WINDOW'
-    DOOR = 'DOOR'
-    FURNITURE = 'FURNITURE'
+    WALL = 'wall'
+    WINDOW = 'window'
+    DOOR = 'door'
+    FURNITURE = 'furniture'
 
     # Parse through uploaded Excel file
     for index, row in excel_data.iterrows():
@@ -197,7 +196,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
-        elif row_type == FURNITURE and row['furniture_type'] == 'rectangle':
+        elif row_type == FURNITURE and row['furniture_type'].lower() == 'rectangle':
             width = row['width']
             height = row['height']
             rotation = row['rotation']
@@ -210,7 +209,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
-        elif row_type == FURNITURE and row['furniture_type'] == 'circle':
+        elif row_type == FURNITURE and row['furniture_type'].lower() == 'circle':
             radius = row['radius']
             table_name = descriptor.lower()
             x = row['x']
@@ -220,8 +219,9 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             latex_code += latex_circle_furniture_template.format(radius, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
-        elif row_type == FURNITURE:
+        elif row_type == FURNITURE and row['furniture_type'].lower() not in ['rectangle', 'circle']:
             message = f"Invalid value for furniture_type in row {index+2}. Please enter either 'rectangle' or 'circle'."
+            print(message)
             return {'success': False, 'message': message}
         elif row_type == 'sensor':
             x = row['x']
