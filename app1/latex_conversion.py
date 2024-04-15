@@ -87,8 +87,14 @@ def conversion(file, layout_style):
     if not is_numeric(x_step):
         message = f"Invalid input type for X Axis step value. Please enter a real number."
         return {'success': False, 'message': message}
+    if x_step > abs(x_max-x_min):
+        message = f"Invalid step value for X Axis. Please enter a number between {x_min} and {x_max}."
+        return {'success': False, 'message': message}
     if not is_numeric(y_step):
         message = f"Invalid input types for Y Axis step value. Please enter a real number."
+        return {'success': False, 'message': message}
+    if y_step > abs(y_max-y_min):
+        message = f"Invalid step value for Y Axis. Please enter a number between {y_min} and {y_max}."
         return {'success': False, 'message': message}
 
     latex_gridline_template = """
