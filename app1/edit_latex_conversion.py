@@ -127,11 +127,11 @@ def conversion(file, layout_style, labels):
             x1 = row['x']
             y1 = row['y']
              # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if excel_data.iloc[index + 1]['descriptor'].lower() != WALL:
                 # If the next row is not a wall
@@ -146,11 +146,11 @@ def conversion(file, layout_style, labels):
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             # If the current row is the last row and it's a wall
             x2 = x1  # Set x2 to the same as x1
@@ -160,11 +160,11 @@ def conversion(file, layout_style, labels):
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['type'] != 'exterior':
                 # Use the current row's coordinates for the last window before the furniture
@@ -179,13 +179,13 @@ def conversion(file, layout_style, labels):
             y = row['y']
             door_angle = row['door_angle']
             # check that x, y, and angle are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
+            if not is_numeric(y):
                 message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(door_angle) not in [int, float] or door_angle < 0 or door_angle > 360:
+            if (not is_numeric(y)) or door_angle < 0 or door_angle > 360:
                 message = f"Invalid input type for door_angle in row {index+2}. Please enter a number between 0 - 360."
                 return {'success': False, 'message': message}
             door_xy = row['door_xory']
@@ -215,7 +215,7 @@ def conversion(file, layout_style, labels):
             x = row['x']
             y = row['y']
             # check that width, height, rotation, x, and y are all valid numbers.
-            if type(width) not in [int, float] or type(height) not in [int, float] or type(rotation) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+            if (not is_numeric(width)) or (not is_numeric(height)) or (not is_numeric(rotation)) or (not is_numeric(x)) or (not is_numeric(y)):
                 message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for width, height, rotation, x, and y."
                 return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
@@ -225,7 +225,7 @@ def conversion(file, layout_style, labels):
             table_name = descriptor.lower()
             x = row['x']
             y = row['y']
-            if type(radius) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+            if (not is_numeric(radius)) or (not is_numeric(x)) or (not is_numeric(y)):
                 message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for radius, x, and y."
                 return {'success': False, 'message': message}
             latex_code += latex_circle_furniture_template.format(radius, x, y)
@@ -236,8 +236,8 @@ def conversion(file, layout_style, labels):
         elif row_type == 'sensor':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for x or y coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for sensor x/y coordinates in line {index+2}. Please enter real numbers."
                 return {'success': False, 'message': message}
             latex_code += latex_sensor_template.format(x, y)
             for label in labels:
@@ -257,10 +257,10 @@ def conversion(file, layout_style, labels):
             x = row['x']
             y = row['y']
             rotation = row['rotation']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for camera x/y coordinates in line {index+2}. Please enter real numbers."
                 return {'success': False, 'message': message}
-            if (type(rotation) in [int, float] and (rotation < 0 or rotation > 360)) or type(rotation) not in [int, float]:
+            if (is_numeric(rotation) and (rotation < 0 or rotation > 360)) or not is_numeric(rotation):
                 message = f"Invalid input type for camera rotation in line {index+2}. Please enter a real number between 0-360."
             latex_code += latex_camera_template.format(rotation, x, y)
             for label in labels:
@@ -279,8 +279,8 @@ def conversion(file, layout_style, labels):
         elif row_type == 'calibration':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for calibration x/y coordinates in line {index+2}. Please enter real numbers."
                 return {'success': False, 'message': message}
             latex_code += latex_calibration_template.format(descriptor, x, y)
             for label in labels:
@@ -299,8 +299,8 @@ def conversion(file, layout_style, labels):
         elif row_type == 'room navigation':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for room navigation x/y coordinates in line {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             room_nav_direction = row['room_nav_direction'].lower()
             if room_nav_direction not in ['left', 'right', 'up', 'down']:
@@ -621,3 +621,11 @@ def conversion(file, layout_style, labels):
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
         return False;
+
+
+def is_numeric(value):
+    try:
+        pd.to_numeric(value)
+        return True
+    except ValueError:
+        return False

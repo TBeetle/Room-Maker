@@ -16,6 +16,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import FileExtensionValidator
 from datetime import datetime
+from django.utils import timezone
 
 def get_user_subfolder(instance, filename):
     # Returns the path to a user's specific subfolder in 'imported_files'
@@ -214,6 +215,11 @@ class ConvertedFile(models.Model):
         # Set default value for file_name from uploaded_file
         if not self.file_name:
             self.file_name = self.uploaded_file.file_name
+
+        # Use current timezone
+        if not self.created_at:
+            self.created_at = timezone.now()
+        self.last_modified = timezone.now()
 
         # update paths for latex_file and pdf_file if the file_name is changed
         old_prefix = os.path.splitext(os.path.basename(self.latex_file))[0]

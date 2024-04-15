@@ -62,14 +62,41 @@ def conversion(file, layout_style):
     """.format(width=layout_style.furniture_width, color=layout_style.furniture_color)
 
     # Define LaTeX template for gridlines
+
+    # TODO: Add checks that user has entered correct column labels in header
+
+    # check that data entered is valid
     x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
     y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
     x_min = x_axis_data['min']
     x_max = x_axis_data['max']
+    if not is_numeric(x_min) or not is_numeric(x_max):
+        message = f"Invalid input types for X Axis min/max values. Please enter real numbers."
+        return {'success': False, 'message': message}
     y_min = y_axis_data['min']
     y_max = y_axis_data['max']
+    if not is_numeric(y_min) or not is_numeric(y_max):
+        message = f"Invalid input types for Y Axis min/max values. Please enter real numbers."
+        return {'success': False, 'message': message}
+    if (not x_min < x_max):
+        message = f"Invalid input for X Axis min/max values. Please ensure that x_min is less than x_max."
+    if (not y_min < y_max):
+        message = f"Invalid input for Y Axis min/max values. Please ensure that y_min is less than y_max."
     x_step = x_axis_data['step']
     y_step = y_axis_data['step']
+    if not is_numeric(x_step):
+        message = f"Invalid input type for X Axis step value. Please enter a real number."
+        return {'success': False, 'message': message}
+    if x_step > abs(x_max-x_min):
+        message = f"Invalid step value for X Axis. Please enter a number between {x_min} and {x_max}."
+        return {'success': False, 'message': message}
+    if not is_numeric(y_step):
+        message = f"Invalid input types for Y Axis step value. Please enter a real number."
+        return {'success': False, 'message': message}
+    if y_step > abs(y_max-y_min):
+        message = f"Invalid step value for Y Axis. Please enter a number between {y_min} and {y_max}."
+        return {'success': False, 'message': message}
+
     latex_gridline_template = """
         %% GRID - X
         \\foreach \\i in {{{a1},{a2},...,{a3}}}{{
@@ -112,18 +139,28 @@ def conversion(file, layout_style):
         descriptor = row['descriptor']
         row_type = row['type']
 
+        # Prevent parsing lines that don't contain data
         if row_type in ['x axis', 'y axis']:
             continue
+
         if descriptor.lower() == WALL and index < len(excel_data) - 1: 
             x1 = row['x']
             y1 = row['y']
              # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
+            # check that x and y are within range of gridlines
+            if x1 < x_min or x1 > x_max:
+                message = f"Invalid input for wall x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y1 < y_min or y1 > y_max:
+                message = f"Invalid input for wall y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
+                return {'success': False, 'message': message}
+            # --- Data validation passed ---
             if excel_data.iloc[index + 1]['descriptor'].lower() != WALL:
                 # If the next row is not a wall
                 x2 = x1  # Set x2 to the same as x1
@@ -137,12 +174,20 @@ def conversion(file, layout_style):
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
+            # check that x and y are within range of gridlines
+            if x1 < x_min or x1 > x_max:
+                message = f"Invalid input for wall x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y1 < y_min or y1 > y_max:
+                message = f"Invalid input for wall y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
+                return {'success': False, 'message': message}
+            # --- Data validation passed ---
             # If the current row is the last row and it's a wall
             x2 = x1  # Set x2 to the same as x1
             y2 = y1  # Set y2 to the same as y1
@@ -151,11 +196,17 @@ def conversion(file, layout_style):
             x1 = row['x']
             y1 = row['y']
             # check that x and y are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x1):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+            if not is_numeric(y1):
+                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if x1 < x_min or x1 > x_max:
+                message = f"Invalid input for window x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y1 < y_min or y1 > y_max:
+                message = f"Invalid input for window y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
             if index == len(excel_data) - 2 and excel_data.iloc[index + 1]['type'] != 'exterior':
                 # Use the current row's coordinates for the last window before the furniture
@@ -170,19 +221,28 @@ def conversion(file, layout_style):
             y = row['y']
             door_angle = row['door_angle']
             # check that x, y, and angle are valid number values
-            if type(x1) not in [int, float]:
+            if not is_numeric(x):
                 message = f"Invalid input type for x in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(y1) not in [int, float]:
+            if not is_numeric(y):
                 message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if type(door_angle) not in [int, float] or door_angle < 0 or door_angle > 360:
+            if (not is_numeric(y)) or door_angle < 0 or door_angle > 360:
                 message = f"Invalid input type for door_angle in row {index+2}. Please enter a number between 0 - 360."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for door x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for door y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
             door_xy = row['door_xory']
             # check that door_xy is either x or y
             if type(door_xy) in [str]:
                 door_xy = door_xy.lower()
+                if not is_numeric(row['door_length']):
+                    message = f"Invalid input type for door_length in row {index+2}. Please enter a real number."
+                    return {'success': False, 'message': message}
                 if(door_xy == 'x'):
                     door_x = row['door_length']
                     door_y = 0
@@ -198,7 +258,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
-        elif row_type.lower() == FURNITURE and row['furniture_type'].lower() == 'rectangle':
+        elif row_type == FURNITURE and row['furniture_type'].lower() == 'rectangle':
             width = row['width']
             height = row['height']
             rotation = row['rotation']
@@ -206,18 +266,38 @@ def conversion(file, layout_style):
             x = row['x']
             y = row['y']
             # check that width, height, rotation, x, and y are all valid numbers.
-            if type(width) not in [int, float] or type(height) not in [int, float] or type(rotation) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+            if (not is_numeric(width)) or (not is_numeric(height)) or (not is_numeric(rotation)) or (not is_numeric(x)) or (not is_numeric(y)):
                 message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for width, height, rotation, x, and y."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for furniture x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for furniture y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
+                return {'success': False, 'message': message}
+            if width < 0 or width > abs(x_max-x_min):
+                message = f"Invalid input for furniture width in row {index+2}. Please enter a width greater than 0 and within range of layout grid."
+                return {'success': False, 'message': message}
+            if height < 0 or height > abs(y_max-y_min):
+                message = f"Invalid input for furniture height in row {index+2}. Please enter a height greater than 0 and within range of layout grid."
                 return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
-        elif row_type.lower() == FURNITURE and row['furniture_type'].lower() == 'circle':
+        elif row_type == FURNITURE and row['furniture_type'].lower() == 'circle':
             radius = row['radius']
-            table_name = descriptor.lower()
             x = row['x']
             y = row['y']
-            if type(radius) not in [int, float] or type(x) not in [int, float] or type(y) not in [int, float]:
+            if (not is_numeric(radius)) or (not is_numeric(x)) or (not is_numeric(y)):
                 message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for radius, x, and y."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for furniture x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for furniture y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
+                return {'success': False, 'message': message}
+            if radius < 0 or radius > abs(x_max-x_min) or radius > abs(y_max-y_min):
+                message = f"Invalid input for furniture radius in row {index+2}. Please enter a value greater than 0 and within range of layout grid."
                 return {'success': False, 'message': message}
             latex_code += latex_circle_furniture_template.format(radius, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
@@ -228,8 +308,14 @@ def conversion(file, layout_style):
         elif row_type == 'sensor':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for x or y coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for sensor x/y coordinates in line {index+2}. Please enter real numbers."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for sensor x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for sensor y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
             latex_code += latex_sensor_template.format(x, y)
             latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=descriptor)
@@ -237,28 +323,44 @@ def conversion(file, layout_style):
             x = row['x']
             y = row['y']
             rotation = row['rotation']
-            print(f"X: {type(x)}, Y: {y}, Rotation: {rotation}")
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for camera x/y coordinates in line {index+2}. Please enter real numbers."
                 return {'success': False, 'message': message}
-            if (type(rotation) in [int, float] and (rotation < 0 or rotation > 360)) or type(rotation) not in [int, float]:
+            if (is_numeric(rotation) and (rotation < 0 or rotation > 360)) or not is_numeric(rotation):
                 message = f"Invalid input type for camera rotation in line {index+2}. Please enter a real number between 0-360."
-
+            if x < x_min or x > x_max:
+                message = f"Invalid input for camera x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for camera y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
+                return {'success': False, 'message': message}
             latex_code += latex_camera_template.format(rotation, x, y)
             latex_code += latex_camera_label_template.format(x, y, descriptor)
         elif row_type == 'calibration':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for calibration x/y coordinates in line {index+2}. Please enter real numbers."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for calibration x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for calibration y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
             latex_code += latex_calibration_template.format(descriptor, x, y)
             latex_code += latex_calibration_label_template.format(descriptor,descriptor)
         elif row_type == 'room navigation':
             x = row['x']
             y = row['y']
-            if type(x) not in [int, float] or type(y) not in [int, float]:
-                message = f"Invalid input type for coordinates in line {index+2}. Please enter a real number."
+            if (not is_numeric(x)) or (not is_numeric(y)):
+                message = f"Invalid input type for room navigation x/y coordinates in line {index+2}. Please enter a real number."
+                return {'success': False, 'message': message}
+            if x < x_min or x > x_max:
+                message = f"Invalid input for room navigation x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
+                return {'success': False, 'message': message}
+            if y < y_min or y > y_max:
+                message = f"Invalid input for room navigation y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
             room_nav_direction = row['room_nav_direction'].lower()
             if room_nav_direction not in ['left', 'right', 'up', 'down']:
@@ -586,3 +688,12 @@ def conversion(file, layout_style):
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
         return {'success': False, 'message': 'Error occurred during PDF generation.'};
+
+
+
+def is_numeric(value):
+    try:
+        pd.to_numeric(value)
+        return True
+    except ValueError:
+        return False
