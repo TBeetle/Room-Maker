@@ -70,8 +70,7 @@ class UpdateFileNameForm(ModelForm):
             raise forms.ValidationError("File name must not match an existing file in your library.")
         return new_file_name
 
-
-class UpdateStyleSettingsForm(ModelForm):
+class UpdateStyleSettingsForm(forms.ModelForm):
     class Meta:
         model = StyleSettings
         fields = ('wall_color', 'door_color', 'furniture_color', 'window_color',
@@ -88,11 +87,33 @@ class UpdateStyleSettingsForm(ModelForm):
             'navigation_arrow_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
             'calibration_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
             # border widths
-            'wall_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
+            'wall_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
             }
+        
+    def clean(self):
+            cleaned_data = super().clean()
+            wall_width = cleaned_data.get('wall_width')
+            door_width = cleaned_data.get('door_width')
+            furniture_width = cleaned_data.get('furniture_width')
+            window_width = cleaned_data.get('window_width')
+            print(wall_width)
+
+            if wall_width is not None and (wall_width < 1 or wall_width > 16):
+                 raise ValidationError('Wall width must be between 1 and 16.')
+            
+            if door_width is not None and (door_width < 1 or door_width > 16):
+                raise ValidationError('Door width must be between 1 and 16.')
+
+            if furniture_width is not None and (furniture_width < 1 or furniture_width > 16):
+                raise ValidationError('Furniture width must be between 1 and 16.')
+
+            if window_width is not None and (window_width < 1 or window_width > 16):
+                raise ValidationError('Window width must be between 1 and 16.')
+
+            return cleaned_data
 
 class UpdateDefaultStyleSettingsForm(ModelForm):
     class Meta:
@@ -110,11 +131,32 @@ class UpdateDefaultStyleSettingsForm(ModelForm):
             'navigation_arrow_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
             'calibration_color': forms.Select(choices=DefaultStyleSettings.COLOR_CHOICES, attrs={'class': 'form-control, form-select'}),
             # border widths
-            'wall_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
-            'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 2, 'max': 12}),
+            'wall_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'door_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'furniture_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
+            'window_width': forms.TextInput(attrs={'class': 'form-control', 'type': 'number', 'min': 1, 'max': 16}),
         }
+
+    def clean(self):
+            cleaned_data = super().clean()
+            wall_width = cleaned_data.get('wall_width')
+            door_width = cleaned_data.get('door_width')
+            furniture_width = cleaned_data.get('furniture_width')
+            window_width = cleaned_data.get('window_width')
+
+            if wall_width is not None and (wall_width < 1 or wall_width > 16):
+                 raise ValidationError('Wall width must be between 1 and 16.')
+            
+            if door_width is not None and (door_width < 1 or door_width > 16):
+                raise ValidationError('Door width must be between 1 and 16.')
+
+            if furniture_width is not None and (furniture_width < 1 or furniture_width > 16):
+                raise ValidationError('Furniture width must be between 1 and 16.')
+
+            if window_width is not None and (window_width < 1 or window_width > 16):
+                raise ValidationError('Window width must be between 1 and 16.')
+
+            return cleaned_data
 
 class LabelForm(forms.Form):
     location = forms.ChoiceField(choices=Label.LABEL_LOCATIONS, widget=forms.Select(attrs={'class': 'form-control form-select'}))

@@ -425,15 +425,13 @@ def EditLayoutStylePage(request, layout_id):
 
         # Process orientation field
         orientation = request.POST.get('orientation')
-        print("o " + orientation)
         style_settings_instance.orientation = orientation  # Update orientation value
-        print("ORIENTATION: " + style_settings_instance.orientation)
         style_settings_instance.save()
 
         # Initialize list to hold label forms
         label_forms = [LabelForm(request.POST, prefix=str(label.id), initial={'location': label.location}) for label in labels]
 
-        # Check if both forms are valid
+
         if form.is_valid() and all(label_form.is_valid() for label_form in label_forms):
             # Save style settings form
             form.save()
@@ -448,10 +446,6 @@ def EditLayoutStylePage(request, layout_id):
 
             # Call conversion code
             result = elc.conversion(excel_file_path, style_settings_instance, labels)
-
-            # if not success:
-            #    logger.error("Failure converting file.")
-            #    messages.error(request, "An error occurred while converting the file.")
 
             # Place .pdf, .png, and .tex files into user's subfolder at /uploads/imported_files/<username>/
             prefix_filename, _ = os.path.splitext(layout.file_name)
@@ -491,7 +485,6 @@ def EditLayoutStylePage(request, layout_id):
             print("Form errors:", form_errors)
             print("Label form errors:", label_form_errors)
             print("one or more forms are invalid.")
-            # TODO: Handle form validation errors
     else:
         # Initialize style settings form
         form = UpdateStyleSettingsForm(instance=style_settings_instance)
@@ -529,17 +522,6 @@ def LayoutLibraryPage(request):
 
     return render(request, 'layout-library.html', {'layouts': user_layouts, 'filter_value': filter_value})
 
-    # paginator = Paginator(user_layouts, 9)  # Show 9 layouts per page
-
-    # page_number = request.GET.get('page')
-    # try:
-    #     layouts = paginator.page(page_number)
-    # except PageNotAnInteger:
-    #     layouts = paginator.page(1)
-    # except EmptyPage:
-    #     layouts = paginator.page(paginator.num_pages)
-
-    # return render(request, 'layout-library.html', {'layouts': layouts, 'filter_value': filter_value})
 
 
 # %******************** Settings Pages ****************************%
@@ -562,14 +544,18 @@ def SettingsPage(request):
             form.save()
             messages.success(request, "Style settings have been updated.")
             return render(request, "default-style-settings.html", {'form': form})
-        else:
-            messages.error(request, "Style settings have not been applied.")
 
     else:
         # Pre-populate the form with user's current style settings
         form = UpdateDefaultStyleSettingsForm(instance=style_settings_instance)
 
     return render(request, "default-style-settings.html", {'form' : form})
+
+def reset_default_settings(request):
+    # Call the reset_to_defaults method on the DefaultStyleSettings object
+    DefaultStyleSettings.reset_to_defaults(user=request.user)
+    messages.success(request, "Default style settings have been restored.")
+    return redirect('settings')
 
 # %******************* Account Settings ****************************%
 

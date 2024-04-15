@@ -138,6 +138,12 @@
                         <h3 class="fw-bold pt-5" style="color: #000">Boundaries</h3>
                     </center>
 
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <b>Error:</b> All border widths must be between 1 and 16.
+                    </div>
+                    {% endif %}
+
                     <div class="form-row d-flex justify-content-between mt-3">
                         <div class="form-group col-5">
                             <label for="wall_color">Wall Color:</label>

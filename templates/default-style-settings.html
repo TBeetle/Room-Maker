@@ -78,7 +78,25 @@
     .form-group:last-child {
         margin-right:0;
     }
+
+    .btn-secondary {
+        background-color: #999898;
+        border:none;
+    }
+
 </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#reset-settings').click(function() {
+            // Confirm with the user before resetting
+            if (confirm('Are you sure you want to reset to default settings?')) {
+                // Redirect to the reset endpoint
+                window.location.href = '{% url 'reset-settings' %}';
+            }
+        });
+    });
+    </script>
 {% endblock %}
 
 
@@ -104,16 +122,17 @@
                 <div class="col">
                     <!--Default Style Settings-->
                     <div class="p-5" id="defaultStyleSettings">
+                        <div class="d-flex justify-content-between align-items-center">
                             <h1 class="display-6 fw-bold">Default Style Settings</h1>
+                            <button type="submit" class="btn btn-secondary btn-small align-items-center" id="reset-settings" style="height: 2.5rem; width:auto">Reset to system defaults</button>
+                        </div>
                             <hr>
                             
                             {% if messages %}
                                     <div class="alert alert-success" role="alert">
-                                        <ul>
                                             {% for message in messages %}
                                                 {{ message }}
                                             {% endfor %}
-                                        </ul>
                                     </div>
                                 {% endif %}
 
