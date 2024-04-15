@@ -87,14 +87,18 @@ def conversion(file, layout_style):
     if not is_numeric(x_step):
         message = f"Invalid input type for X Axis step value. Please enter a real number."
         return {'success': False, 'message': message}
-    if x_step > abs(x_max-x_min):
-        message = f"Invalid step value for X Axis. Please enter a number between {x_min} and {x_max}."
+    if x_step > abs(x_max-x_min) or x_step <= 0:
+        message = f"Invalid step value for X Axis. Please enter a positive number within the axis range."
         return {'success': False, 'message': message}
     if not is_numeric(y_step):
         message = f"Invalid input types for Y Axis step value. Please enter a real number."
         return {'success': False, 'message': message}
-    if y_step > abs(y_max-y_min):
-        message = f"Invalid step value for Y Axis. Please enter a number between {y_min} and {y_max}."
+    if y_step > abs(y_max-y_min) or y_step<=0:
+        message = f"Invalid step value for Y Axis. Please enter a positive number within the axis range."
+        return {'success': False, 'message': message}
+    # set maximum # of steps
+    if abs(x_max - x_min) / x_step > 30:
+        message = f"Step value for X Axis is too small. Please enter a larger value."
         return {'success': False, 'message': message}
 
     latex_gridline_template = """
@@ -138,9 +142,14 @@ def conversion(file, layout_style):
     for index, row in excel_data.iterrows():
         descriptor = row['descriptor']
         row_type = row['type']
+        print(f"row: {index} + descriptor: {descriptor} + row type: {row_type}")
 
         # Prevent parsing lines that don't contain data
         if row_type in ['x axis', 'y axis']:
+            continue
+        if pd.isna(descriptor) or pd.isna(row_type):
+            continue
+        if is_numeric(descriptor) or is_numeric(row_type):
             continue
 
         if descriptor.lower() == WALL and index < len(excel_data) - 1: 

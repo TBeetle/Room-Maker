@@ -122,6 +122,10 @@ def conversion(file, layout_style, labels):
 
         if row_type in ['x axis', 'y axis']:
             continue
+        if pd.isna(descriptor) or pd.isna(row_type):
+            continue
+        if is_numeric(descriptor) or is_numeric(row_type):
+            continue
 
         if descriptor.lower() == WALL and index < len(excel_data) - 1: 
             x1 = row['x']
@@ -464,6 +468,9 @@ def conversion(file, layout_style, labels):
     elif(y_scale_number >=0 and y_scale_number<=192 and latex_orientation == "landscape"):
         latex_scale=1/19
         latex_paper_size = "legalpaper"
+    else:
+        message = f"Range of Y-axis is too large. Maximum range between min and max values is 1250."
+        return {'success': False, 'message': message}
 
     # Complete LaTeX code with autopopulated walls
     complete_latex_code = f"""
