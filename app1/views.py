@@ -551,6 +551,12 @@ def SettingsPage(request):
 
     return render(request, "default-style-settings.html", {'form' : form})
 
+def reset_default_settings(request):
+    # Call the reset_to_defaults method on the DefaultStyleSettings object
+    DefaultStyleSettings.reset_to_defaults(user=request.user)
+    messages.success(request, "Default style settings have been restored.")
+    return redirect('settings')
+
 # %******************* Account Settings ****************************%
 
 from django.contrib.auth import update_session_auth_hash

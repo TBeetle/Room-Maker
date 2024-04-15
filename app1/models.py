@@ -183,6 +183,31 @@ class DefaultStyleSettings(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # called when user resets style settings back to default
+    @classmethod
+    def reset_to_defaults(cls, user):
+        # Define your default values here
+        default_values = {
+            'wall_color': 'black',
+            'door_color': 'black',
+            'furniture_color': 'black',
+            'window_color': 'black',
+            'sensor_label_color': 'black',
+            'camera_label_color': 'black',
+            'navigation_arrow_color': 'black',
+            'calibration_color': 'black',
+            'wall_width': 2,
+            'door_width': 2,
+            'furniture_width': 2,
+            'window_width': 2
+        }
+        
+        style_settings_instance, _ = cls.objects.get_or_create(user=user)
+        
+        for field, value in default_values.items():
+            setattr(style_settings_instance, field, value)
+        style_settings_instance.save()
+
 # Stores generated LaTeX code and reference to original file
 class ConvertedFile(models.Model):
     file_name = models.CharField(max_length=255, default="name") # Stores the PREFIX (without extension)

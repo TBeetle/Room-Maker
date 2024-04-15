@@ -32,6 +32,7 @@ urlpatterns = [
     path("accounts/logout/", views.LogoutPage, name='logout'),
     path('layout-library/', views.LayoutLibraryPage, name="layout-library"),
     path('default-style-settings/', views.SettingsPage, name='settings'),
+    path('reset-settings/', views.reset_default_settings, name='reset-settings'),
     path('account-settings/', views.AccountSettingsPage, name='account-settings'),
 
     path('accounts/password-reset/', auth_views.PasswordResetView.as_view(template_name='reset_password.html'), name='reset_password'),
