@@ -11011,6 +11011,7 @@ html {
   max-width: 25rem;
   border-radius: 0.5rem;
   overflow: hidden;
+  border: 2px solid #c0c2c6;
 }
 .portfolio .portfolio-item .portfolio-item-caption {
   position: absolute;
