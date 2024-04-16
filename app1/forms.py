@@ -58,8 +58,13 @@ class UpdateFileNameForm(ModelForm):
         fields = ['new_file_name']
 
     def clean_new_file_name(self):
-        new_file_name = self.cleaned_data['new_file_name']
-        # Cleaning data:
+        new_file_name = self.cleaned_data['new_file_name'].strip()  # Remove leading and trailing whitespace
+
+        # Check if the file name is blank after stripping whitespace
+        if new_file_name == "":
+            print("BLANK NAME")
+            raise forms.ValidationError("File name cannot be blank.")
+        
         new_file_name = new_file_name.replace(' ', '_')
         # Extract filename prefix without extension
         if '.' in new_file_name:

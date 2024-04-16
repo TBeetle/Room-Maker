@@ -108,6 +108,11 @@
                         </div>
                         
                         <div class="mt-5 text-start">
+                            {% if update_file_name_form.errors %}
+                            <div class="alert alert-danger">
+                                <b>Error:</b> New file name cannot be blank or match the name of an existing layout in your library.
+                            </div>
+                            {% endif %}
                             <form method="post" id="updateFileNameForm">
                                 <div class="row">
                                     {% csrf_token %}
