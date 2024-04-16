@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import subprocess
 import os
 import shutil
@@ -9,6 +10,12 @@ def conversion(file, layout_style, labels):
     
     # Read Excel data 
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
+
+    # drop empty rows
+    excel_data = excel_data.dropna(how='all')
+    excel_data.reset_index(drop=True, inplace=True)
+    print(excel_data)
+  
     
     # Convert first row and first column to lowercase
     excel_data.columns = excel_data.columns.str.lower()
@@ -340,6 +347,8 @@ def conversion(file, layout_style, labels):
             latex_building = descriptor
         elif row_type == 'orientation':
             latex_orientation = layout_style.orientation
+
+
         # Scaling Layout
     y_scale_max = y_max+5
     y_scale_min = y_min-5
@@ -603,7 +612,6 @@ def conversion(file, layout_style, labels):
     if process.returncode == 0:
         print("PDF generated successfully.") # Specify the destination folder
         print(layout_style.camera_label_color)
-        print("labels:", label_type)
         pdf_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
         tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
         aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
@@ -630,9 +638,13 @@ def conversion(file, layout_style, labels):
         return False;
 
 
+import math
+
 def is_numeric(value):
     try:
         pd.to_numeric(value)
+        if math.isnan(value):
+            return False
         return True
     except ValueError:
         return False
