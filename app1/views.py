@@ -231,6 +231,7 @@ def ImportPage(request):
                     return redirect("export-layout", layout_id=converted_file.id)
         except Exception as e:
             logger.error("Error occurred during import: %s", e)
+            print(e)
             if uploaded_file_path:
                 try:
                     os.remove(uploaded_file_path)

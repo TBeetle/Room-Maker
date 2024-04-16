@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import subprocess
 import os
 import shutil
@@ -9,10 +10,17 @@ def conversion(file, layout_style):
     
     # Read Excel data into a dataframe
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
+    
+    # drop empty rows
+    excel_data = excel_data.dropna(how='all')
+    excel_data.reset_index(drop=True, inplace=True)
+    print(excel_data)
   
     # Convert first row and first column to lowercase
     excel_data.columns = excel_data.columns.str.lower()
     excel_data['type'] = excel_data['type'].str.lower()
+
+    # Check that header has all necessary values
 
     print("CALLING CONVERSION CODE:")
     print(file)
@@ -63,7 +71,17 @@ def conversion(file, layout_style):
 
     # Define LaTeX template for gridlines
 
-    # TODO: Add checks that user has entered correct column labels in header
+    missing_cols = ensure_header(excel_data)
+    if missing_cols:
+        if len(missing_cols) == 1:
+            col = missing_cols[0]
+            message = f"Invalid file. Please ensure that you include the following column header in your input: '{col.capitalize()}'"
+        else:
+            message = "Invalid input. Please ensure that you include the following column(s) in your header: "
+            for col in missing_cols:
+                message = message + "'" + col.capitalize() + "', "
+        return {'success': False, 'message': message}
+
 
     # check that data entered is valid
     x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
@@ -138,7 +156,8 @@ def conversion(file, layout_style):
     DOOR = 'door'
     FURNITURE = 'furniture'
 
-    # Parse through uploaded Excel file
+    print(f"LENGTH: {len(excel_data)}")
+     # Parse through uploaded Excel file
     for index, row in excel_data.iterrows():
         descriptor = row['descriptor']
         row_type = row['type']
@@ -337,6 +356,7 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             if (is_numeric(rotation) and (rotation < 0 or rotation > 360)) or not is_numeric(rotation):
                 message = f"Invalid input type for camera rotation in line {index+2}. Please enter a real number between 0-360."
+                return {'success': False, 'message': message}
             if x < x_min or x > x_max:
                 message = f"Invalid input for camera x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
                 return {'success': False, 'message': message}
@@ -409,6 +429,7 @@ def conversion(file, layout_style):
                 message = f"Invalid input type for orientation in line {index+2}. Please enter either 'portrait' or 'orientation'."
                 return {'success': False, 'message': message}
             latex_orientation = descriptor
+
 
     # Scaling Layout
     y_scale_max = y_max+5
@@ -699,10 +720,26 @@ def conversion(file, layout_style):
         return {'success': False, 'message': 'Error occurred during PDF generation.'};
 
 
+import math
 
 def is_numeric(value):
     try:
         pd.to_numeric(value)
+        if math.isnan(value):
+            return False
         return True
     except ValueError:
         return False
+    
+
+def ensure_header(excel_data):
+    """Ensure that the DataFrame contains all necessary header columns for input processing"""
+    
+    cols = excel_data.columns.tolist()
+
+    required_cols = ['type', 'descriptor', 'x', 'y', 'width', 'height', 'rotation', 'door_angle',
+                     'door_length', 'door_xory', 'room_nav_direction', 'furniture_type', 'radius', 'min', 'max', 'step']
+    
+    missing_cols = [col for col in required_cols if col not in cols]
+
+    return missing_cols
