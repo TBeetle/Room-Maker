@@ -73,8 +73,8 @@
             {% endif %}
 
             {% if layout.style_settings.orientation == "landscape" %}
-            <div class="col-lg-6 col-md-12 mt-5 p-4 mr-5 container justify-content-center align-items-center">
-                <div class="card" style="max-width: 100%; height: auto; border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+            <div class="col-lg-6 col-md-12 mt-5 p-4 container justify-content-center align-items-center">
+                <div class="card mx-5" style="max-width: 100%; height: auto; border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
                     <img class="card-img-top" src="{% url 'serve-image' layout.image %}" style="max-width:100%; border-radius: 10px" alt="Output Preview">
                 </div>
                 <center>

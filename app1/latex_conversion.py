@@ -428,6 +428,9 @@ def conversion(file, layout_style):
             if orientation not in ['portrait', 'landscape']:
                 message = f"Invalid input type for orientation in line {index+2}. Please enter either 'portrait' or 'orientation'."
                 return {'success': False, 'message': message}
+            layout_style.orientation = descriptor
+            layout_style.save()
+            print(f"ORIENTATION FROM CONVERSION: {layout_style.orientation}")
             latex_orientation = descriptor
 
 
