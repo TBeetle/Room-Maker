@@ -424,6 +424,8 @@ def EditLayoutStylePage(request, layout_id):
     for label in labels:
         print(label.name + " located " + label.location)
 
+    print(f"Orientation: {style_settings_instance.orientation}")
+
     # get path to Excel file
     excel_file_path = layout.file_path
 

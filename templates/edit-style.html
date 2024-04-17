@@ -102,8 +102,8 @@
         <form id ="layout-form" method="post">
             {% csrf_token %}
     
-        <div class="row align-items-start mb-5">
-            <div class="col justify-content-center mt-3">
+        <div class="row align-items-start mb-5 d-flex justify-content-between">
+            <div class="col-4 justify-content-center mt-3">
 
                 <!-- Leftmost column containing the color/font controls -->
                
@@ -186,7 +186,7 @@
                     </div>
             </div>
             <!-- Middle column containing PDF preview -->
-            <div class="col m-4 justify-content-center" id="layout-preview">
+            <div class="col-3 m-4 justify-content-center" id="layout-preview">
                 {% if layout.style_settings.orientation == "portrait" %}
                 <div class="object-fit-contain pdf-preview" style="border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"; style="width:auto">
                     <center>
@@ -218,7 +218,7 @@
             </div>
 
             <!-- Rightmost column containing controls for File Orientation and Label locations-->
-            <div class="col justify-content-center p-3">
+            <div class="col-4 justify-content-center p-3">
 
                 <center>
                     <h3 class="fw-bold" style="color: #000">File Orientation</h3>
