@@ -59,26 +59,38 @@ def ImportPage(request):
         # Ensure atomicity
         try:
             with transaction.atomic():
+
+                # get uploaded file from POST request
                 uploaded_file = request.FILES["uploaded_file"]
                 username = request.user.username
 
-                # File extension and file name validation:
-                file_extension = uploaded_file.name.split('.')[-1]  # Get file extension
+                # Get file extension of uploaded file
+                file_extension = uploaded_file.name.split('.')[-1] 
                 valid_extensions = ['xlsx', 'json', 'csv']
-                uploaded_files_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username)
-                file_path = os.path.join(uploaded_files_path, get_valid_filename(get_valid_filename(uploaded_file.name)))
      
+                # Create variable for uploaded file path --> "uploads/imported_files/<username>"
+                uploaded_files_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', username)
+
+                # Determine if a file with the same prefix already exists by searching for it within uploads/imported_files/<username>
+                uploaded_filename = get_valid_filename(uploaded_file.name)
+                prefix , _ = os.path.splitext(uploaded_filename)  # getting prefix
+                converted_filename = f"{prefix}.xlsx"   # appending .xlsx
+                duplicate_file_path = os.path.join(uploaded_files_path, converted_filename)  # create file path of duplicate file
+                print(f"SEARCHING FOR: {duplicate_file_path}")
+
+                # Ensure file ends with a valid extension
                 if file_extension not in valid_extensions:
                     messages.info(request, "Invalid file format. Please upload a file with valid extension (xlsx, json, or csv).")
-                elif os.path.exists(file_path):
+                # Ensure that an existing file does not exist with the same prefix
+                elif os.path.exists(duplicate_file_path):
                     messages.info(request, "File with the same name already exists. Please choose a different file name.")
                 else:
+                    # file validation & file duplication checks both passed
 
                     # Rename file to have no spaces
                     uploaded_file.name = get_valid_filename(uploaded_file.name)
-                    print("File name: " + uploaded_file.name)
 
-                    # Create an UploadedFile instance with base file
+                    # Create an UploadedFile instance with base fileS
                     uploaded_file_instance = UploadedFile(
                         file=uploaded_file,
                         user=request.user,
@@ -93,8 +105,6 @@ def ImportPage(request):
                     # Save UploadedFile instance to server
                     uploaded_file_instance.file_name = uploaded_filename
                     uploaded_file_instance.save()
-
-                    print("CHECK 1 COMPLETE: File Uploaded to /imported_files/<user>/")
 
                     # Rename file
                     prefix_filename, _ = os.path.splitext(uploaded_filename)
