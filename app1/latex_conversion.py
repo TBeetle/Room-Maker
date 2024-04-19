@@ -71,17 +71,26 @@ def conversion(file, layout_style):
 
     # Define LaTeX template for gridlines
 
+    # Ensure that the input file has all required columns
     missing_cols = ensure_header(excel_data)
     if missing_cols:
         if len(missing_cols) == 1:
             col = missing_cols[0]
-            message = f"Invalid file. Please ensure that you include the following column header in your input: '{col.capitalize()}'"
+            message = f"Invalid input. Please ensure that you include the following column header in your input: '{col.capitalize()}'"
         else:
             message = "Invalid input. Please ensure that you include the following column(s) in your header: "
             for col in missing_cols:
                 message = message + "'" + col.capitalize() + "', "
         return {'success': False, 'message': message}
-
+    
+    # Ensure that the input file columns are the right data type
+    num_type_cols = ['x', 'y', 'width', 'height', 'rotation', 'door_angle', 'door_length', 'radius', 'min', 'max', 'step']
+    str_type_cols = ['type', 'descriptor', 'door_xory', 'furniture_type']
+    excel_data[num_type_cols] = excel_data[num_type_cols].apply(pd.to_numeric, errors='coerce')
+    for col in num_type_cols:
+        if excel_data[col].isnull().any():
+            message = f"Invalid input. Column '{col}' contains non-numeric values."
+            return {'success': False, 'message': message}
 
     # check that data entered is valid
     x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
@@ -156,7 +165,8 @@ def conversion(file, layout_style):
     DOOR = 'door'
     FURNITURE = 'furniture'
 
-    print(f"LENGTH: {len(excel_data)}")
+    print(f"TYPES: {excel_data.dtypes}")
+
      # Parse through uploaded Excel file
     for index, row in excel_data.iterrows():
         descriptor = row['descriptor']
@@ -255,7 +265,7 @@ def conversion(file, layout_style):
             if not is_numeric(y):
                 message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
-            if (not is_numeric(y)) or door_angle < 0 or door_angle > 360:
+            if (not is_numeric(door_angle)) or door_angle < 0 or door_angle > 360:
                 message = f"Invalid input type for door_angle in row {index+2}. Please enter a number between 0 - 360."
                 return {'success': False, 'message': message}
             if x < x_min or x > x_max:
