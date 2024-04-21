@@ -79,7 +79,7 @@
 
 
 {% block content %}
-    <div class="container" {% if layout.style_settings.orientation == "landscape" %}style="width: 85%"{% else %}style="width: 95%;"{% endif %} style="justify-content: space-between; margin-bottom: 10%;">
+    <div class="container" {% if layout.style_settings.orientation == "landscape" %}style="width: 85%"{% else %}style="width: 100%;"{% endif %} style="justify-content: space-between; margin-bottom: 10%;">
 
         <!-- Header -->
         <div class="col-12 mt-3 mb-4 d-flex flex-row align-items-center" style="border-bottom: 1px solid rgb(166, 161, 161)">
@@ -190,7 +190,7 @@
                 {% if layout.style_settings.orientation == "portrait" %}
                 <div class="object-fit-contain pdf-preview" style="border: 1px solid rgb(166, 161, 161); box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"; style="width:auto">
                     <center>
-                        <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-height:450px;">
+                        <img src="{% url 'serve-image' layout.image %}" alt="Output Preview" style="max-height:450px; max-width:100%">
                     </center>
                 </div>
                 <div class="mt-3 d-flex justify-content-center">
