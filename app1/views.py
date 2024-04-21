@@ -117,8 +117,13 @@ def ImportPage(request):
                             df = pd.read_csv(uploaded_file_path)
 
                         if file_extension == "json":
-                            # Read JSON into a dataframe
-                            df = pd.read_json(uploaded_file_path)
+                            try:
+                                # Read JSON into a dataframe
+                                df = pd.read_json(uploaded_file_path)
+                            except ValueError as e:
+                                print("Error: File is not valid JSON")
+                                messages.error(request, "Uploaded file does not follow valid JSON syntax. Please ensure that all input is derived from valid JavaScript object notation.")
+                                return redirect("import")
 
                         # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx, relative to MEDIA_ROOT
                         excel_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, converted_filename)
