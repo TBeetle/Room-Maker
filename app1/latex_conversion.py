@@ -88,7 +88,7 @@ def conversion(file, layout_style):
     str_type_cols = ['type', 'descriptor', 'door_xory', 'furniture_type']
     excel_data[num_type_cols] = excel_data[num_type_cols].apply(pd.to_numeric, errors='coerce')
     for col in num_type_cols:
-        if excel_data[col].isnull().any():
+        if not excel_data[col].isnull().any() and not is_numeric(excel_data[col]):
             message = f"Invalid input. Column '{col}' contains non-numeric values."
             return {'success': False, 'message': message}
 
