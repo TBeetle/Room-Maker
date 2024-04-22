@@ -261,8 +261,16 @@ def ImportPage(request):
 
     return render(request, 'import.html')
 
-# parse through Excel file to identify labels 
+# parse through Excel file to identify labels
 def parse_excel_file(converted_file):
+    """
+    Helper function for ImportPage view that parses the file uploaded by the user and identifies objects that have labels
+
+    Parameters:
+        converted_file: ConvertedFile object containing reference to Excel file 
+    Returns:
+        labels: List of label objects containing a name + type for each label
+    """
     # read excel file into df
     df = pd.read_excel(converted_file.file_path)
     # convert df to lowercase first col/row
@@ -284,7 +292,7 @@ def parse_excel_file(converted_file):
 
     return labels
 
-#  Download sample Excel file for formmating
+#  Download sample Excel file for formating
 from django.http import FileResponse
 def download_sample_excel(request):
     file_path = os.path.join('uploads', 'sample_files', 'example_excel_format.xlsx')
@@ -292,14 +300,14 @@ def download_sample_excel(request):
     response['Content-Disposition'] = 'attachment; filename=example_excel_format.xlsx'
     return response
 
-# Download sample CSV file for formmating
+# Download sample CSV file for formating
 def download_sample_csv(request):
     file_path = os.path.join('uploads', 'sample_files', 'example_csv_format.csv')
     response = FileResponse(open(file_path, 'rb'))
     response['Content-Disposition'] = 'attachment; filename=example_csv_format.csv'
     return response
 
-#  Download sample JSON file for formmating
+#  Download sample JSON file for formating
 def download_sample_json(request):
     file_path = os.path.join('uploads', 'sample_files', 'example_json_format.json')
     response = FileResponse(open(file_path, 'rb'))
@@ -310,6 +318,7 @@ def download_sample_json(request):
 
 # %******************** Export File Page ****************************%
 
+# Allows user to download the generated PDF of the current layout
 def download_pdf(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     file_path = layout.pdf_file
@@ -321,6 +330,7 @@ def download_pdf(request, layout_id):
     else:
         return HttpResponse("File not found", status=404)
 
+# Allows user to download the generated LaTeX code of the current layout
 def download_tex(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     file_path = layout.latex_file
@@ -332,6 +342,7 @@ def download_tex(request, layout_id):
     else:
         return HttpResponse("File not found", status=404)
 
+# Allows user to download the generated PDF and LaTeX code in a zipped file of the current layout
 def download_zip(request, layout_id):
     layout = get_object_or_404(ConvertedFile, id=layout_id)
     pdf_path = layout.pdf_file
@@ -358,23 +369,27 @@ from .forms import UpdateFileNameForm
 
 from shutil import move
 
+# Export page, accessed after a user clicks 'convert' on a layout or selects a layout from the library
 @login_required(login_url="login")
 def ExportPage(request, layout_id):
     # Retreive layout based on layout id
     layout = ConvertedFile.objects.get(id=layout_id)
 
+    # POST request = user attempting to rename the file
     if request.method == 'POST':
+        # Initialize the form for updating file name
         update_file_name_form = UpdateFileNameForm(request.POST, instance=layout)
         if update_file_name_form.is_valid():
+            # Update the layout's filename
             new_file_name = update_file_name_form.cleaned_data['new_file_name']
             old_file_name = layout.file_name
             layout.file_name = new_file_name
-            # NEED TO UPDATE LAYOUT.FILE_PATH
+            # Update the layout's file path to have the new file name
             new_file_path = os.path.join(settings.MEDIA_ROOT, 'imported_files', request.user.username, new_file_name)
             layout.file_path = f"{new_file_path}.xlsx"
             layout.save()
 
-            # rename associated files in user's uploaded file directory
+            # rename associated files in user's uploaded file directory to have new file name
             user_directory = os.path.join(settings.MEDIA_ROOT, 'imported_files', request.user.username)
             for file_extension in ['.pdf', '.tex', '.png', '.xlsx']:
                 old_file_path = os.path.join(user_directory, f"{old_file_name}{file_extension}")
@@ -382,12 +397,12 @@ def ExportPage(request, layout_id):
                 if os.path.exists(old_file_path):
                     move(old_file_path, new_file_path)
                 
-            print("File RENAMED successfully to: " + layout.file_name)
             return redirect('export-layout', layout.id)
         else:
-            # Display the validation error as a message
+            # Error message is handled within update file name form validation
             pass
-
+    
+    # GET request: initialize the filename form on page
     else:
         update_file_name_form = UpdateFileNameForm(instance=layout, initial={'new_file_name': layout.file_name})
 
@@ -535,6 +550,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ConvertedFile
 from django.db.models import F
 
+# Allows a user to view all of their uploaded layouts
 @login_required(login_url="login")
 def LayoutLibraryPage(request):
     filter_value = request.GET.get('filter')
@@ -574,6 +590,7 @@ def SettingsPage(request):
 
     return render(request, "default-style-settings.html", {'form' : form})
 
+# Allows user to reset their default style settings to the system default
 def reset_default_settings(request):
     # Call the reset_to_defaults method on the DefaultStyleSettings object
     DefaultStyleSettings.reset_to_defaults(user=request.user)
@@ -585,6 +602,7 @@ def reset_default_settings(request):
 from django.contrib.auth import update_session_auth_hash
 from .forms import AccountSettingsForm
 
+# Account Settings page where user can update their email and/or password
 @login_required(login_url="login")
 def AccountSettingsPage(request):
     user = request.user
@@ -606,7 +624,7 @@ def AccountSettingsPage(request):
 
 # %******************** User Registration ****************************%
 import re
-
+# Registration page for users to create new accounts
 def RegisterPage(request):
     if request.method=='POST':
         uname = request.POST.get('username')
@@ -660,6 +678,7 @@ def RegisterPage(request):
 
 # %******************** Authentication pages ****************************%
 
+# Page where users can log in
 def LoginPage(request):
     if request.method=="POST":
         username = request.POST.get("username")
@@ -673,36 +692,12 @@ def LoginPage(request):
             #return HttpResponse("Username or password is incorrect!")
     return render(request, "login.html")
 
+# View allowing user to log out of their current session
 def LogoutPage(request):
     logout(request)
     # return redirect('login')
     return render(request, 'logout.html')
 
-def HomePage(request):
-    return render(request, "home.html")
-
-# def ForgotPassword(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         try:
-#             user = User.objects.get(email=email)
-#             # Generate a unique token for password reset (you can use Django's built-in token generator)
-#             # Reset token generation code goes here...
-#             # token = ...
-#             token = token_generator.make_token(user)
-
-#             # Send password reset email
-#             subject = 'Password Reset Instructions'
-#             html_message = render_to_string('password-reset-email.html', {'token': token})
-#             plain_message = strip_tags(html_message)
-#             from_email = 'backyardigansreset@gmail.com'  # Set your email address
-#             to_email = user.email
-#             send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-#             messages.success(request, 'Password reset instructions sent to your email.')
-#             return redirect('login')  # Redirect to login page
-#         except User.DoesNotExist:
-#             messages.error(request, 'User with this email does not exist.')
-#     return render(request, 'forgot-password.html')
 
 from django.utils.http import urlsafe_base64_decode
 from django.core.exceptions import ValidationError
@@ -711,37 +706,15 @@ from django.core.exceptions import ValidationError
 # from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
-# def ResetPassword(request, uidb64, token):
-#     try:
-#         uid = urlsafe_base64_decode(uidb64).decode()  # Decode the uidb64 to a string
-#         user = User.objects.get(pk=uid)
-#     except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
-#         user = None
 
-#     if user is not None and PasswordResetTokenGenerator().check_token(user, token):
-#         # Process password reset form submission
-#         if request.method == 'POST':
-#             password = request.POST.get('password')
-#             confirm_password = request.POST.get('confirm_password')
-#             if password == confirm_password:
-#                 user.set_password(password)
-#                 user.save()
-#                 messages.success(request, 'Password reset successfully.')
-#                 return redirect('login')  # Redirect to login page
-#             else:
-#                 messages.error(request, 'Passwords do not match.')
-#     else:
-#         messages.error(request, 'Invalid link for password reset.')
-#         return redirect('login')  # Redirect to login page
+# %******************** Delete buttons ****************************%
 
-#     return render(request, 'password-reset.html', {'uidb64': uidb64, 'token': token})
-
-# %******************** Delete button ****************************%
+# Allows a user to delete a layout from their library
 @login_required(login_url="login")
 def delete_layout_test(request, layout_id):
     try:
         layout = ConvertedFile.objects.get(id=layout_id, user=request.user)  # Ensure the user can only delete their own layouts
-        # delete associated files
+        # delete all associated files with the layout
         print(f"file path to Excel file: {layout.file_path}")
         default_storage.delete(layout.file_path)
         default_storage.delete(layout.latex_file)
@@ -756,6 +729,7 @@ def delete_layout_test(request, layout_id):
         messages.error(request, "Error deleting layout: %s" % e)
     return HttpResponseRedirect(reverse('layout-library'))
 
+# Allows a user to delete all layouts from their library
 @login_required(login_url="login")
 def delete_all_layout_test(request):
     try:
