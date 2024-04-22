@@ -21,6 +21,7 @@ class LoginTestCase(LiveServerTestCase):
     
     username_input.send_keys("user_test10")
     password_input.send_keys("pass_test10")
+
     login_button.click()
 
     time.sleep(5)
@@ -40,6 +41,7 @@ class LoginAndOutTestCase(LiveServerTestCase):
         
         username_input.send_keys("user_test10")
         password_input.send_keys("pass_test10")
+
         login_button.click()
         
         time.sleep(5)
@@ -68,6 +70,7 @@ class DownloadExcel(LiveServerTestCase):
       
       username_input.send_keys("user_test10")
       password_input.send_keys("pass_test10")
+
       login_button.click()
       
       time.sleep(3)
@@ -95,6 +98,7 @@ class DownloadCSV(LiveServerTestCase):
       
       username_input.send_keys("user_test10")
       password_input.send_keys("pass_test10")
+
       login_button.click()
       
       time.sleep(3)
@@ -122,6 +126,7 @@ class DownloadJSON(LiveServerTestCase):
       
       username_input.send_keys("user_test10")
       password_input.send_keys("pass_test10")
+    
       login_button.click()
       
       time.sleep(3)
@@ -146,6 +151,7 @@ class UploadExcelTemplate(LiveServerTestCase):
       
       username_input.send_keys("user_test10")
       password_input.send_keys("pass_test10")
+
       login_button.click()
       
       time.sleep(3)
@@ -177,6 +183,7 @@ class UploadCSVTemplate(LiveServerTestCase):
       
       username_input.send_keys("user_test10")
       password_input.send_keys("pass_test10")
+    
       login_button.click()
       
       time.sleep(3)

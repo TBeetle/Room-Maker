@@ -96,13 +96,9 @@ Make sure the downloaded versions of chromedriver and selenium are compatible!
 
 ### Running Tests
 
-To run Unit Test run the following in the terminal:
-
 ```bash
 python manage.py test app1.tests.unit_tests
 ```
-
-To run Behavioral Tests run the following in the terminal:
 
 ```bash
 python manage.py test app1.tests.behavioral_tests
