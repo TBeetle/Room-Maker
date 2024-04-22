@@ -19,8 +19,8 @@ class LoginTestCase(LiveServerTestCase):
     password_input = selenium.find_element('id','password')
     login_button = selenium.find_element("id",'loginbutton')
     
-    username_input.send_keys("user_test6")
-    password_input.send_keys("pass_test6")
+    username_input.send_keys("user_test7")
+    password_input.send_keys("pass_test7")
     login_button.click()
 
     time.sleep(5)
@@ -38,8 +38,8 @@ class LoginAndOutTestCase(LiveServerTestCase):
         password_input = selenium.find_element('id', 'password')
         login_button = selenium.find_element('id', 'loginbutton')
         
-        username_input.send_keys("user_test6")
-        password_input.send_keys("pass_test6")
+        username_input.send_keys("user_test7")
+        password_input.send_keys("pass_test7")
         login_button.click()
         
         time.sleep(5)
@@ -66,8 +66,8 @@ class DownloadExcel(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test7")
+      password_input.send_keys("pass_test7")
       login_button.click()
       
       time.sleep(3)
@@ -93,8 +93,8 @@ class DownloadCSV(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test7")
+      password_input.send_keys("pass_test7")
       login_button.click()
       
       time.sleep(3)
@@ -120,8 +120,8 @@ class DownloadJSON(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test7")
+      password_input.send_keys("pass_test7")
       login_button.click()
       
       time.sleep(3)
@@ -144,8 +144,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test7")
+      password_input.send_keys("pass_test7")
       login_button.click()
       
       time.sleep(3)
@@ -175,8 +175,8 @@ class UploadCSVTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test7")
+      password_input.send_keys("pass_test7")
       login_button.click()
       
       time.sleep(3)
