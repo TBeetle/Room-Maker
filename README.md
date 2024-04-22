@@ -1,6 +1,6 @@
 # TheBackyardigans
 
-Our project is a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app includes both a downloadable LaTeX file and PDF of the finished drawing. Users are able to adjust items live in the browser (e.g. shift a wall around, move a chair) with a flexible UI. Style settings are controlled in the app, and it is built using Django and Materialize-CSS.
+Our project is a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app includes both a downloadable LaTeX file containing code to generate the layout and a PDF of the finished drawing. Users are able to further customize individual layouts with a flexible UI. Style settings are controlled in the app, and it is built using Django and Materialize-CSS.
 
 ## Project Setup Guide
 
