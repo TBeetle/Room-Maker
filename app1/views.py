@@ -123,6 +123,10 @@ def ImportPage(request):
                             except ValueError as e:
                                 print("Error: File is not valid JSON")
                                 messages.error(request, "Uploaded file does not follow valid JSON syntax. Please ensure that all input is derived from valid JavaScript object notation.")
+                                uploaded_csvjson_filepath = os.path.join(settings.MEDIA_ROOT, 'imported_files', username, uploaded_filename)
+                                default_storage.delete(uploaded_csvjson_filepath)
+                                os.remove(uploaded_file_instance.file_path)
+                                uploaded_file_instance.delete()
                                 return redirect("import")
 
                         # Create new Excel workbook at /uploads/imported_files/<filename>.xlsx, relative to MEDIA_ROOT
