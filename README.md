@@ -13,6 +13,7 @@ Run the following command to update the package lists:
 ```bash
 sudo apt-get update
 ```
+
 ### Step 2: Clone the Repository
 
 Clone the project repository using Git:
@@ -21,6 +22,7 @@ Clone the project repository using Git:
 git clone https://github.com/SCCapstone/TheBackyardigans.git
 cd TheBackyardigans
 ```
+
 ### Step 3: Install Python 3.11
 
 Install Python 3.11 using the following command:
@@ -28,6 +30,7 @@ Install Python 3.11 using the following command:
 ```bash
 sudo apt install python3.11
 ```
+
 ### Step 4: Install Pipenv
 
 Our app utilizes Pipenv to keep our package requirements in check. Install and create an environment for Pipenv to manage Python dependencies using the following commands:
@@ -36,6 +39,7 @@ Our app utilizes Pipenv to keep our package requirements in check. Install and c
 pip install pipenv
 pipenv --python 3.11 install --ignore-pipfile
 ```
+
 ### Step 5: Activate the Pipenv Shell
 
 You can then enter the Pipenv environment with the following command:
@@ -43,6 +47,7 @@ You can then enter the Pipenv environment with the following command:
 ```bash
 pipenv shell
 ```
+
 ### Step 6: Install LaTeX Dependencies
 
 Our project incorporates LaTeX code to convert the Excel/CSV/JSON files to a viewable layout. Here's what you need to install:
@@ -54,6 +59,7 @@ sudo apt isntall dvipng
 sudo apt install texlive-science
 sudo apt install poppler-utils
 ```
+
 ### Step 8: Run the Application
 
 You can run the Django server locally using:
@@ -61,20 +67,32 @@ You can run the Django server locally using:
 ```bash
 python manage.py runserver
 ```
+
 Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
-
-## Testing
+## Testing Guide
 
 In our project we have two primary types of tests that are being run: unit test and behavioral test. Both of these types of
-tests have their own python file and are within the tests folder.
+tests have their own python file within the tests folder:
 
 '/tests/unit_tests.py'
 '/tests/behavioral_tests.py'
 
 ### Testing Technology
 
-We are using Selenium to test our project.
+We are using Chromedriver and Selenium to test our project.
+
+Follow the links to see a guides on installing selenium on windows/mac:
+
+https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windows-e02202ac2b08
+https://www.geeksforgeeks.org/how-to-install-selenium-webdriver-on-macos/
+
+Additional guides on installing Chromdriver:
+https://chromedriver.chromium.org/getting-started
+https://chromedriver.chromium.org/downloads
+https://googlechromelabs.github.io/chrome-for-testing/
+
+Make sure the downloaded versions of chromedriver and selenium are compatible!
 
 ### Running Tests
 
@@ -84,34 +102,7 @@ To run Unit Test:
 python manage.py test app1.tests.unit_tests
 ```
 
-### Behaviorial test setup:
-
-Helpful Guide-
-
-https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windows-e02202ac2b08
-
-Install Selenium-
-
-```bash
-pip install selenium
-```
-
-Install Chromedriver and place within your system wide directory-
-
-More helpful links to download Chromedriver
-https://chromedriver.chromium.org/getting-started
-https://chromedriver.chromium.org/downloads
-https://googlechromelabs.github.io/chrome-for-testing/
-
-### Running Behaviorial Tests:
-
-Within Terminal One:
-
-```bash
-python manage.py runserver
-```
-
-Within Terminal Two:
+To run Behavioral Tests:
 
 ```bash
 python manage.py test app1.tests.behavioral_tests
