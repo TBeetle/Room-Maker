@@ -5,24 +5,34 @@ import os
 import shutil
 from pdf2image import convert_from_path
 from django.conf import settings
+import math
 
 def conversion(file, layout_style, labels):
-    
+    """
+    Function to convert previously generated layouts with new formatting from "Edit Layout" page.
+
+    Parameters:
+    file (Excel): The excel file associated with the layout.
+    layout_style (list): The new layout style from the "Edit Layout" page.
+    labels (list) : The positioning of layout elements labels.
+
+    Returns:
+    boolean : True or False based on if the conversion was succesful. If False, then a specific error message is returned.
+    """
+
     # Read Excel data 
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
 
     # drop empty rows
     excel_data = excel_data.dropna(how='all')
     excel_data.reset_index(drop=True, inplace=True)
-    print(excel_data)
+    # print(excel_data)
   
-    
     # Convert first row and first column to lowercase
     excel_data.columns = excel_data.columns.str.lower()
     excel_data['type'] = excel_data['type'].str.lower()
 
-    print("CALLING CONVERSION CODE:")
-    print(file)
+    # print("CALLING CONVERSION CODE:", file)
     
     # Define LaTeX template
     latex_walls_template = "\\draw[wall, line width={width}pt,color ={color}] ({x1},{y1}) -- ({x2},{y2}) coordinate (c);\n".format(width=layout_style.wall_width,color=layout_style.wall_color, x1='{:.2f}',y1='{:.2f}',x2='{:.2f}',y2='{:.2f}' )
@@ -82,6 +92,7 @@ def conversion(file, layout_style, labels):
     x_step = x_axis_data['step']
     y_step = y_axis_data['step']
     latex_gridline_template = """
+
         %% GRID - X
         \\foreach \\i in {{{a1},{a2},...,{a3}}}{{
             \\draw[grid-line] (\\i,{a4}) -- (\\i,{a5});
@@ -96,14 +107,6 @@ def conversion(file, layout_style, labels):
             \\node[gray, left] at ({a9},\\i) {{\\SI{{\\value}}{{\\inch}}}};
         }}
     """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
-
-    # generating labels
-    if labels:
-        # Iterature through the labels as follows
-        for label in labels:
-            label_name = label.name
-            label_type = label.type
-            print("Tyler:",label_name)
 
 
     # Iterate through rows and generate LaTeX code for walls and furniture
@@ -153,6 +156,7 @@ def conversion(file, layout_style, labels):
                 x2 = excel_data.at[index + 1, 'x']
                 y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
+
         elif descriptor.lower() == WALL and index == len(excel_data) - 1:
             x1 = row['x']
             y1 = row['y']
@@ -167,6 +171,7 @@ def conversion(file, layout_style, labels):
             x2 = x1  # Set x2 to the same as x1
             y2 = y1  # Set y2 to the same as y1
             latex_code += latex_walls_template.format(x1, y1, x2, y2)
+
         elif descriptor.lower() == WINDOW and index < len(excel_data) - 1:
             x1 = row['x']
             y1 = row['y']
@@ -185,6 +190,7 @@ def conversion(file, layout_style, labels):
                 x2 = excel_data.at[index + 1, 'x']
                 y2 = excel_data.at[index + 1, 'y']
             latex_code += latex_windows_template.format(x1, y1, x2, y2)
+
         elif descriptor.lower() == DOOR and index < len(excel_data) - 1:
             x = row['x']
             y = row['y']
@@ -218,6 +224,7 @@ def conversion(file, layout_style, labels):
                 return {'success': False, 'message': message}
             
             latex_code += latex_door_template.format(d1=door_angle, d2=x, d3=y, d4=door_x, d5=door_y)
+
         elif row_type == FURNITURE and row['furniture_type'].lower() == 'rectangle':
             width = row['width']
             height = row['height']
@@ -225,12 +232,15 @@ def conversion(file, layout_style, labels):
             table_name = descriptor.lower()
             x = row['x']
             y = row['y']
+
             # check that width, height, rotation, x, and y are all valid numbers.
             if (not is_numeric(width)) or (not is_numeric(height)) or (not is_numeric(rotation)) or (not is_numeric(x)) or (not is_numeric(y)):
                 message = f"Invalid input type for furniture in line {index+2}. Please ensure you entered valid numbers for width, height, rotation, x, and y."
                 return {'success': False, 'message': message}
             latex_code += latex_rectangle_furniture_template.format(height, width, rotation, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
+
+        # Check if the input is valid for circlular table element 
         elif row_type == FURNITURE and row['furniture_type'].lower() == 'circle':
             radius = row['radius']
             table_name = descriptor.lower()
@@ -241,9 +251,13 @@ def conversion(file, layout_style, labels):
                 return {'success': False, 'message': message}
             latex_code += latex_circle_furniture_template.format(radius, x, y)
             latex_code += latex_furniture_label_template.format(x, y, descriptor)
+
+        # Check if the input is valid for non circular or rectangular table element 
         elif row_type == FURNITURE and row['furniture_type'].lower() not in ['rectangle', 'circle']:
             message = f"Invalid value for furniture_type in row {index+2}. Please enter either 'rectangle' or 'circle'."
             return {'success': False, 'message': message}
+        
+        # Check if the input is valid for sensor element 
         elif row_type == 'sensor':
             x = row['x']
             y = row['y']
@@ -254,16 +268,14 @@ def conversion(file, layout_style, labels):
             for label in labels:
                 if label.name == row['descriptor'] and label.location == 'below':
                     latex_code += latex_sensor_label_edit_template.format('yshift=-5pt',label.location,s1=x, s2=y, s3=row['descriptor'])
-                    print("below sensor")
                 elif label.name == row['descriptor'] and label.location == 'left':
                     latex_code += latex_sensor_label_edit_template.format('xshift=-5pt',label.location,s1=x, s2=y, s3=row['descriptor'])
-                    print("left sensor")
                 elif label.name == row['descriptor'] and label.location == 'right':
                     latex_code += latex_sensor_label_edit_template.format('xshift=5pt',label.location,s1=x, s2=y, s3=row['descriptor'])
-                    print("right sensor")
                 elif label.name == row['descriptor']:
                     latex_code += latex_sensor_label_template.format(s1=x, s2=y, s3=row['descriptor'])
-                    print("above sensor")
+
+        # Check if the input is valid for camera element 
         elif row_type == 'camera':
             x = row['x']
             y = row['y']
@@ -277,16 +289,14 @@ def conversion(file, layout_style, labels):
             for label in labels:
                 if label.name == row['descriptor'] and label.location == 'below':
                     latex_code += latex_camera_label_edit_template.format('yshift=-8pt',label.location,x,y,row['descriptor'])
-                    print("below camera")
                 elif label.name == row['descriptor'] and label.location == 'left':
                     latex_code += latex_camera_label_edit_template.format('xshift=-4pt',label.location,x,y,row['descriptor'])
-                    print("left camera")
                 elif label.name == row['descriptor'] and label.location == 'right':
                     latex_code += latex_camera_label_edit_template.format('xshift=4pt',label.location,x,y,row['descriptor'])
-                    print("right camera")
                 elif label.name == row['descriptor']:
                     latex_code += latex_camera_label_template.format(x,y,row['descriptor'])
-                    print("above camera")
+
+        # Check if the input is valid for calibration element
         elif row_type == 'calibration':
             x = row['x']
             y = row['y']
@@ -297,16 +307,13 @@ def conversion(file, layout_style, labels):
             for label in labels:
                 if label.name == row['descriptor'] and label.location == 'below':
                     latex_code += latex_calibration_label_edit_template.format('yshift=-6pt',label.location,row['descriptor'],row['descriptor'])
-                    print("below")
                 elif label.name == row['descriptor'] and label.location == 'left':
                     latex_code += latex_calibration_label_edit_template.format('xshift=-6pt',label.location,row['descriptor'],row['descriptor'])
-                    print("left")
                 elif label.name == row['descriptor'] and label.location == 'right':
                     latex_code += latex_calibration_label_edit_template.format('xshift=6pt',label.location,row['descriptor'],row['descriptor'])
-                    print("right")
                 elif label.name == row['descriptor']:
                     latex_code += latex_calibration_label_template.format(row['descriptor'],row['descriptor'])
-                    print("above")
+        # Check if the input is valid for room navigation element
         elif row_type == 'room navigation':
             x = row['x']
             y = row['y']
@@ -336,6 +343,8 @@ def conversion(file, layout_style, labels):
                 node_location = 'below'
             
             latex_code += latex_room_nav_template.format(x, y, arrow_x, arrow_y, node_location, descriptor)
+
+        # Check if the input is valid for various other elements
         elif row_type == 'date':
             latex_date = descriptor
         elif row_type == 'room name':
@@ -349,7 +358,7 @@ def conversion(file, layout_style, labels):
             latex_orientation = layout_style.orientation
 
 
-        # Scaling Layout
+    # Scaling the layout based on input and the desired orientation 
     y_scale_max = y_max+5
     y_scale_min = y_min-5
     y_scale_number = y_scale_max-y_scale_min
@@ -481,7 +490,7 @@ def conversion(file, layout_style, labels):
         message = f"Range of Y-axis is too large. Maximum range between min and max values is 1250."
         return {'success': False, 'message': message}
 
-    # Complete LaTeX code with autopopulated walls
+    # Complete LaTeX code built using f-string and with various code injections based on input
     complete_latex_code = f"""
     %!TeX program = lualatex
     \\documentclass[12pt]{{article}}
@@ -595,15 +604,11 @@ def conversion(file, layout_style, labels):
 
     \\end{{document}}
     """
-    # Print or save LaTeX code
-    # print(complete_latex_code)
 
     # Save LaTeX code to a .tex file
     tex_file_path = 'output.tex'
     with open(tex_file_path, 'w') as f:
         f.write(complete_latex_code)
-
-    # TODO: create a new ConvertedFile for the user and upload the 'output.tex' 
 
     # Run the LaTeX compiler (lualatex) to generate the PDF
     process = subprocess.run(['lualatex', tex_file_path])
@@ -611,7 +616,6 @@ def conversion(file, layout_style, labels):
     # Check if the compilation was successful
     if process.returncode == 0:
         print("PDF generated successfully.") # Specify the destination folder
-        print(layout_style.camera_label_color)
         pdf_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.pdf')
         tex_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.tex')
         aux_destination_folder = os.path.join(settings.MEDIA_ROOT, 'conversion_output', 'output.aux')
@@ -637,10 +641,16 @@ def conversion(file, layout_style, labels):
         print("Error during PDF generation. Check the LaTeX log for details.")
         return False;
 
-
-import math
-
 def is_numeric(value):
+    """
+    Function to check if the number is a valid integer or double.
+
+    Parameters:
+    value (int or double) : The number checked.
+
+    Returns:
+    boolean : True or False based on if the number is valid or not.
+    """  
     try:
         pd.to_numeric(value)
         print("got to inside of try block!")
