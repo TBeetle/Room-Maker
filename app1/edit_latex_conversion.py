@@ -643,8 +643,10 @@ import math
 def is_numeric(value):
     try:
         pd.to_numeric(value)
+        print("got to inside of try block!")
         if math.isnan(value):
             return False
         return True
     except ValueError:
+        print("value error.")
         return False
