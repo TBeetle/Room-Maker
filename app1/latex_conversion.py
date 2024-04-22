@@ -92,9 +92,20 @@ def conversion(file, layout_style):
             message = f"Invalid input. Column '{col}' contains non-numeric values."
             return {'success': False, 'message': message}
 
-    # check that data entered is valid
-    x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
-    y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
+    # Get data for X and Y axes
+    # check that 'X axis' exists in data
+    if (excel_data['type'] == 'x axis').any():
+        x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
+    else:
+        message = f"Invalid input. No data found for X-axis."
+        return {'success': False, 'message': message}
+    # check the Y Axis exists in data
+    if (excel_data['type'] == 'y axis').any():
+        y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
+    else:
+        message = f"Invalid input. No data found for Y-axis."
+        return {'success': False, 'message': message}
+    # Get minimum and maximum values for X axis
     x_min = x_axis_data['min']
     x_max = x_axis_data['max']
     if not is_numeric(x_min) or not is_numeric(x_max):
