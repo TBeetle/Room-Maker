@@ -13,6 +13,7 @@ Run the following command to update the package lists:
 ```bash
 sudo apt-get update
 ```
+
 ### Step 2: Clone the Repository
 
 Clone the project repository using Git:
@@ -21,6 +22,7 @@ Clone the project repository using Git:
 git clone https://github.com/SCCapstone/TheBackyardigans.git
 cd TheBackyardigans
 ```
+
 ### Step 3: Install Python 3.11
 
 Install Python 3.11 using the following command:
@@ -28,6 +30,7 @@ Install Python 3.11 using the following command:
 ```bash
 sudo apt install python3.11
 ```
+
 ### Step 4: Install Pipenv
 
 Our app utilizes Pipenv to keep our package requirements in check. Install and create an environment for Pipenv to manage Python dependencies using the following commands:
@@ -36,6 +39,7 @@ Our app utilizes Pipenv to keep our package requirements in check. Install and c
 pip install pipenv
 pipenv --python 3.11 install --ignore-pipfile
 ```
+
 ### Step 5: Activate the Pipenv Shell
 
 You can then enter the Pipenv environment with the following command:
@@ -43,6 +47,7 @@ You can then enter the Pipenv environment with the following command:
 ```bash
 pipenv shell
 ```
+
 ### Step 6: Install LaTeX Dependencies
 
 Our project incorporates LaTeX code to convert the Excel/CSV/JSON files to a viewable layout. Here's what you need to install:
@@ -54,6 +59,7 @@ sudo apt isntall dvipng
 sudo apt install texlive-science
 sudo apt install poppler-utils
 ```
+
 ### Step 8: Run the Application
 
 You can run the Django server locally using:
@@ -61,8 +67,8 @@ You can run the Django server locally using:
 ```bash
 python manage.py runserver
 ```
-Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
+Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
 ## Testing
 
@@ -78,7 +84,7 @@ We are using Selenium to test our project.
 
 ### Running Tests
 
-To run Unit Test:
+To run Unit Test run the following in the terminal:
 
 ```bash
 python manage.py test app1.tests.unit_tests
@@ -105,13 +111,7 @@ https://googlechromelabs.github.io/chrome-for-testing/
 
 ### Running Behaviorial Tests:
 
-Within Terminal One:
-
-```bash
-python manage.py runserver
-```
-
-Within Terminal Two:
+Within Terminal:
 
 ```bash
 python manage.py test app1.tests.behavioral_tests
