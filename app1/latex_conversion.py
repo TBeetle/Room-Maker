@@ -3,24 +3,34 @@ import numpy as np
 import subprocess
 import os
 import shutil
+import math
 from pdf2image import convert_from_path
 from django.conf import settings
 
 def conversion(file, layout_style):
-    
+    """
+    Function to convert input file to layout using LaTeX and LuaLaTeX for compilation
+
+    Parameters:
+    file (Excel or JSON or CSv): The file the user uploaded.
+    layout_style (list): The layout style from the "Default Style Settings" page.
+    labels (list) : The positioning of layout elements labels.
+
+    Returns:
+    boolean : True or False based on if the conversion was succesful. If False, then a specific error message is returned.
+    """
+
     # Read Excel data into a dataframe
     excel_data = pd.read_excel(os.path.join(settings.MEDIA_ROOT, 'imported_files', file))
     
     # drop empty rows
     excel_data = excel_data.dropna(how='all')
     excel_data.reset_index(drop=True, inplace=True)
-    print(excel_data)
+    # print(excel_data)
   
     # Convert first row and first column to lowercase
     excel_data.columns = excel_data.columns.str.lower()
     excel_data['type'] = excel_data['type'].str.lower()
-
-    # Check that header has all necessary values
 
     print("CALLING CONVERSION CODE:")
     print(file)
@@ -69,8 +79,6 @@ def conversion(file, layout_style):
 
     """.format(width=layout_style.furniture_width, color=layout_style.furniture_color)
 
-    # Define LaTeX template for gridlines
-
     # Ensure that the input file has all required columns
     missing_cols = ensure_header(excel_data)
     if missing_cols:
@@ -92,9 +100,21 @@ def conversion(file, layout_style):
             message = f"Invalid input. Column '{col}' contains non-numeric values."
             return {'success': False, 'message': message}
 
-    # check that data entered is valid
-    x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
-    y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
+
+    # Get data for X and Y axes
+    # check that 'X axis' exists in data
+    if (excel_data['type'] == 'x axis').any():
+        x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
+    else:
+        message = f"Invalid input. No data found for X-axis."
+        return {'success': False, 'message': message}
+    # check the Y Axis exists in data
+    if (excel_data['type'] == 'y axis').any():
+        y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
+    else:
+        message = f"Invalid input. No data found for Y-axis."
+        return {'success': False, 'message': message}
+    # Get minimum and maximum values for X axis
     x_min = x_axis_data['min']
     x_max = x_axis_data['max']
     if not is_numeric(x_min) or not is_numeric(x_max):
@@ -144,11 +164,6 @@ def conversion(file, layout_style):
         }}
     """.format(a1=x_min,a2=x_min+x_step,a3=x_max, a4=y_min-5,a5=y_max+5,a6=y_min,a7=y_min+y_step,a8=y_max,a9=x_min-5,a10=x_max+5)
 
-    
-    # TODO: Do whatever you want with the labels here; this will only be called when a user changes the labels from Edit Style page
-    # also move this section of code wherever
-
-
     # Iterate through rows and generate LaTeX code for walls and furniture
     latex_code = ""
 
@@ -165,13 +180,11 @@ def conversion(file, layout_style):
     DOOR = 'door'
     FURNITURE = 'furniture'
 
-    print(f"TYPES: {excel_data.dtypes}")
-
      # Parse through uploaded Excel file
     for index, row in excel_data.iterrows():
         descriptor = row['descriptor']
         row_type = row['type']
-        print(f"row: {index} + descriptor: {descriptor} + row type: {row_type}")
+        # print(f"row: {index} + descriptor: {descriptor} + row type: {row_type}")
 
         # Prevent parsing lines that don't contain data
         if row_type in ['x axis', 'y axis']:
@@ -225,7 +238,9 @@ def conversion(file, layout_style):
             if y1 < y_min or y1 > y_max:
                 message = f"Invalid input for wall y-coordinate in row {index+2}. Please enter a coordinate between {y_min} and {y_max}."
                 return {'success': False, 'message': message}
+            
             # --- Data validation passed ---
+
             # If the current row is the last row and it's a wall
             x2 = x1  # Set x2 to the same as x1
             y2 = y1  # Set y2 to the same as y1
@@ -430,7 +445,6 @@ def conversion(file, layout_style):
             latex_room_name = descriptor
         elif row_type == 'neighborhood':
             latex_neighborhood = descriptor
-            print(f"neighborhood: {latex_neighborhood}")
         elif row_type == 'building':
             latex_building = descriptor
         elif row_type == 'orientation':
@@ -440,7 +454,6 @@ def conversion(file, layout_style):
                 return {'success': False, 'message': message}
             layout_style.orientation = descriptor
             layout_style.save()
-            print(f"ORIENTATION FROM CONVERSION: {layout_style.orientation}")
             latex_orientation = descriptor
 
 
@@ -695,9 +708,7 @@ def conversion(file, layout_style):
     # Save LaTeX code to a .tex file
     tex_file_path = 'output.tex'
     with open(tex_file_path, 'w') as f:
-        f.write(complete_latex_code)
-
-    # TODO: create a new ConvertedFile for the user and upload the 'output.tex' 
+        f.write(complete_latex_code) 
 
     # Run the LaTeX compiler (lualatex) to generate the PDF
     process = subprocess.run(['lualatex', tex_file_path])
@@ -731,9 +742,6 @@ def conversion(file, layout_style):
     else:
         print("Error during PDF generation. Check the LaTeX log for details.")
         return {'success': False, 'message': 'Error occurred during PDF generation.'};
-
-
-import math
 
 def is_numeric(value):
     try:

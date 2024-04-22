@@ -19,8 +19,13 @@ class LoginTestCase(LiveServerTestCase):
     password_input = selenium.find_element('id','password')
     login_button = selenium.find_element("id",'loginbutton')
     
+<<<<<<< HEAD
     username_input.send_keys("user_test7")
     password_input.send_keys("pass_test7")
+=======
+    username_input.send_keys("user_test10")
+    password_input.send_keys("pass_test10")
+>>>>>>> master
     login_button.click()
 
     time.sleep(5)
@@ -38,8 +43,13 @@ class LoginAndOutTestCase(LiveServerTestCase):
         password_input = selenium.find_element('id', 'password')
         login_button = selenium.find_element('id', 'loginbutton')
         
+<<<<<<< HEAD
         username_input.send_keys("user_test7")
         password_input.send_keys("pass_test7")
+=======
+        username_input.send_keys("user_test10")
+        password_input.send_keys("pass_test10")
+>>>>>>> master
         login_button.click()
         
         time.sleep(5)
@@ -66,8 +76,13 @@ class DownloadExcel(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
+<<<<<<< HEAD
       username_input.send_keys("user_test7")
       password_input.send_keys("pass_test7")
+=======
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
+>>>>>>> master
       login_button.click()
       
       time.sleep(3)
@@ -93,8 +108,13 @@ class DownloadCSV(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
+<<<<<<< HEAD
       username_input.send_keys("user_test7")
       password_input.send_keys("pass_test7")
+=======
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
+>>>>>>> master
       login_button.click()
       
       time.sleep(3)
@@ -120,8 +140,13 @@ class DownloadJSON(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
+<<<<<<< HEAD
       username_input.send_keys("user_test7")
       password_input.send_keys("pass_test7")
+=======
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
+>>>>>>> master
       login_button.click()
       
       time.sleep(3)
@@ -144,8 +169,13 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
+<<<<<<< HEAD
       username_input.send_keys("user_test7")
       password_input.send_keys("pass_test7")
+=======
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
+>>>>>>> master
       login_button.click()
       
       time.sleep(3)
@@ -175,8 +205,13 @@ class UploadCSVTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
+<<<<<<< HEAD
       username_input.send_keys("user_test7")
       password_input.send_keys("pass_test7")
+=======
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
+>>>>>>> master
       login_button.click()
       
       time.sleep(3)
@@ -206,8 +241,8 @@ class UploadJSONTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -225,9 +260,9 @@ class UploadJSONTemplate(LiveServerTestCase):
       time.sleep(3)
 
 #9: Upload Excel Minimum X Values
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelMinimumX(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_minimum_x(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -237,8 +272,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -256,9 +291,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #10: Upload Excel Maximum X Values
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelMaximumX(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_maximum_x(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -268,8 +303,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -287,9 +322,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #11: Upload Excel Minimum Y Values
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelMinimumY(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_minimum_y(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -299,8 +334,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -318,9 +353,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #12: Upload Excel Value Out of Bounds (too small)
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelOOBS(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_OOOBS(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -330,8 +365,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -349,9 +384,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #13: Upload Excel minimum calibration
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelMinimumCali(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_minimum_cali(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -361,8 +396,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -380,9 +415,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #14: Upload Excel maximum calibration
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelMaxCali(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_max_cali(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -392,8 +427,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -411,9 +446,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #15: Upload Excel Value Out of Bounds (too large)
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelOOBL(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_OOBL(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -423,8 +458,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -442,9 +477,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #16: Upload Excel Camera has different sizes
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelDifCamSize(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_dif_cam_size(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -454,8 +489,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -472,10 +507,10 @@ class UploadExcelTemplate(LiveServerTestCase):
 
       time.sleep(15)
 
-#17: Upload Excel Camera has different sizes
-class UploadExcelTemplate(LiveServerTestCase):
+#17: Upload Excel Camera large rotation
+class UploadExcelCamRot(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_cam_large_rotation(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -485,8 +520,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test6")
-      password_input.send_keys("pass_test6")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -504,9 +539,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       time.sleep(15)
 
 #18: Upload Excel Template and then change object colors
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelEditColors(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_new_colors(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -516,8 +551,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test7")
-      password_input.send_keys("pass_test7")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -546,7 +581,7 @@ class UploadExcelTemplate(LiveServerTestCase):
 #19: Upload Excel Template and then change boundary colors
 class UploadExcelTemplate(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_boundary_colors(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -556,8 +591,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test7")
-      password_input.send_keys("pass_test7")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -584,9 +619,9 @@ class UploadExcelTemplate(LiveServerTestCase):
       submit_changes.click()
 
 #20: Upload Excel Template and then change landscape
-class UploadExcelTemplate(LiveServerTestCase):
+class UploadExcelLandscape(LiveServerTestCase):
    
-   def test_upload_excel_template(self):
+   def test_upload_excel_new_landscape(self):
       chromeOptions = webdriver.ChromeOptions()
       selenium = webdriver.Chrome(options=chromeOptions)
       selenium.get('https://thebackyardigans-test.up.railway.app/accounts/login/')
@@ -596,8 +631,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test7")
-      password_input.send_keys("pass_test7")
+      username_input.send_keys("user_test10")
+      password_input.send_keys("pass_test10")
       login_button.click()
       
       time.sleep(3)
@@ -617,8 +652,12 @@ class UploadExcelTemplate(LiveServerTestCase):
       edit_style_button = selenium.find_element('id','editStyle')
       edit_style_button.click()
 
+      time.sleep(5)
+
       edit_style_button = selenium.find_element('id','landscapeButton')
       edit_style_button.click()
+
+      time.sleep(5)
 
       submit_changes = selenium.find_element('id','submit-all')
       submit_changes.click()

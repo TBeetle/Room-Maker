@@ -1,6 +1,6 @@
 # TheBackyardigans
 
-Our project is a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app includes both a downloadable LaTeX file and PDF of the finished drawing. Users are able to adjust items live in the browser (e.g. shift a wall around, move a chair) with a flexible UI. Style settings are controlled in the app, and it is built using Django and Materialize-CSS.
+Our project is a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app includes both a downloadable LaTeX file containing code to generate the layout and a PDF of the finished drawing. Users are able to further customize individual layouts with a flexible UI. Style settings are controlled in the app, and it is built using Django and Materialize-CSS.
 
 ## Project Setup Guide
 
@@ -70,20 +70,19 @@ python manage.py runserver
 
 Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
-## Testing
+## Testing Guide
 
 In our project we have two primary types of tests that are being run: unit test and behavioral test. Both of these types of
-tests have their own python file and are within the tests folder.
+tests have their own python file within the tests folder:
 
 '/tests/unit_tests.py'
 '/tests/behavioral_tests.py'
 
 ### Testing Technology
 
-We are using Selenium to test our project.
+We are using Chromedriver and Selenium to test our project.
 
-### Running Tests
-
+<<<<<<< HEAD
 To run Unit Test run the following in the terminal:
 
 ```bash
@@ -93,25 +92,33 @@ python manage.py test app1.tests.unit_tests
 ### Behaviorial test setup:
 
 Helpful Guide-
+=======
+Follow the links to see a guides on installing selenium on windows/mac:
+>>>>>>> master
 
 https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windows-e02202ac2b08
+https://www.geeksforgeeks.org/how-to-install-selenium-webdriver-on-macos/
 
-Install Selenium-
-
-```bash
-pip install selenium
-```
-
-Install Chromedriver and place within your system wide directory-
-
-More helpful links to download Chromedriver
+Additional guides on installing Chromdriver:
 https://chromedriver.chromium.org/getting-started
 https://chromedriver.chromium.org/downloads
 https://googlechromelabs.github.io/chrome-for-testing/
 
-### Running Behaviorial Tests:
+Make sure the downloaded versions of chromedriver and selenium are compatible!
 
+### Running Tests
+
+<<<<<<< HEAD
 Within Terminal:
+=======
+To run Unit Test:
+
+```bash
+python manage.py test app1.tests.unit_tests
+```
+
+To run Behavioral Tests:
+>>>>>>> master
 
 ```bash
 python manage.py test app1.tests.behavioral_tests
