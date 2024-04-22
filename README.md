@@ -1,51 +1,70 @@
 # TheBackyardigans
 
-Our project will be a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app would be both a downloadable LaTeX file and PDF of the finished drawing. Users would be able to adjust items live in the browser (e.g. shift a wall around, move a chair) with a flexible UI. Style settings would be controlled in the app, and it would be built using Django and Materialize-CSS. A bonus feature would allow for an upload of a PDF building plan that auto-converts walls/doors/windows to LaTeX.
+Our project is a Web application that can ingest a JSON or Excel/CSV file to draw a building layout. The output of the app includes both a downloadable LaTeX file and PDF of the finished drawing. Users are able to adjust items live in the browser (e.g. shift a wall around, move a chair) with a flexible UI. Style settings are controlled in the app, and it is built using Django and Materialize-CSS.
 
-## External Requirements
+## Project Setup Guide
 
-In order to build this project you first have to install:
+This guide will walk you through setting up the project environment step-by-step.
 
-- [Pip](https://pypi.org/project/pip/)
-- [Pipenv](https://pypi.org/project/pipenv/)
-- [Django](https://www.djangoproject.com/)
-- [Black](https://pypi.org/project/black/)
+### Step 1: Update Package Lists
 
-Install pip:
-Pip comes on device but to upgrade look at commands here - https://pip.pypa.io/en/stable/installation/
+Run the following command to update the package lists:
 
-Install pipenv:
+```bash
+sudo apt-get update
+```
+### Step 2: Clone the Repository
 
-We're going to use pipenv to create virtual environments which can be created with -
+Clone the project repository using Git:
 
-pipenv --python "<path-to-python>" install --ignore-pipfile
+```bash
+git clone https://github.com/SCCapstone/TheBackyardigans.git
+cd TheBackyardigans
+```
+### Step 3: Install Python 3.11
 
-Install Django:
+Install Python 3.11 using the following command:
 
-Django is a little bit more complicated to install and prepare, but you can view installation tutorial with commands here - https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django
+```bash
+sudo apt install python3.11
+```
+### Step 4: Install Pipenv
 
-Install Black:
+Our app utilizes Pipenv to keep our package requirements in check. Install and create an environment for Pipenv to manage Python dependencies using the following commands:
 
-Black is our group's style guide of choice. To install use -
+```bash
+pip install pipenv
+pipenv --python 3.11 install --ignore-pipfile
+```
+### Step 5: Activate the Pipenv Shell
 
-pip install black
+You can then enter the Pipenv environment with the following command:
 
-## Setup
+```bash
+pipenv shell
+```
+### Step 6: Install LaTeX Dependencies
 
-If you plan on using pipenv, make sure you use pipenv shell to enter the environment.
+Our project incorporates LaTeX code to convert the Excel/CSV/JSON files to a viewable layout. Here's what you need to install:
 
-## Running
+```bash
+sudo apt install texlive-luatex
+sudo apt install texlive-fonts-recommended texlive-fonts-extra
+sudo apt isntall dvipng
+sudo apt install texlive-science
+sudo apt install poppler-utils
+```
+### Step 8: Run the Application
 
-Make sure you have correctly cloned the repository and it is the most recent version by using git pull command. Then, to run our web app type:
+You can run the Django server locally using:
 
-cd layoutGenerator
-python3 manage.py runserver
+```bash
+python manage.py runserver
+```
+Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
-# Deployment
 
-We are planning on deploying using Railway, but this is subject to change.
-
-# Testing
+## Testing
 
 In our project we have two primary types of tests that are being run: unit test and behavioral test. Both of these types of
 tests have their own python file and are within the tests folder.
@@ -53,17 +72,19 @@ tests have their own python file and are within the tests folder.
 '/tests/unit_tests.py'
 '/tests/behavioral_tests.py'
 
-## Testing Technology
+### Testing Technology
 
-Not applicable at this time
+We are using Selenium to test our project.
 
-## Running Tests
+### Running Tests
 
 To run Unit Test:
 
+```bash
 python manage.py test app1.tests.unit_tests
+```
 
-Behaviorial test setup:
+### Behaviorial test setup:
 
 Helpful Guide-
 
@@ -71,7 +92,9 @@ https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windo
 
 Install Selenium-
 
+```bash
 pip install selenium
+```
 
 Install Chromedriver and place within your system wide directory-
 
@@ -80,15 +103,19 @@ https://chromedriver.chromium.org/getting-started
 https://chromedriver.chromium.org/downloads
 https://googlechromelabs.github.io/chrome-for-testing/
 
-To run Behaviorial Test:
+### Running Behaviorial Tests:
 
 Within Terminal One:
 
+```bash
 python manage.py runserver
+```
 
 Within Terminal Two:
 
+```bash
 python manage.py test app1.tests.behavioral_tests
+```
 
 # Authors
 
