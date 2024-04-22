@@ -106,46 +106,46 @@ def conversion(file, layout_style):
     if (excel_data['type'] == 'x axis').any():
         x_axis_data = excel_data[excel_data['type'] == 'x axis'].iloc[0]
     else:
-        message = f"Invalid input. No data found for X-axis."
+        message = f"Invalid input. No data found for X axis."
         return {'success': False, 'message': message}
     # check the Y Axis exists in data
     if (excel_data['type'] == 'y axis').any():
         y_axis_data = excel_data[excel_data['type'] == 'y axis'].iloc[0]
     else:
-        message = f"Invalid input. No data found for Y-axis."
+        message = f"Invalid input. No data found for Y axis."
         return {'success': False, 'message': message}
     # Get minimum and maximum values for X axis
     x_min = x_axis_data['min']
     x_max = x_axis_data['max']
     if not is_numeric(x_min) or not is_numeric(x_max):
-        message = f"Invalid input types for X Axis min/max values. Please enter real numbers."
+        message = f"Invalid input types for X axis min/max values. Please enter real numbers."
         return {'success': False, 'message': message}
     y_min = y_axis_data['min']
     y_max = y_axis_data['max']
     if not is_numeric(y_min) or not is_numeric(y_max):
-        message = f"Invalid input types for Y Axis min/max values. Please enter real numbers."
+        message = f"Invalid input types for Y axis min/max values. Please enter real numbers."
         return {'success': False, 'message': message}
     if (not x_min < x_max):
-        message = f"Invalid input for X Axis min/max values. Please ensure that x_min is less than x_max."
+        message = f"Invalid input for X axis min/max values. Please ensure that x_min is less than x_max."
     if (not y_min < y_max):
-        message = f"Invalid input for Y Axis min/max values. Please ensure that y_min is less than y_max."
+        message = f"Invalid input for Y axis min/max values. Please ensure that y_min is less than y_max."
     x_step = x_axis_data['step']
     y_step = y_axis_data['step']
     if not is_numeric(x_step):
-        message = f"Invalid input type for X Axis step value. Please enter a real number."
+        message = f"Invalid input type for X axis step value. Please enter a real number."
         return {'success': False, 'message': message}
     if x_step > abs(x_max-x_min) or x_step <= 0:
-        message = f"Invalid step value for X Axis. Please enter a positive number within the axis range."
+        message = f"Invalid step value for X axis. Please enter a positive number within the axis range."
         return {'success': False, 'message': message}
     if not is_numeric(y_step):
-        message = f"Invalid input types for Y Axis step value. Please enter a real number."
+        message = f"Invalid input types for Y axis step value. Please enter a real number."
         return {'success': False, 'message': message}
     if y_step > abs(y_max-y_min) or y_step<=0:
-        message = f"Invalid step value for Y Axis. Please enter a positive number within the axis range."
+        message = f"Invalid step value for Y axis. Please enter a positive number within the axis range."
         return {'success': False, 'message': message}
     # set maximum # of steps
     if abs(x_max - x_min) / x_step > 30:
-        message = f"Step value for X Axis is too small. Please enter a larger value."
+        message = f"Step value for X axis is too small. Please enter a larger value."
         return {'success': False, 'message': message}
 
     latex_gridline_template = """
@@ -199,10 +199,10 @@ def conversion(file, layout_style):
             y1 = row['y']
              # check that x and y are valid number values
             if not is_numeric(x1):
-                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for X in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if not is_numeric(y1):
-                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for Y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             # check that x and y are within range of gridlines
             if x1 < x_min or x1 > x_max:
@@ -226,10 +226,10 @@ def conversion(file, layout_style):
             y1 = row['y']
             # check that x and y are valid number values
             if not is_numeric(x1):
-                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for X in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if not is_numeric(y1):
-                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for Y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             # check that x and y are within range of gridlines
             if x1 < x_min or x1 > x_max:
@@ -250,10 +250,10 @@ def conversion(file, layout_style):
             y1 = row['y']
             # check that x and y are valid number values
             if not is_numeric(x1):
-                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for X in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if not is_numeric(y1):
-                message = f"Invalid input type for y in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for Y in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if x1 < x_min or x1 > x_max:
                 message = f"Invalid input for window x-coordinate in row {index+2}. Please enter a coordinate between {x_min} and {x_max}."
@@ -275,10 +275,10 @@ def conversion(file, layout_style):
             door_angle = row['door_angle']
             # check that x, y, and angle are valid number values
             if not is_numeric(x):
-                message = f"Invalid input type for x in row {index+2}. Please enter a real number."
+                message = f"Invalid input type for X in row {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if not is_numeric(y):
-                message = f"Invalid input type for y in row + {index+2}. Please enter a real number."
+                message = f"Invalid input type for Y in row + {index+2}. Please enter a real number."
                 return {'success': False, 'message': message}
             if (not is_numeric(door_angle)) or door_angle < 0 or door_angle > 360:
                 message = f"Invalid input type for door_angle in row {index+2}. Please enter a number between 0 - 360."
