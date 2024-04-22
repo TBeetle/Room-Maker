@@ -70,48 +70,35 @@ python manage.py runserver
 
 Once the server is running, you can head to http://127.0.0.1:8000/ in your web browser to view the application locally.
 
-## Testing
+## Testing Guide
 
 In our project we have two primary types of tests that are being run: unit test and behavioral test. Both of these types of
-tests have their own python file and are within the tests folder.
+tests have their own python file within the tests folder:
 
 '/tests/unit_tests.py'
 '/tests/behavioral_tests.py'
 
 ### Testing Technology
 
-We are using Selenium to test our project.
+We are using Chromedriver and Selenium to test our project.
 
-### Running Tests
-
-To run Unit Test run the following in the terminal:
-
-```bash
-python manage.py test app1.tests.unit_tests
-```
-
-### Behaviorial test setup:
-
-Helpful Guide-
+Follow the links to see a guides on installing selenium on windows/mac:
 
 https://medium.com/@patrick.yoho11/installing-selenium-and-chromedriver-on-windows-e02202ac2b08
+https://www.geeksforgeeks.org/how-to-install-selenium-webdriver-on-macos/
 
-Install Selenium-
-
-```bash
-pip install selenium
-```
-
-Install Chromedriver and place within your system wide directory-
-
-More helpful links to download Chromedriver
+Additional guides on installing Chromdriver:
 https://chromedriver.chromium.org/getting-started
 https://chromedriver.chromium.org/downloads
 https://googlechromelabs.github.io/chrome-for-testing/
 
-### Running Behaviorial Tests:
+Make sure the downloaded versions of chromedriver and selenium are compatible!
 
-Within Terminal:
+### Running Tests
+
+```bash
+python manage.py test app1.tests.unit_tests
+```
 
 ```bash
 python manage.py test app1.tests.behavioral_tests
