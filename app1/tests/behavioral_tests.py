@@ -19,8 +19,8 @@ class LoginTestCase(LiveServerTestCase):
     password_input = selenium.find_element('id','password')
     login_button = selenium.find_element("id",'loginbutton')
     
-    username_input.send_keys("user_test10")
-    password_input.send_keys("pass_test10")
+    username_input.send_keys("testing12")
+    password_input.send_keys("testing12")
 
     login_button.click()
 
@@ -39,8 +39,8 @@ class LoginAndOutTestCase(LiveServerTestCase):
         password_input = selenium.find_element('id', 'password')
         login_button = selenium.find_element('id', 'loginbutton')
         
-        username_input.send_keys("user_test10")
-        password_input.send_keys("pass_test10")
+        username_input.send_keys("testing12")
+        password_input.send_keys("testing12")
 
         login_button.click()
         
@@ -68,8 +68,8 @@ class DownloadExcel(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
 
       login_button.click()
       
@@ -96,8 +96,8 @@ class DownloadCSV(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
 
       login_button.click()
       
@@ -124,8 +124,8 @@ class DownloadJSON(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
     
       login_button.click()
       
@@ -149,8 +149,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
 
       login_button.click()
       
@@ -181,8 +181,8 @@ class UploadCSVTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
     
       login_button.click()
       
@@ -213,8 +213,8 @@ class UploadJSONTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -244,8 +244,8 @@ class UploadExcelMinimumX(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -275,8 +275,8 @@ class UploadExcelMaximumX(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -306,8 +306,8 @@ class UploadExcelMinimumY(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -337,15 +337,15 @@ class UploadExcelOOBS(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_format_out_of_bounds_small')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_format_out_of_bounds_small.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -368,15 +368,15 @@ class UploadExcelMinimumCali(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_min_calibration')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_min_calibration.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -399,15 +399,15 @@ class UploadExcelMaxCali(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_max_calibration')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_max_calibration.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -430,15 +430,15 @@ class UploadExcelOOBL(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_out_of_bounds_large')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_out_of_bounds_large.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -461,15 +461,15 @@ class UploadExcelDifCamSize(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_out_of_bounds_large')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_out_of_bounds_large.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -492,15 +492,15 @@ class UploadExcelCamRot(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
 
       current_dir = os.path.dirname(__file__)
       #print(f"Current directory: {current_dir}")
-      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_table_large_rotation')
+      upload_file_path = os.path.join(current_dir, 'testsfiles/example_excel_table_large_rotation.xlsx')
       #print(upload_file_path)
 
       upload_input = selenium.find_element('id', 'formFile')
@@ -523,8 +523,8 @@ class UploadExcelEditColors(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -563,8 +563,8 @@ class UploadExcelTemplate(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
@@ -603,8 +603,8 @@ class UploadExcelLandscape(LiveServerTestCase):
       password_input = selenium.find_element('id', 'password')
       login_button = selenium.find_element('id', 'loginbutton')
       
-      username_input.send_keys("user_test10")
-      password_input.send_keys("pass_test10")
+      username_input.send_keys("testing12")
+      password_input.send_keys("testing12")
       login_button.click()
       
       time.sleep(3)
